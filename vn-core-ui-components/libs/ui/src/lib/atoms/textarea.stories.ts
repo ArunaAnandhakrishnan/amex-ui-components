@@ -1,0 +1,33 @@
+import type { Meta, StoryObj } from '@storybook/angular';
+import { TextareaComponent } from './textarea';
+
+const meta: Meta<TextareaComponent> = {
+  title: 'Atoms/Textarea',
+  component: TextareaComponent,
+  tags: ['autodocs'],
+  argTypes: {
+    placeholder: { control: 'text' },
+    rows: { control: 'number' },
+    disabled: { control: 'boolean' },
+    error: { control: 'text' },
+  },
+};
+
+export default meta;
+type Story = StoryObj<TextareaComponent>;
+
+export const Default: Story = {
+  args: { placeholder: 'Enter your message...', rows: 4 },
+};
+
+export const WithError: Story = {
+  args: { placeholder: 'Enter your message...', error: 'Message is required' },
+};
+
+export const Disabled: Story = {
+  args: { placeholder: 'Disabled textarea', disabled: true },
+};
+
+export const Tall: Story = {
+  args: { placeholder: 'Lots of room to write...', rows: 8 },
+};
