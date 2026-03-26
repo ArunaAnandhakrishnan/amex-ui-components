@@ -9,6 +9,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/animations": "~21.1.0",
     "@angular/common": "~21.1.0",
     "@angular/compiler": "~21.1.0",
     "@angular/core": "~21.1.0",
@@ -16,6 +17,8 @@
     "@angular/platform-browser": "~21.1.0",
     "@angular/platform-browser-dynamic": "~21.1.0",
     "@angular/router": "~21.1.0",
+    "@mdx-js/mdx": "^3.1.1",
+    "@mdx-js/react": "^3.1.1",
     "rxjs": "~7.8.0"
   },
   "devDependencies": {
@@ -26,6 +29,7 @@
     "@angular/compiler-cli": "~21.1.0",
     "@angular/language-service": "~21.1.0",
     "@eslint/js": "^9.8.0",
+    "@mdx-js/rollup": "^3.1.1",
     "@nx/angular": "22.5.4",
     "@nx/devkit": "22.5.4",
     "@nx/eslint": "22.5.4",
@@ -38,8 +42,9 @@
     "@nx/workspace": "22.5.4",
     "@playwright/test": "^1.36.0",
     "@schematics/angular": "~21.1.0",
-    "@storybook/angular": "^10.3.0",
-    "@storybook/builder-vite": "^10.3.0",
+    "@storybook/addon-docs": "10.3.0",
+    "@storybook/angular": "10.3.0",
+    "@storybook/builder-vite": "10.3.0",
     "@swc-node/register": "~1.11.1",
     "@swc/core": "~1.15.5",
     "@swc/helpers": "~0.5.18",
