@@ -53,5 +53,30 @@ export class App {
         { label: 'Notification Toast', path: '/molecules/notification-toast' },
       ],
     },
+
+    // Add these two groups to the nav array:
+{
+  group: 'AMEX Atoms',
+  items: [
+    { label: 'Card Badge',     path: '/amex/atoms/card-badge' },
+    { label: 'Status Badge',   path: '/amex/atoms/status-badge' },
+    { label: 'Account Number', path: '/amex/atoms/account-number' },
+    { label: 'Points Display', path: '/amex/atoms/points-display' },
+    { label: 'Amount',         path: '/amex/atoms/amount' },
+    { label: 'Reference ID',   path: '/amex/atoms/reference-id' },
+  ],
+},
+{
+  group: 'AMEX Molecules',
+  items: [
+    { label: 'Statement Row',   path: '/amex/molecules/statement-row' },
+    { label: 'Card Tile',       path: '/amex/molecules/card-tile' },
+    { label: 'Report Table',    path: '/amex/molecules/report-table' },
+    { label: 'Audit Trail Row', path: '/amex/molecules/audit-trail-row' },
+    { label: 'Offer Card',      path: '/amex/molecules/offer-card' },
+    { label: 'Wearable Tile',   path: '/amex/molecules/wearable-tile' },
+    { label: 'User Row',        path: '/amex/molecules/user-row' },
+  ],
+},
   ];
 }

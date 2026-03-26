@@ -29,4 +29,23 @@ export const appRoutes: Route[] = [
   { path: 'molecules/date-input', loadComponent: () => import('./pages/molecules/date-input-page').then(m => m.DateInputPageComponent) },
   { path: 'molecules/file-upload', loadComponent: () => import('./pages/molecules/file-upload-page').then(m => m.FileUploadPageComponent) },
   { path: 'molecules/notification-toast', loadComponent: () => import('./pages/molecules/notification-toast-page').then(m => m.NotificationToastPageComponent) },
+
+  // ... existing routes ...
+
+  // AMEX Atoms
+  { path: 'amex/atoms/card-badge', loadComponent: () => import('./pages/amex/atoms/card-badge-page').then(m => m.CardBadgePageComponent) },
+  { path: 'amex/atoms/status-badge', loadComponent: () => import('./pages/amex/atoms/status-badge-page').then(m => m.StatusBadgePageComponent) },
+  { path: 'amex/atoms/account-number', loadComponent: () => import('./pages/amex/atoms/account-number-page').then(m => m.AccountNumberPageComponent) },
+  { path: 'amex/atoms/points-display', loadComponent: () => import('./pages/amex/atoms/points-display-page').then(m => m.PointsDisplayPageComponent) },
+  { path: 'amex/atoms/amount', loadComponent: () => import('./pages/amex/atoms/amount-page').then(m => m.AmountPageComponent) },
+  { path: 'amex/atoms/reference-id', loadComponent: () => import('./pages/amex/atoms/reference-id-page').then(m => m.ReferenceIdPageComponent) },
+
+  // AMEX Molecules
+  { path: 'amex/molecules/statement-row', loadComponent: () => import('./pages/amex/molecules/statement-row-page').then(m => m.StatementRowPageComponent) },
+  { path: 'amex/molecules/card-tile', loadComponent: () => import('./pages/amex/molecules/card-tile-page').then(m => m.CardTilePageComponent) },
+  { path: 'amex/molecules/report-table', loadComponent: () => import('./pages/amex/molecules/report-table-page').then(m => m.ReportTablePageComponent) },
+  { path: 'amex/molecules/audit-trail-row', loadComponent: () => import('./pages/amex/molecules/audit-trail-row-page').then(m => m.AuditTrailRowPageComponent) },
+  { path: 'amex/molecules/offer-card', loadComponent: () => import('./pages/amex/molecules/offer-card-page').then(m => m.OfferCardPageComponent) },
+  { path: 'amex/molecules/wearable-tile', loadComponent: () => import('./pages/amex/molecules/wearable-tile-page').then(m => m.WearableTilePageComponent) },
+  { path: 'amex/molecules/user-row', loadComponent: () => import('./pages/amex/molecules/user-row-page').then(m => m.UserRowPageComponent) },
 ];
