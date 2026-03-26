@@ -30,3 +30,21 @@ export * from './lib/molecules/search-bar';
 export * from './lib/molecules/date-input';
 export * from './lib/molecules/file-upload';
 export * from './lib/molecules/notification-toast';
+
+
+// AMEX Atoms
+export * from './lib/amex/atoms/card-badge';
+export * from './lib/amex/atoms/status-badge';
+export * from './lib/amex/atoms/account-number';
+export * from './lib/amex/atoms/points-display';
+export * from './lib/amex/atoms/amount';
+export * from './lib/amex/atoms/reference-id';
+
+// AMEX Molecules
+export * from './lib/amex/molecules/statement-row';
+export * from './lib/amex/molecules/card-tile';
+export * from './lib/amex/molecules/report-table';
+export * from './lib/amex/molecules/audit-trail-row';
+export * from './lib/amex/molecules/offer-card';
+export * from './lib/amex/molecules/wearable-tile';
+export * from './lib/amex/molecules/user-row';
