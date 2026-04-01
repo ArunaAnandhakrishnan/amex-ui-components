@@ -78,5 +78,31 @@ export class App {
     { label: 'User Row',        path: '/amex/molecules/user-row' },
   ],
 },
+{
+      group: 'AMEX Feedback',
+      items: [
+        { label: 'Success Toast',               path: '/amex/feedback' },
+        { label: 'Error Toast',                 path: '/amex/feedback' },
+        { label: 'Inline Validation Error',     path: '/amex/feedback' },
+        { label: 'Confirmation Modal',          path: '/amex/feedback' },
+        { label: 'Duplicate Warning',           path: '/amex/feedback' },
+        { label: 'File Upload Progress',        path: '/amex/feedback' },
+        { label: 'Reset Password Confirm',      path: '/amex/feedback' },
+      ],
+    },
+
+{
+  group: 'AMEX Navigation',
+  items: [
+    { label: 'Top Nav Bar',         path: '/amex/navigation' },
+    { label: 'Tab Bar',             path: '/amex/navigation' },
+    { label: 'Sidebar Menu',        path: '/amex/navigation' },
+    { label: 'Portal Home Tiles',   path: '/amex/navigation' },
+    { label: 'Dashboard Menu Bar',  path: '/amex/navigation' },
+    { label: 'Page Header',         path: '/amex/navigation' },
+    { label: 'Breadcrumb Trail',    path: '/amex/navigation' },
+    { label: 'Logout Confirmation', path: '/amex/navigation' },
+  ],
+},
   ];
 }

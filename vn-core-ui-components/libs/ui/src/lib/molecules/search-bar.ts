@@ -1,9 +1,11 @@
 import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'ui-search-bar',
   standalone: true,
+  imports: [NgIf],
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => SearchBarComponent), multi: true }],
   template: `
     <div class="search-bar" [class.focused]="focused">

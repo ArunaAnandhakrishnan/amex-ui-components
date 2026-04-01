@@ -48,3 +48,22 @@ export * from './lib/amex/molecules/audit-trail-row';
 export * from './lib/amex/molecules/offer-card';
 export * from './lib/amex/molecules/wearable-tile';
 export * from './lib/amex/molecules/user-row';
+
+// AMEX Feedback
+export * from './lib/amex/feedback/success-toast';
+export * from './lib/amex/feedback/error-toast';
+export * from './lib/amex/feedback/inline-validation-error';
+export * from './lib/amex/feedback/confirmation-modal';
+export * from './lib/amex/feedback/duplicate-submission-warning';
+export * from './lib/amex/feedback/file-upload-progress';
+export * from './lib/amex/feedback/reset-password-confirm';
+
+// AMEX Navigation
+export * from './lib/amex/navigation/top-nav-bar';
+export * from './lib/amex/navigation/tab-bar';
+export * from './lib/amex/navigation/sidebar-menu';
+export * from './lib/amex/navigation/portal-home-tiles';
+export * from './lib/amex/navigation/dashboard-menu-bar';
+export * from './lib/amex/navigation/page-header';
+export * from './lib/amex/navigation/breadcrumb-trail';
+export * from './lib/amex/navigation/logout-confirmation';
