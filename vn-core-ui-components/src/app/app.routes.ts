@@ -48,4 +48,10 @@ export const appRoutes: Route[] = [
   { path: 'amex/molecules/offer-card', loadComponent: () => import('./pages/amex/molecules/offer-card-page').then(m => m.OfferCardPageComponent) },
   { path: 'amex/molecules/wearable-tile', loadComponent: () => import('./pages/amex/molecules/wearable-tile-page').then(m => m.WearableTilePageComponent) },
   { path: 'amex/molecules/user-row', loadComponent: () => import('./pages/amex/molecules/user-row-page').then(m => m.UserRowPageComponent) },
+
+    // AMEX Feedback
+  { path: 'amex/feedback', loadComponent: () => import('./pages/amex/feedback/feedback-page').then(m => m.AmexFeedbackPageComponent) },
+
+ { path: 'amex/navigation', loadComponent: () => import('./pages/amex/navigation/navigation-page').then(m => m.AmexNavigationPageComponent) },
+
 ];

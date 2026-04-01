@@ -1,10 +1,11 @@
 import { Component, Input, forwardRef } from '@angular/core';
+import { NgIf } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'ui-input',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, NgIf],
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => InputComponent), multi: true }],
   template: `
     <div class="input-wrapper" [class.has-error]="error" [class.disabled]="disabled">

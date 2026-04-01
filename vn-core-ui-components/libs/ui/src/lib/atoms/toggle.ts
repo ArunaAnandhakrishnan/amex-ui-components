@@ -1,9 +1,11 @@
 import { Component, Input, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'ui-toggle',
   standalone: true,
+  imports: [NgIf],
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => ToggleComponent), multi: true }],
   template: `
     <label class="toggle-label" [class.disabled]="disabled">
