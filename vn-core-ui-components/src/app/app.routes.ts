@@ -52,6 +52,24 @@ export const appRoutes: Route[] = [
     // AMEX Feedback
   { path: 'amex/feedback', loadComponent: () => import('./pages/amex/feedback/feedback-page').then(m => m.AmexFeedbackPageComponent) },
 
- { path: 'amex/navigation', loadComponent: () => import('./pages/amex/navigation/navigation-page').then(m => m.AmexNavigationPageComponent) },
-
+    // AMEX Navigation
+  { path: 'amex/navigation', loadComponent: () => import('./pages/amex/navigation/navigation-page').then(m => m.AmexNavigationPageComponent) },
+    
+  // AMEX Search-filters
+  { path: 'amex/search-filters', loadComponent: () => import('./pages/amex/search-filters/search-filters-page').then(m => m.AmexSearchFiltersPageComponent) },
+   
+  // AMEX Tables
+  { path: 'amex/tables', loadComponent: () => import('./pages/amex/tables/tables-page').then(m => m.AmexTablesPageComponent) },
+    
+  // AMEX Actions
+  { path: 'amex/action', loadComponent: () => import('./pages/amex/action/actions-page').then(m => m.AmexActionsPageComponent) },
+  
+    // AMEX Form
+  { path: 'amex/forms', loadComponent: () => import('./pages/amex/forms/forms-page').then(m => m.AmexFormsPageComponent) },
+  
+     // AMEX Display Viewers
+  { path: 'amex/display-viewers', loadComponent: () => import('./pages/amex/display-viewers/display-viewers-page').then(m => m.AmexDisplayViewersPageComponent) },
+  
+  // AMEX Authentication
+{ path: 'amex/authentication', loadComponent: () => import('./pages/amex/authentication/authentication-page').then(m => m.AmexAuthenticationPageComponent) },
 ];

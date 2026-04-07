@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AmexStatusBadgeComponent } from '../atoms/status-badge';
 
-export interface AmexTableColumn {
+export interface Amex_Molecules_TableColumn {
   key: string;
   label: string;
   sortable?: boolean;
@@ -12,7 +12,7 @@ export interface AmexTableColumn {
 }
 
 export interface AmexReportTableConfig {
-  columns: AmexTableColumn[];
+  columns: Amex_Molecules_TableColumn[];
   pageSize?: number;
   searchable?: boolean;
   exportable?: boolean;

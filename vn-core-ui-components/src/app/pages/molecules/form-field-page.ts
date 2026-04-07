@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { ShowcasePageComponent } from '../showcase-page';
 import { VariantSectionComponent } from '../variant-section';
-import { FormFieldComponent, InputComponent, SelectComponent, CheckboxComponent } from '@vn-core-ui-components/ui';
+import { FormFieldComponent, InputComponent, SelectComponent } from '@vn-core-ui-components/ui';
 
 @Component({ selector: 'app-form-field-page', standalone: true,
-  imports: [ShowcasePageComponent, VariantSectionComponent, FormFieldComponent, InputComponent, SelectComponent, CheckboxComponent],
+  imports: [ShowcasePageComponent, VariantSectionComponent, FormFieldComponent, InputComponent, SelectComponent],
   template: `
     <app-showcase-page title="Form Field" description="Label + control + hint/error wrapper.">
       <app-variant-section title="With Input">

@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { action } from '@storybook/addon-actions';
 import { IconButtonComponent } from './icon-button';
 
 const meta: Meta<IconButtonComponent> = {
@@ -16,7 +15,7 @@ const meta: Meta<IconButtonComponent> = {
 export default meta;
 type Story = StoryObj<IconButtonComponent>;
 
-export const Ghost: Story = { args: { icon: '✏️', ariaLabel: 'Edit', variant: 'ghost', clicked: action('clicked') } };
-export const Primary: Story = { args: { icon: '＋', ariaLabel: 'Add', variant: 'primary', clicked: action('clicked') } };
-export const Danger: Story = { args: { icon: '🗑', ariaLabel: 'Delete', variant: 'danger', clicked: action('clicked') } };
+export const Ghost: Story = { args: { icon: '✏️', ariaLabel: 'Edit', variant: 'ghost'} };
+export const Primary: Story = { args: { icon: '＋', ariaLabel: 'Add', variant: 'primary'} };
+export const Danger: Story = { args: { icon: '🗑', ariaLabel: 'Delete', variant: 'danger'} };
 export const Disabled: Story = { args: { icon: '✏️', ariaLabel: 'Edit', disabled: true } };
