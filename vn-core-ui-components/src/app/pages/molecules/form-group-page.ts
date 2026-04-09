@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { ShowcasePageComponent } from '../showcase-page';
 import { VariantSectionComponent } from '../variant-section';
-import { FormGroupComponent, FormFieldComponent, InputComponent, SelectComponent, TextareaComponent, CheckboxComponent, RadioGroupComponent } from '@vn-core-ui-components/ui';
+import { FormGroupComponent, FormFieldComponent, InputComponent, TextareaComponent, CheckboxComponent, RadioGroupComponent } from '@vn-core-ui-components/ui';
 
 @Component({ selector: 'app-form-group-page', standalone: true,
-  imports: [ShowcasePageComponent, VariantSectionComponent, FormGroupComponent, FormFieldComponent, InputComponent, SelectComponent, TextareaComponent, CheckboxComponent, RadioGroupComponent],
+  imports: [ShowcasePageComponent, VariantSectionComponent, FormGroupComponent, FormFieldComponent, InputComponent, TextareaComponent, CheckboxComponent, RadioGroupComponent],
   template: `
     <app-showcase-page title="Form Group" description="Groups related form fields with optional legend.">
       <app-variant-section title="Contact Form">

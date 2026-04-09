@@ -81,28 +81,96 @@ export class App {
 {
       group: 'AMEX Feedback',
       items: [
-        { label: 'Success Toast',               path: '/amex/feedback' },
-        { label: 'Error Toast',                 path: '/amex/feedback' },
-        { label: 'Inline Validation Error',     path: '/amex/feedback' },
-        { label: 'Confirmation Modal',          path: '/amex/feedback' },
-        { label: 'Duplicate Warning',           path: '/amex/feedback' },
-        { label: 'File Upload Progress',        path: '/amex/feedback' },
-        { label: 'Reset Password Confirm',      path: '/amex/feedback' },
+        { label: 'Feedback',               path: '/amex/feedback' },
+        // { label: 'Success Toast',               path: '/amex/feedback' },
+        // { label: 'Error Toast',                 path: '/amex/feedback' },
+        // { label: 'Inline Validation Error',     path: '/amex/feedback' },
+        // { label: 'Confirmation Modal',          path: '/amex/feedback' },
+        // { label: 'Duplicate Warning',           path: '/amex/feedback' },
+        // { label: 'File Upload Progress',        path: '/amex/feedback' },
+        // { label: 'Reset Password Confirm',      path: '/amex/feedback' },
       ],
     },
 
 {
   group: 'AMEX Navigation',
   items: [
-    { label: 'Top Nav Bar',         path: '/amex/navigation' },
-    { label: 'Tab Bar',             path: '/amex/navigation' },
-    { label: 'Sidebar Menu',        path: '/amex/navigation' },
-    { label: 'Portal Home Tiles',   path: '/amex/navigation' },
-    { label: 'Dashboard Menu Bar',  path: '/amex/navigation' },
-    { label: 'Page Header',         path: '/amex/navigation' },
-    { label: 'Breadcrumb Trail',    path: '/amex/navigation' },
-    { label: 'Logout Confirmation', path: '/amex/navigation' },
+      { label: 'Navigation',         path: '/amex/navigation' },
+    // { label: 'Top Nav Bar',         path: '/amex/navigation' },
+    // { label: 'Tab Bar',             path: '/amex/navigation' },
+    // { label: 'Sidebar Menu',        path: '/amex/navigation' },
+    // { label: 'Portal Home Tiles',   path: '/amex/navigation' },
+    // { label: 'Dashboard Menu Bar',  path: '/amex/navigation' },
+    // { label: 'Page Header',         path: '/amex/navigation' },
+    // { label: 'Breadcrumb Trail',    path: '/amex/navigation' },
+    // { label: 'Logout Confirmation', path: '/amex/navigation' },
   ],
 },
+{
+  group: 'AMEX Search & Filters',
+  items: [
+    { label: 'Search & Filters', path: '/amex/search-filters' },
+  ],
+},
+{
+  group: 'AMEX Tables',
+  items: [
+     { label: 'Tables',  path: '/amex/tables' },
+    // { label: 'Sortable Filterable Table',  path: '/amex/tables' },
+    // { label: 'Paginated Table',            path: '/amex/tables' },
+    // { label: 'BCRB Reports Table',         path: '/amex/tables' },
+    // { label: 'User Management Table',      path: '/amex/tables' },
+    // { label: 'SOC/ROC Records Table',      path: '/amex/tables' },
+    // { label: 'Eligible Transactions Table',path: '/amex/tables' },
+  ],
+},
+
+{
+  group: 'AMEX Action',
+  items: [
+     { label: 'Actions',  path: '/amex/action' },
+  ],
+},
+{
+      group: 'AMEX Forms',
+      items: [
+        { label: 'Form', path: '/amex/forms' },
+        // { label: 'Add User Form',                path: '/amex/forms' },
+        // { label: 'Edit User Form',               path: '/amex/forms' },
+        // { label: 'Edit My Details Form',         path: '/amex/forms' },
+        // { label: 'Merchant Data Form',           path: '/amex/forms' },
+        // { label: 'Add Delete Merchant Panel',    path: '/amex/forms' },
+        // { label: 'Contact Information Form',     path: '/amex/forms' },
+        // { label: 'Country Master Form',          path: '/amex/forms' },
+        // { label: 'Currency Master Form',         path: '/amex/forms' },
+        // { label: 'SOC/ROC Entry Form',           path: '/amex/forms' },
+        // { label: 'Payment Allocation Form',      path: '/amex/forms' },
+        // { label: 'Report Format Form',           path: '/amex/forms' },
+        // { label: 'VAT Registration Form',        path: '/amex/forms' },
+        // { label: 'Upload Certificate Panel',     path: '/amex/forms' },
+        // { label: 'Tax Invoice Delivery Form',    path: '/amex/forms' },
+        // { label: 'Customized Reports Form',      path: '/amex/forms' },
+        // { label: 'Algeria Payment Form',         path: '/amex/forms' },
+        // { label: 'Wearable Issuance Form',       path: '/amex/forms' },
+        // { label: 'Centurion Card Art Selector',  path: '/amex/forms' },
+        // { label: 'File Upload Form',             path: '/amex/forms' },
+        // { label: 'VAT Invoice Search Form',      path: '/amex/forms' },
+        // { label: 'UAEFTS Statement Request',     path: '/amex/forms' },
+        // { label: 'New Outlet Application',       path: '/amex/forms' },
+        // { label: 'MRM Create/Edit User Form',    path: '/amex/forms' },
+      ],
+    },
+    {
+      group: 'AMEX Display Viewers',
+      items: [
+        { label: 'Display Viewers', path: '/amex/display-viewers' },
+      ]
+    },
+    {
+  group: 'AMEX Authentication',
+  items: [
+    { label: 'Authentication', path: '/amex/authentication' },
+  ]
+}
   ];
 }
