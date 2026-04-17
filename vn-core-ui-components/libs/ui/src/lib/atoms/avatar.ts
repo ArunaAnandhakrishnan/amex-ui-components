@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <div class="avatar avatar-{{size}}" [style.background]="!src ? color : 'transparent'">
-      <img *ngIf="src" [src]="src" [alt]="alt" class="avatar-img" />
+      <img *ngIf="src" [src]="src" [attr.alt]="alt || initials" class="avatar-img" />
       <span *ngIf="!src" class="avatar-initials">{{ initials }}</span>
     </div>
   `,

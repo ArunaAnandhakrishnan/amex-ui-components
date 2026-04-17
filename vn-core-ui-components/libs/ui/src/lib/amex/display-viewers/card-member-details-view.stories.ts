@@ -4,7 +4,7 @@ import { AmexCardMemberDetailsViewComponent } from './card-member-details-view';
 const meta: Meta<AmexCardMemberDetailsViewComponent> = {
   title: 'AMEX/Display-Viewers/CardMemberDetailsView',
   component: AmexCardMemberDetailsViewComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'needs-improvement', 'screen-reader', 'color-contrast'],
 };
 export default meta;
 type Story = StoryObj<AmexCardMemberDetailsViewComponent>;

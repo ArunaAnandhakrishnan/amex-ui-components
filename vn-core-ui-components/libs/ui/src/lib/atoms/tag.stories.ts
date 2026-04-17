@@ -4,7 +4,7 @@ import { TagComponent } from './tag';
 const meta: Meta<TagComponent> = {
   title: 'Atoms/Tag',
   component: TagComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'keyboard-navigation', 'screen-reader'],
   argTypes: {
     variant: { control: 'select', options: ['primary','secondary','success','warning','error','neutral'] },
     removable: { control: 'boolean' },

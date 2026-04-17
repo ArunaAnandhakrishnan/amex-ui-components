@@ -4,7 +4,7 @@ import { AmexAccountNumberComponent } from './account-number';
 const meta: Meta<AmexAccountNumberComponent> = {
   title: 'AMEX/Atoms/AccountNumber',
   component: AmexAccountNumberComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'screen-reader', 'color-contrast'],
   argTypes: {
     number:  { control: 'text' },
     masked:  { control: 'boolean' },

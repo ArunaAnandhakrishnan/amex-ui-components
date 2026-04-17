@@ -12,7 +12,7 @@ const ALL_IMPORTS = [FormFieldComponent, InputComponent, SelectComponent, Textar
 const meta: Meta<FormGroupComponent> = {
   title: 'Molecules/FormGroup',
   component: FormGroupComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'form-validation', 'screen-reader', 'keyboard-navigation'],
   argTypes: {
     legend: { control: 'text' },
     layout: { control: 'radio', options: ['vertical', 'horizontal'] },

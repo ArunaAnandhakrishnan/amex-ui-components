@@ -4,7 +4,7 @@ import { AmexLoginFormComponent } from './login-form';
 const meta: Meta<AmexLoginFormComponent> = {
   title: 'AMEX/Authentication/LoginForm',
   component: AmexLoginFormComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'needs-improvement', 'keyboard-navigation', 'screen-reader', 'form-validation'],
 };
 export default meta;
 type Story = StoryObj<AmexLoginFormComponent>;

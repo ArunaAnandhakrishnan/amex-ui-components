@@ -8,6 +8,7 @@ const config: StorybookConfig & { viteFinal?: (config: UserConfig) => Promise<Us
   ],
   addons: [
     '@storybook/addon-docs',
+    '@storybook/addon-a11y',
   ],
   framework: {
     name: '@storybook/angular',

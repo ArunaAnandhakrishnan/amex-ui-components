@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -6,7 +6,15 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <button [disabled]="disabled" [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]">
+    <button type="button" 
+      [disabled]="disabled" 
+      [ngClass]="['btn', 'btn-' + variant, 'btn-' + size]"
+      [attr.aria-label]="ariaLabel || label"
+      [attr.aria-describedby]="ariaDescribedBy"
+      [attr.aria-expanded]="ariaExpanded"
+      [attr.aria-pressed]="ariaPressed"
+      [attr.aria-disabled]="disabled"
+      (keydown)="onKeydown($event)">
       {{ label }}
     </button>
   `,
@@ -31,4 +39,16 @@ export class ButtonComponent {
   @Input() variant: 'primary' | 'secondary' = 'primary';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
   @Input() disabled = false;
+  @Input() ariaLabel = '';
+  @Input() ariaDescribedBy = '';
+  @Input() ariaExpanded: boolean | null = null;
+  @Input() ariaPressed: boolean | null = null;
+
+  @HostListener('keydown', ['$event'])
+  onKeydown(event: KeyboardEvent) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      (event.target as HTMLButtonElement).click();
+    }
+  }
 }

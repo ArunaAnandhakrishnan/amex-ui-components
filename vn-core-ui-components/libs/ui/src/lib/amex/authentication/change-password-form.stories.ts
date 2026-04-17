@@ -4,7 +4,7 @@ import { AmexChangePasswordFormComponent } from './change-password-form';
 const meta: Meta<AmexChangePasswordFormComponent> = {
   title: 'AMEX/Authentication/ChangePasswordForm',
   component: AmexChangePasswordFormComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'needs-improvement', 'keyboard-navigation', 'screen-reader', 'form-validation'],
 };
 export default meta;
 type Story = StoryObj<AmexChangePasswordFormComponent>;

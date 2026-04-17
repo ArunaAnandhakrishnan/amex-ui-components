@@ -34,10 +34,20 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps
 
+      # Build Storybook static and serve it for accessibility tests
+      - run: npx nx run ui:build-storybook
+      - run: npx http-server ./dist/storybook/ui -p 4400 &
+
       # Prepend any command with "nx record --" to record its logs to Nx Cloud
       # - run: npx nx record -- echo Hello World
       # When you enable task distribution, run the e2e-ci task instead of e2e
       - run: npx nx run-many -t lint test build e2e
+      # Upload accessibility results and baseline draft for triage
+      - name: Upload accessibility results
+        uses: actions/upload-artifact@v3
+        with:
+          name: a11y-results
+          path: e2e/results/**
       # Nx Cloud recommends fixes for failures to help you get CI green faster. Learn more: https://nx.dev/ci/features/self-healing-ci
       - run: npx nx fix-ci
         if: always()

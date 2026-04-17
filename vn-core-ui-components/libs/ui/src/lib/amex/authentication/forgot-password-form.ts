@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener, ElementRef, ViewChild, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="amex-shell" [class.onls-style]="portalStyle === 'onls'" [class.oms-style]="portalStyle === 'oms'">
+    <div class="amex-shell" [class.onls-style]="portalStyle === 'onls'" [class.oms-style]="portalStyle === 'oms'" role="main" aria-label="Forgot password form">
 
       <!-- ONLS top bar -->
       <div class="top-bar" *ngIf="portalStyle === 'onls'">
@@ -55,17 +55,46 @@ import { FormsModule } from '@angular/forms';
             <div class="error-box" *ngIf="errorMessage">{{ errorMessage }}</div>
 
             <ng-container *ngIf="!submitted || errorMessage">
-              <p class="help-text">Please enter your User Name or Email address. A temporary password will be sent to your registered email.</p>
+              <p class="help-text" role="note">Please enter your User Name or Email address. A temporary password will be sent to your registered email.</p>
               <div class="field-row">
-                <label class="field-label">User Name / Email <span class="req">*</span></label>
-                <input type="text" class="field-input" [(ngModel)]="identifier" />
+                <label class="field-label" id="identifier-label" for="identifier">User Name / Email <span class="req" aria-label="required">*</span></label>
+                <input 
+                  type="text" 
+                  class="field-input" 
+                  [(ngModel)]="identifier" 
+                  id="identifier"
+                  aria-labelledby="identifier-label"
+                  aria-required="true"
+                  aria-describedby="identifier-help"
+                  autocomplete="username email"
+                  (keydown)="onKeydown($event)"
+                  #identifierInput
+                />
+                <div id="identifier-help" class="sr-only">Enter your user name or email address</div>
               </div>
               <div class="btn-row-onls">
-                <button class="btn-submit-onls" (click)="onSubmit()">Submit</button>
+                <button 
+                  class="btn-submit-onls" 
+                  (click)="onSubmit()" 
+                  (keydown.enter)="onSubmit()"
+                  (keydown.space)="onSubmit()"
+                  type="submit"
+                  aria-label="Submit password reset request"
+                  #onlsSubmitBtn
+                >Submit</button>
               </div>
             </ng-container>
             <div class="back-link" *ngIf="submitted && !errorMessage">
-              <a class="form-link" (click)="backToLogin.emit()">Back to Login</a>
+              <a 
+                class="form-link" 
+                (click)="backToLogin.emit()" 
+                (keydown.enter)="backToLogin.emit()"
+                (keydown.space)="backToLogin.emit()"
+                role="button"
+                tabindex="0"
+                aria-label="Return to login page"
+                #onlsBackLink
+              >Back to Login</a>
             </div>
           </div>
 
@@ -79,30 +108,67 @@ import { FormsModule } from '@angular/forms';
             <div class="error-box" *ngIf="errorMessage">{{ errorMessage }}</div>
 
             <ng-container *ngIf="!submitted || errorMessage">
-              <p class="help-text">Please enter your User Name or registered Email Address to receive a temporary password.</p>
+              <p class="help-text" role="note">Please enter your User Name or registered Email Address to receive a temporary password.</p>
               <div class="field-row">
-                <label class="field-label">User Name / Email <span class="req">*</span></label>
-                <input type="text" class="field-input-oms" [(ngModel)]="identifier" />
+                <label class="field-label" id="identifier-label-oms" for="identifier-oms">User Name / Email <span class="req" aria-label="required">*</span></label>
+                <input 
+                  type="text" 
+                  class="field-input-oms" 
+                  [(ngModel)]="identifier" 
+                  id="identifier-oms"
+                  aria-labelledby="identifier-label-oms"
+                  aria-required="true"
+                  aria-describedby="identifier-help-oms"
+                  autocomplete="username email"
+                  (keydown)="onKeydown($event)"
+                  #identifierInputOms
+                />
+                <div id="identifier-help-oms" class="sr-only">Enter your user name or email address</div>
               </div>
               <div class="btn-row-oms">
-                <button class="btn-back-oms" (click)="backToLogin.emit()">Back to Login</button>
-                <button class="btn-submit-oms" (click)="onSubmit()">Submit</button>
+                <button 
+                  class="btn-back-oms" 
+                  (click)="backToLogin.emit()" 
+                  (keydown.enter)="backToLogin.emit()"
+                  (keydown.space)="backToLogin.emit()"
+                  type="button"
+                  aria-label="Return to login page"
+                  #omsBackBtn
+                >Back to Login</button>
+                <button 
+                  class="btn-submit-oms" 
+                  (click)="onSubmit()" 
+                  (keydown.enter)="onSubmit()"
+                  (keydown.space)="onSubmit()"
+                  type="submit"
+                  aria-label="Submit password reset request"
+                  #omsSubmitBtn
+                >Submit</button>
               </div>
             </ng-container>
             <div class="back-link" *ngIf="submitted && !errorMessage">
-              <a class="form-link" (click)="backToLogin.emit()">&#8592; Back to Login</a>
+              <a 
+                class="form-link" 
+                (click)="backToLogin.emit()" 
+                (keydown.enter)="backToLogin.emit()"
+                (keydown.space)="backToLogin.emit()"
+                role="button"
+                tabindex="0"
+                aria-label="Return to login page"
+                #omsBackLink
+              >&#8592; Back to Login</a>
             </div>
           </div>
 
         </div>
       </div>
 
-      <div class="footer-links">
-        <a class="footer-link">American Express Web Site Rules and Regulations</a> |
-        <a class="footer-link">News Centre</a> |
-        <a class="footer-link">Fraud Protection Centre</a> |
-        <a class="footer-link">Trademarks</a> |
-        <a class="footer-link">Privacy Statement</a>
+      <div class="footer-links" role="contentinfo" aria-label="Footer links">
+        <a class="footer-link" href="#" aria-label="American Express Web Site Rules and Regulations">American Express Web Site Rules and Regulations</a> |
+        <a class="footer-link" href="#" aria-label="News Centre">News Centre</a> |
+        <a class="footer-link" href="#" aria-label="Fraud Protection Centre">Fraud Protection Centre</a> |
+        <a class="footer-link" href="#" aria-label="Trademarks">Trademarks</a> |
+        <a class="footer-link" href="#" aria-label="Privacy Statement">Privacy Statement</a>
         <span class="footer-copy">Copyright &copy; 2009 American Express Company</span>
       </div>
     </div>
@@ -180,7 +246,26 @@ import { FormsModule } from '@angular/forms';
 
     .footer-links { background: #f5f5f5; border-top: 1px solid #ddd; padding: 5px 10px; font-size: 10px; color: #666; display: flex; flex-wrap: wrap; gap: 4px; }
     .footer-link { color: #006fcf; cursor: pointer; }
+    .footer-link:hover, .footer-link:focus { color: #003087; text-decoration: underline; }
     .footer-copy { margin-left: auto; }
+    
+    /* Accessibility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    
+    .field-input:focus, .field-input-oms:focus, .btn-submit-onls:focus, .btn-back-oms:focus, .btn-submit-oms:focus, .form-link:focus, .footer-link:focus {
+      outline: 2px solid #006fcf;
+      outline-offset: 2px;
+    }
   `]
 })
 export class AmexForgotPasswordFormComponent {
@@ -191,11 +276,51 @@ export class AmexForgotPasswordFormComponent {
   @Output() submitIdentifier = new EventEmitter<string>();
   @Output() backToLogin = new EventEmitter<void>();
 
+  @ViewChild('identifierInput') identifierInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('onlsSubmitBtn') onlsSubmitBtn!: ElementRef<HTMLButtonElement>;
+  @ViewChild('onlsBackLink') onlsBackLink!: ElementRef<HTMLAnchorElement>;
+  
+  @ViewChild('identifierInputOms') identifierInputOms!: ElementRef<HTMLInputElement>;
+  @ViewChild('omsBackBtn') omsBackBtn!: ElementRef<HTMLButtonElement>;
+  @ViewChild('omsSubmitBtn') omsSubmitBtn!: ElementRef<HTMLButtonElement>;
+  @ViewChild('omsBackLink') omsBackLink!: ElementRef<HTMLAnchorElement>;
+
   identifier = '';
   submitted = false;
 
-  onSubmit() {
+  constructor(private renderer: Renderer2) {}
+
+  ngAfterViewInit() {
+    // Set initial focus to identifier field
+    const firstInput = this.portalStyle === 'onls' ? this.identifierInput : this.identifierInputOms;
+    if (firstInput) {
+      this.renderer.setAttribute(firstInput.nativeElement, 'autofocus', 'true');
+    }
+  }
+
+  onKeydown(event: KeyboardEvent): void {
+    // Handle Enter key submission
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.onSubmit();
+    }
+  }
+
+  onSubmit(): void {
+    // Validate form before submission
+    if (!this.identifier.trim()) {
+      return;
+    }
     this.submitted = true;
     this.submitIdentifier.emit(this.identifier);
+  }
+
+  @HostListener('keydown', ['$event'])
+  handleGlobalKeydown(event: KeyboardEvent): void {
+    // Handle Escape key to reset focus
+    if (event.key === 'Escape') {
+      const firstInput = this.portalStyle === 'onls' ? this.identifierInput : this.identifierInputOms;
+      firstInput?.nativeElement.focus();
+    }
   }
 }

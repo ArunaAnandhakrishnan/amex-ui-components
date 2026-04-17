@@ -4,7 +4,7 @@ import { AvatarComponent } from './avatar';
 const meta: Meta<AvatarComponent> = {
   title: 'Atoms/Avatar',
   component: AvatarComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'screen-reader', 'color-contrast'],
   argTypes: {
     size: { control: 'radio', options: ['sm','md','lg','xl'] },
     color: { control: 'color' },

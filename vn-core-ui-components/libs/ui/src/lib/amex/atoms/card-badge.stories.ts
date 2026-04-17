@@ -4,7 +4,7 @@ import { AmexCardBadgeComponent } from './card-badge';
 const meta: Meta<AmexCardBadgeComponent> = {
   title: 'AMEX/Atoms/CardBadge',
   component: AmexCardBadgeComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'screen-reader', 'color-contrast'],
   argTypes: {
     type: { control: 'select', options: ['centurion','platinum','gold','green','corporate','bta','supplementary'] },
     label: { control: 'text' },

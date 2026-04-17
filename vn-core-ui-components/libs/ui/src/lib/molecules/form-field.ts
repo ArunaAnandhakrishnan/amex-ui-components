@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <div class="form-field" [class.required]="required">
-      <label *ngIf="label" class="form-field-label">{{ label }}</label>
+      <label *ngIf="label" class="form-field-label" [attr.for]="forId">{{ label }}</label>
       <ng-content></ng-content>
       <span *ngIf="hint && !error" class="form-field-hint">{{ hint }}</span>
       <span *ngIf="error" class="form-field-error">{{ error }}</span>
@@ -30,4 +30,5 @@ export class FormFieldComponent {
   @Input() hint = '';
   @Input() error = '';
   @Input() required = false;
+  @Input() forId = '';
 }

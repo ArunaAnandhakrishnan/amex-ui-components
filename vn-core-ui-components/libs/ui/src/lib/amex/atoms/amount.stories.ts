@@ -4,7 +4,7 @@ import { AmexAmountComponent } from './amount';
 const meta: Meta<AmexAmountComponent> = {
   title: 'AMEX/Atoms/Amount',
   component: AmexAmountComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'screen-reader', 'color-contrast'],
   argTypes: {
     amount:   { control: 'number' },
     currency: { control: 'text' },

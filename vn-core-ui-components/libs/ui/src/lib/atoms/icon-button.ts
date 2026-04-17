@@ -1,12 +1,19 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 
 @Component({
   selector: 'ui-icon-button',
   standalone: true,
   template: `
-    <button class="icon-btn icon-btn-{{variant}} icon-btn-{{size}}"
-      [disabled]="disabled" [attr.aria-label]="ariaLabel" (click)="clicked.emit()">
-      <span class="icon-btn-icon">{{ icon }}</span>
+    <button type="button" class="icon-btn icon-btn-{{variant}} icon-btn-{{size}}"
+      [disabled]="disabled" 
+      [attr.aria-label]="ariaLabel || ariaLabelFallback"
+      [attr.aria-describedby]="ariaDescribedBy"
+      [attr.aria-pressed]="ariaPressed"
+      [attr.aria-expanded]="ariaExpanded"
+      [attr.aria-disabled]="disabled"
+      (click)="clicked.emit()"
+      (keydown)="onKeydown($event)">
+      <span class="icon-btn-icon" aria-hidden="true">{{ icon }}</span>
     </button>
   `,
   styles: [`
@@ -30,8 +37,36 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 export class IconButtonComponent {
   @Input() icon = '★';
   @Input() ariaLabel = '';
+  @Input() ariaDescribedBy = '';
+  @Input() ariaPressed: boolean | null = null;
+  @Input() ariaExpanded: boolean | null = null;
   @Input() variant: 'primary' | 'ghost' | 'danger' = 'ghost';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
   @Input() disabled = false;
   @Output() clicked = new EventEmitter<void>();
+
+  get ariaLabelFallback(): string {
+    // Provide fallback aria-label based on icon if not explicitly set
+    const iconLabels: { [key: string]: string } = {
+      '★': 'Star',
+      '✕': 'Close',
+      '✓': 'Check',
+      '✗': 'Cross',
+      '❤': 'Heart',
+      '➕': 'Add',
+      '➖': 'Remove',
+      '✏': 'Edit',
+      '🔍': 'Search',
+      '⚙': 'Settings'
+    };
+    return iconLabels[this.icon] || 'Icon button';
+  }
+
+  @HostListener('keydown', ['$event'])
+  onKeydown(event: KeyboardEvent) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.clicked.emit();
+    }
+  }
 }

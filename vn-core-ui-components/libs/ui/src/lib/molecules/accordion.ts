@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ElementRef, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface AccordionItem {
@@ -13,12 +13,17 @@ export interface AccordionItem {
   imports: [CommonModule],
   template: `
     <div class="accordion">
-      <div *ngFor="let item of items" class="accordion-item" [class.open]="isOpen(item.id)">
-        <button class="accordion-header" (click)="toggle(item.id)" [attr.aria-expanded]="isOpen(item.id)">
+      <div *ngFor="let item of items; let i = index" class="accordion-item" [class.open]="isOpen(item.id)">
+        <button class="accordion-header" #headerBtn
+          id="{{item.id}}-header"
+          aria-controls="{{item.id}}-panel"
+          (click)="toggle(item.id)"
+          (keydown)="onKeydown($event, i)"
+          [attr.aria-expanded]="isOpen(item.id)">
           <span>{{ item.title }}</span>
           <span class="accordion-icon">{{ isOpen(item.id) ? '▲' : '▼' }}</span>
         </button>
-        <div class="accordion-body" *ngIf="isOpen(item.id)">
+        <div class="accordion-body" *ngIf="isOpen(item.id)" #panelRef id="{{item.id}}-panel" role="region" [attr.aria-labelledby]="item.id + '-header'">
           <p>{{ item.content }}</p>
         </div>
       </div>
@@ -40,11 +45,18 @@ export interface AccordionItem {
     .accordion-body { padding: 12px 16px 16px; font-size: 14px; color: #555; line-height: 1.6; background: #fff; }
   `],
 })
-export class AccordionComponent {
+export class AccordionComponent implements AfterViewInit {
   @Input() items: AccordionItem[] = [];
   @Input() multiple = false;
 
   openIds = new Set<string>();
+
+  @ViewChildren('headerBtn', { read: ElementRef }) headerButtons!: QueryList<ElementRef<HTMLButtonElement>>;
+  @ViewChildren('panelRef', { read: ElementRef }) panels!: QueryList<ElementRef<HTMLElement>>;
+
+  ngAfterViewInit() {
+    // ensure headers are focusable; nothing to init now but available for keyboard ops
+  }
 
   isOpen(id: string) { return this.openIds.has(id); }
 
@@ -54,6 +66,41 @@ export class AccordionComponent {
     } else {
       if (!this.multiple) this.openIds.clear();
       this.openIds.add(id);
+      // after opening, move focus into first focusable element inside panel (if any)
+      setTimeout(() => {
+        const panel = document.getElementById(`${id}-panel`);
+        if (panel) {
+          const focusable = panel.querySelector<HTMLElement>(
+            'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          );
+          if (focusable) focusable.focus();
+        }
+      });
     }
+  }
+
+  onKeydown(e: KeyboardEvent, index: number) {
+    const max = this.items.length - 1;
+    let next = index;
+    if (e.key === 'ArrowDown') {
+      next = index === max ? 0 : index + 1;
+      e.preventDefault();
+      this.focusHeader(next);
+    } else if (e.key === 'ArrowUp') {
+      next = index === 0 ? max : index - 1;
+      e.preventDefault();
+      this.focusHeader(next);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      this.focusHeader(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      this.focusHeader(max);
+    }
+  }
+
+  private focusHeader(idx: number) {
+    const btn = this.headerButtons?.toArray()[idx];
+    if (btn && btn.nativeElement) btn.nativeElement.focus();
   }
 }

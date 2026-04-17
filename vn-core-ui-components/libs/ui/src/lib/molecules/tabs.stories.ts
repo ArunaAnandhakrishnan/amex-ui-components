@@ -11,7 +11,7 @@ const TABS = [
 const meta: Meta<TabsComponent> = {
   title: 'Molecules/Tabs',
   component: TabsComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'keyboard-navigation', 'screen-reader', 'roving-tabindex'],
 };
 export default meta;
 type Story = StoryObj<TabsComponent>;

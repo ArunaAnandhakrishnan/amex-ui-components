@@ -4,7 +4,7 @@ import { TextareaComponent } from './textarea';
 const meta: Meta<TextareaComponent> = {
   title: 'Atoms/Textarea',
   component: TextareaComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'form-validation', 'screen-reader', 'keyboard-navigation'],
   argTypes: {
     placeholder: { control: 'text' },
     rows: { control: 'number' },

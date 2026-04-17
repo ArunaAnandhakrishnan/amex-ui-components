@@ -4,7 +4,7 @@ import { AmexStatusBadgeComponent } from './status-badge';
 const meta: Meta<AmexStatusBadgeComponent> = {
   title: 'AMEX/Atoms/StatusBadge',
   component: AmexStatusBadgeComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'screen-reader', 'color-contrast'],
   argTypes: {
     status: { control: 'select', options: ['approved','rejected','pending','draft','active','inactive','processing','completed','expired','locked'] },
     label: { control: 'text' },

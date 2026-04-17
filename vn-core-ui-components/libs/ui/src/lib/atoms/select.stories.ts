@@ -11,7 +11,7 @@ const COUNTRIES = [
 const meta: Meta<SelectComponent> = {
   title: 'Atoms/Select',
   component: SelectComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'form-validation', 'screen-reader', 'keyboard-navigation'],
   argTypes: {
     placeholder: { control: 'text' },
     disabled: { control: 'boolean' },

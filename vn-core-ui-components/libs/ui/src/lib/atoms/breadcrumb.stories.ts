@@ -4,7 +4,7 @@ import { BreadcrumbComponent } from './breadcrumb';
 const meta: Meta<BreadcrumbComponent> = {
   title: 'Atoms/Breadcrumb',
   component: BreadcrumbComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'screen-reader', 'keyboard-navigation'],
   argTypes: { separator: { control: 'text' } },
 };
 export default meta;

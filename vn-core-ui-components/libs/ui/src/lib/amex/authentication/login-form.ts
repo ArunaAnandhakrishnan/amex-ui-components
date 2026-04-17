@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener, ElementRef, ViewChild, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -42,18 +42,18 @@ export interface LoginCredentials {
           <div class="login-panel">
 
             <!-- Error message -->
-            <div class="error-box" *ngIf="errorMessage">
+            <div class="error-box" *ngIf="errorMessage" role="alert" aria-live="polite" aria-atomic="true">
               {{ errorMessage }}
             </div>
 
             <!-- Success message -->
-            <div class="success-box" *ngIf="successMessage">
+            <div class="success-box" *ngIf="successMessage" role="status" aria-live="polite" aria-atomic="true">
               {{ successMessage }}
             </div>
 
             <div class="field-row">
-              <label class="field-label" for="username">
-                User Name <span class="required">*</span>
+              <label class="field-label" for="username" id="username-label">
+                User Name <span class="required" aria-label="required">*</span>
               </label>
               <input
                 id="username"
@@ -61,12 +61,18 @@ export interface LoginCredentials {
                 class="field-input"
                 [(ngModel)]="credentials.username"
                 autocomplete="username"
+                aria-labelledby="username-label"
+                aria-required="true"
+                aria-describedby="username-help"
+                (keydown)="onKeydown($event)"
+                #usernameInput
               />
+              <div id="username-help" class="sr-only">Enter your user name for login</div>
             </div>
 
             <div class="field-row">
-              <label class="field-label" for="password">
-                Password <span class="required">*</span>
+              <label class="field-label" for="password" id="password-label">
+                Password <span class="required" aria-label="required">*</span>
               </label>
               <input
                 id="password"
@@ -74,21 +80,51 @@ export interface LoginCredentials {
                 class="field-input"
                 [(ngModel)]="credentials.password"
                 autocomplete="current-password"
+                aria-labelledby="password-label"
+                aria-required="true"
+                aria-describedby="password-help"
+                (keydown)="onKeydown($event)"
+                #passwordInput
               />
+              <div id="password-help" class="sr-only">Enter your password for login</div>
             </div>
 
             <div class="form-links">
-              <a class="form-link" (click)="forgotUserId.emit()">Forgot User ID?</a>
-              <a class="form-link" (click)="forgotPassword.emit()">Forgot Password?</a>
+              <a class="form-link" 
+                 (click)="forgotUserId.emit()" 
+                 (keydown.enter)="forgotUserId.emit()"
+                 (keydown.space)="forgotUserId.emit()"
+                 role="button"
+                 tabindex="0"
+                 aria-label="Forgot User ID">Forgot User ID?</a>
+              <a class="form-link" 
+                 (click)="forgotPassword.emit()" 
+                 (keydown.enter)="forgotPassword.emit()"
+                 (keydown.space)="forgotPassword.emit()"
+                 role="button"
+                 tabindex="0"
+                 aria-label="Forgot Password">Forgot Password?</a>
             </div>
 
             <div class="btn-row">
-              <button class="btn-submit" (click)="onSubmit()">Login</button>
+              <button class="btn-submit" 
+                      (click)="onSubmit()" 
+                      (keydown.enter)="onSubmit()"
+                      (keydown.space)="onSubmit()"
+                      type="submit"
+                      aria-label="Login to your account"
+                      #loginButton>Login</button>
             </div>
 
             <div class="register-row" *ngIf="showRegister">
               <span>New user? </span>
-              <a class="form-link" (click)="registerClick.emit()">Sign Up</a>
+              <a class="form-link" 
+                 (click)="registerClick.emit()" 
+                 (keydown.enter)="registerClick.emit()"
+                 (keydown.space)="registerClick.emit()"
+                 role="button"
+                 tabindex="0"
+                 aria-label="Sign up for a new account">Sign Up</a>
             </div>
 
           </div>
@@ -96,12 +132,12 @@ export interface LoginCredentials {
       </div>
 
       <!-- Footer -->
-      <div class="footer-links">
-        <a class="footer-link">American Express Web Site Rules and Regulations</a> |
-        <a class="footer-link">News Centre</a> |
-        <a class="footer-link">Fraud Protection Centre</a> |
-        <a class="footer-link">Trademarks</a> |
-        <a class="footer-link">Privacy Statement</a>
+      <div class="footer-links" role="contentinfo" aria-label="Footer links">
+        <a class="footer-link" href="#" aria-label="American Express Web Site Rules and Regulations">American Express Web Site Rules and Regulations</a> |
+        <a class="footer-link" href="#" aria-label="News Centre">News Centre</a> |
+        <a class="footer-link" href="#" aria-label="Fraud Protection Centre">Fraud Protection Centre</a> |
+        <a class="footer-link" href="#" aria-label="Trademarks">Trademarks</a> |
+        <a class="footer-link" href="#" aria-label="Privacy Statement">Privacy Statement</a>
         <span class="footer-copy">Copyright &copy; 2009 American Express Company</span>
       </div>
     </div>
@@ -161,7 +197,26 @@ export interface LoginCredentials {
     /* Footer */
     .footer-links { background: #f5f5f5; border-top: 1px solid #ddd; padding: 5px 10px; font-size: 10px; color: #666; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
     .footer-link { color: #006fcf; cursor: pointer; }
+    .footer-link:hover, .footer-link:focus { color: #003087; text-decoration: underline; }
     .footer-copy { margin-left: auto; }
+    
+    /* Accessibility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    
+    .field-input:focus, .btn-submit:focus, .form-link:focus, .footer-link:focus {
+      outline: 2px solid #006fcf;
+      outline-offset: 2px;
+    }
   `]
 })
 export class AmexLoginFormComponent {
@@ -175,9 +230,46 @@ export class AmexLoginFormComponent {
   @Output() forgotPassword = new EventEmitter<void>();
   @Output() registerClick = new EventEmitter<void>();
 
+  @ViewChild('usernameInput') usernameInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('passwordInput') passwordInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('loginButton') loginButton!: ElementRef<HTMLButtonElement>;
+
   credentials: LoginCredentials = { username: '', password: '' };
 
+  constructor(private renderer: Renderer2) {}
+
+  ngAfterViewInit() {
+    // Set initial focus to username field
+    if (this.usernameInput) {
+      this.renderer.setAttribute(this.usernameInput.nativeElement, 'autofocus', 'true');
+    }
+  }
+
+  onKeydown(event: KeyboardEvent) {
+    // Handle Enter key in form fields
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (event.target === this.usernameInput?.nativeElement) {
+        this.passwordInput?.nativeElement.focus();
+      } else if (event.target === this.passwordInput?.nativeElement) {
+        this.onSubmit();
+      }
+    }
+  }
+
   onSubmit() {
+    // Validate form before submission
+    if (!this.credentials.username || !this.credentials.password) {
+      return;
+    }
     this.loginSubmit.emit({ ...this.credentials });
+  }
+
+  @HostListener('keydown', ['$event'])
+  handleGlobalKeydown(event: KeyboardEvent) {
+    // Handle Escape key to reset focus
+    if (event.key === 'Escape') {
+      this.usernameInput?.nativeElement.focus();
+    }
   }
 }

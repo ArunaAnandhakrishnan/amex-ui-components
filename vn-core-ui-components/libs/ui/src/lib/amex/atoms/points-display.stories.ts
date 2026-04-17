@@ -4,7 +4,7 @@ import { AmexPointsDisplayComponent } from './points-display';
 const meta: Meta<AmexPointsDisplayComponent> = {
   title: 'AMEX/Atoms/PointsDisplay',
   component: AmexPointsDisplayComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'screen-reader', 'color-contrast'],
   argTypes: {
     points:  { control: 'number' },
     label:   { control: 'text' },

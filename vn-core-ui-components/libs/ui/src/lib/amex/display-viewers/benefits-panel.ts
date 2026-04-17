@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface BenefitItem {
@@ -26,88 +26,135 @@ export interface BenefitItem {
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="bp">
+    <div class="bp" role="region" aria-label="Benefits panel">
       <!-- Page header bar -->
-      <div class="bp__section-header">Benefits</div>
+      <h2 class="bp__section-header">Benefits</h2>
 
       <!-- Benefits grid -->
-      <div *ngIf="!selectedBenefit" class="bp__grid">
-        <div *ngFor="let b of benefits"
+      <div *ngIf="!selectedBenefit" class="bp__grid" role="grid" aria-label="Available benefits">
+        <div *ngFor="let b of benefits; let i = index"
              class="bp__card"
              [class.bp__card--enrolled]="b.enrolled"
-             (click)="openDetail(b)">
+             (click)="openDetail(b)"
+             (keydown)="onCardKeydown($event, i)"
+             tabindex="0"
+             role="gridcell"
+             [attr.aria-label]="getBenefitAriaLabel(b)"
+             [attr.aria-describedby]="b.enrolled ? 'enrolled-status-' + i : null"
+             #benefitCard
+          >
 
           <div class="bp__card-img-wrap">
-            <img *ngIf="b.imageUrl" [src]="b.imageUrl" [alt]="b.title" class="bp__card-img" />
-            <div *ngIf="!b.imageUrl" class="bp__card-img-placeholder">
-              <span>AMERICAN EXPRESS</span>
+            <img *ngIf="b.imageUrl" [src]="b.imageUrl" [alt]="b.title + ' benefit image'" class="bp__card-img" />
+            <div *ngIf="!b.imageUrl" class="bp__card-img-placeholder" role="img" aria-label="American Express benefit placeholder">
+              <span aria-hidden="true">AMERICAN EXPRESS</span>
             </div>
-            <span *ngIf="b.enrolled" class="bp__enrolled-badge">Enrolled</span>
+            <span *ngIf="b.enrolled" class="bp__enrolled-badge" id="enrolled-status-{{i}}" aria-label="Enrolled benefit">Enrolled</span>
           </div>
 
           <div class="bp__card-body">
-            <h4 class="bp__card-title">
+            <h3 class="bp__card-title">
               {{ b.title | uppercase }}
-              <span *ngIf="b.hasFlash" aria-hidden="true">⚡</span>
-            </h4>
+              <span *ngIf="b.hasFlash" aria-label="Flash benefit available">⚡</span>
+            </h3>
             <p class="bp__card-desc">{{ b.description }}</p>
           </div>
 
           <div class="bp__card-footer">
-            <div class="bp__dates">
+            <div class="bp__dates" role="group" aria-label="Benefit validity dates">
               <span *ngIf="b.validFrom" class="bp__date">From: {{ b.validFrom }}</span>
               <span *ngIf="b.validUntil" class="bp__date">Until: {{ b.validUntil }}</span>
             </div>
           </div>
         </div>
 
-        <div *ngIf="benefits.length === 0" class="bp__empty">
+        <div *ngIf="benefits.length === 0" class="bp__empty" role="status" aria-live="polite">
           No benefits available for this card member.
         </div>
       </div>
 
       <!-- Detail view -->
-      <div *ngIf="selectedBenefit" class="bp__detail">
+      <div *ngIf="selectedBenefit" class="bp__detail" role="dialog" aria-modal="true" aria-label="Benefit details">
         <div class="bp__detail-img-wrap">
-          <img *ngIf="selectedBenefit.imageUrl" [src]="selectedBenefit.imageUrl" [alt]="selectedBenefit.title" class="bp__detail-img" />
-          <div *ngIf="!selectedBenefit.imageUrl" class="bp__detail-img-fallback">
-            <span>AMERICAN EXPRESS</span>
+          <img *ngIf="selectedBenefit.imageUrl" [src]="selectedBenefit.imageUrl" [alt]="selectedBenefit.title + ' benefit image'" class="bp__detail-img" />
+          <div *ngIf="!selectedBenefit.imageUrl" class="bp__detail-img-fallback" role="img" aria-label="American Express benefit placeholder">
+            <span aria-hidden="true">AMERICAN EXPRESS</span>
           </div>
-          <button class="bp__detail-close" (click)="closeDetail()">&#x2715;</button>
+          <button 
+            class="bp__detail-close" 
+            (click)="closeDetail()" 
+            (keydown.enter)="closeDetail()"
+            (keydown.space)="closeDetail()"
+            type="button"
+            aria-label="Close benefit details"
+            #closeBtn
+          >&#x2715;</button>
         </div>
 
-        <button class="bp__detail-nav bp__detail-nav--left"  (click)="prevBenefit()">&#8249;</button>
-        <button class="bp__detail-nav bp__detail-nav--right" (click)="nextBenefit()">&#8250;</button>
+        <button 
+          class="bp__detail-nav bp__detail-nav--left" 
+          (click)="prevBenefit()" 
+          (keydown.enter)="prevBenefit()"
+          (keydown.space)="prevBenefit()"
+          type="button"
+          aria-label="Previous benefit"
+          #prevBtn
+        >&#8249;</button>
+        <button 
+          class="bp__detail-nav bp__detail-nav--right" 
+          (click)="nextBenefit()" 
+          (keydown.enter)="nextBenefit()"
+          (keydown.space)="nextBenefit()"
+          type="button"
+          aria-label="Next benefit"
+          #nextBtn
+        >&#8250;</button>
 
         <div class="bp__detail-info">
           <div class="bp__detail-left">
-            <p class="bp__detail-name">{{ selectedBenefit.title }}</p>
+            <h3 class="bp__detail-name">{{ selectedBenefit.title }}</h3>
             <p class="bp__detail-status"
                [class.bp__detail-status--enrolled]="selectedBenefit.enrolled"
-               [class.bp__detail-status--not]="!selectedBenefit.enrolled">
+               [class.bp__detail-status--not]="!selectedBenefit.enrolled"
+               role="status"
+               aria-label="Enrollment status: {{ selectedBenefit.enrolled ? 'Enrolled' : 'Not Enrolled' }}">
               {{ selectedBenefit.enrolled ? 'Enrolled' : 'Not Enrolled' }}
             </p>
             <div class="bp__detail-desc-row">
-              <span class="bp__detail-lbl">Description:</span>
-              <p class="bp__detail-desc-text">{{ selectedBenefit.description }}</p>
+              <span class="bp__detail-lbl" id="desc-label">Description:</span>
+              <p class="bp__detail-desc-text" aria-labelledby="desc-label">{{ selectedBenefit.description }}</p>
             </div>
-            <div *ngIf="selectedBenefit.validFrom || selectedBenefit.validUntil" class="bp__detail-validity">
+            <div *ngIf="selectedBenefit.validFrom || selectedBenefit.validUntil" class="bp__detail-validity" role="group" aria-label="Benefit validity period">
               <span *ngIf="selectedBenefit.validFrom" class="bp__detail-date">Valid from {{ selectedBenefit.validFrom }}</span>
               <span *ngIf="selectedBenefit.validUntil"> to {{ selectedBenefit.validUntil }}</span>
             </div>
           </div>
 
           <div class="bp__detail-right">
-            <button *ngIf="!selectedBenefit.enrolled"
-                    class="bp__enroll-btn"
-                    (click)="enroll.emit(selectedBenefit)">Enroll</button>
-            <button *ngIf="selectedBenefit.enrolled"
-                    class="bp__unenroll-btn"
-                    (click)="unenroll.emit(selectedBenefit)">Unenroll</button>
+            <button 
+              *ngIf="!selectedBenefit.enrolled"
+              class="bp__enroll-btn"
+              (click)="enroll.emit(selectedBenefit)"
+              (keydown.enter)="enroll.emit(selectedBenefit)"
+              (keydown.space)="enroll.emit(selectedBenefit)"
+              type="button"
+              aria-label="Enroll in {{ selectedBenefit.title }} benefit"
+              #enrollBtn
+            >Enroll</button>
+            <button 
+              *ngIf="selectedBenefit.enrolled"
+              class="bp__unenroll-btn"
+              (click)="unenroll.emit(selectedBenefit)"
+              (keydown.enter)="unenroll.emit(selectedBenefit)"
+              (keydown.space)="unenroll.emit(selectedBenefit)"
+              type="button"
+              aria-label="Unenroll from {{ selectedBenefit.title }} benefit"
+              #unenrollBtn
+            >Unenroll</button>
 
             <div *ngIf="selectedBenefit.termsAndConditions" class="bp__detail-tnc">
-              <span class="bp__detail-lbl">Terms &amp; Conditions</span>
-              <p class="bp__detail-tnc-text">{{ selectedBenefit.termsAndConditions }}</p>
+              <span class="bp__detail-lbl" id="tnc-label">Terms &amp; Conditions</span>
+              <p class="bp__detail-tnc-text" aria-labelledby="tnc-label">{{ selectedBenefit.termsAndConditions }}</p>
             </div>
           </div>
         </div>
@@ -230,6 +277,23 @@ export interface BenefitItem {
     }
     .bp__detail-tnc      { display: flex; flex-direction: column; gap: 4px; }
     .bp__detail-tnc-text { font-size: 12px; color: #444; margin: 0; line-height: 1.5; }
+    
+    /* Accessibility */
+    .bp__card:focus, .bp__detail-close:focus, .bp__detail-nav:focus, .bp__enroll-btn:focus, .bp__unenroll-btn:focus {
+      outline: 2px solid #006fcf;
+      outline-offset: 2px;
+    }
+    
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+      .bp__card {
+        border: 2px solid currentColor;
+      }
+      .bp__card--enrolled {
+        border-color: #006fcf;
+        border-width: 3px;
+      }
+    }
   `],
 })
 export class AmexBenefitsPanelComponent {
@@ -240,8 +304,116 @@ export class AmexBenefitsPanelComponent {
   @Output() enroll         = new EventEmitter<BenefitItem>();
   @Output() unenroll       = new EventEmitter<BenefitItem>();
 
-  openDetail(b: BenefitItem) { this._idx = this.benefits.indexOf(b); this.selectedBenefit = b; }
-  closeDetail() { this.selectedBenefit = null; }
-  prevBenefit() { if (this._idx > 0) { this._idx--; this.selectedBenefit = this.benefits[this._idx]; } }
-  nextBenefit() { if (this._idx < this.benefits.length - 1) { this._idx++; this.selectedBenefit = this.benefits[this._idx]; } }
+  @ViewChild('closeBtn') closeBtn!: ElementRef<HTMLButtonElement>;
+  @ViewChild('prevBtn') prevBtn!: ElementRef<HTMLButtonElement>;
+  @ViewChild('nextBtn') nextBtn!: ElementRef<HTMLButtonElement>;
+  @ViewChild('enrollBtn') enrollBtn!: ElementRef<HTMLButtonElement>;
+  @ViewChild('unenrollBtn') unenrollBtn!: ElementRef<HTMLButtonElement>;
+
+  openDetail(b: BenefitItem) { 
+    this._idx = this.benefits.indexOf(b); 
+    this.selectedBenefit = b;
+    // Focus management for detail view
+    setTimeout(() => {
+      this.closeBtn?.nativeElement.focus();
+    }, 100);
+  }
+  
+  closeDetail() { 
+    this.selectedBenefit = null;
+    // Return focus to the grid
+    setTimeout(() => {
+      const gridCards = document.querySelectorAll('.bp__card');
+      if (gridCards.length > 0 && this._idx >= 0 && this._idx < gridCards.length) {
+        (gridCards[this._idx] as HTMLElement).focus();
+      }
+    }, 100);
+  }
+  
+  prevBenefit() { 
+    if (this._idx > 0) { 
+      this._idx--; 
+      this.selectedBenefit = this.benefits[this._idx];
+      // Announce navigation to screen readers
+      this.announceBenefitChange('Previous benefit');
+    } 
+  }
+  
+  nextBenefit() { 
+    if (this._idx < this.benefits.length - 1) { 
+      this._idx++; 
+      this.selectedBenefit = this.benefits[this._idx];
+      // Announce navigation to screen readers
+      this.announceBenefitChange('Next benefit');
+    } 
+  }
+
+  onCardKeydown(event: KeyboardEvent, index: number): void {
+    // Handle keyboard navigation in the grid
+    switch (event.key) {
+      case 'Enter':
+      case ' ':
+        event.preventDefault();
+        this.openDetail(this.benefits[index]);
+        break;
+      case 'ArrowRight':
+        event.preventDefault();
+        if (index < this.benefits.length - 1) {
+          const nextCard = document.querySelectorAll('.bp__card')[index + 1] as HTMLElement;
+          nextCard?.focus();
+        }
+        break;
+      case 'ArrowLeft':
+        event.preventDefault();
+        if (index > 0) {
+          const prevCard = document.querySelectorAll('.bp__card')[index - 1] as HTMLElement;
+          prevCard?.focus();
+        }
+        break;
+    }
+  }
+
+  getBenefitAriaLabel(benefit: BenefitItem): string {
+    let label = benefit.title;
+    if (benefit.enrolled) {
+      label += ', Enrolled';
+    }
+    if (benefit.hasFlash) {
+      label += ', Flash benefit available';
+    }
+    if (benefit.validFrom || benefit.validUntil) {
+      label += ', Valid';
+      if (benefit.validFrom) {
+        label += ` from ${benefit.validFrom}`;
+      }
+      if (benefit.validUntil) {
+        label += ` until ${benefit.validUntil}`;
+      }
+    }
+    label += `. ${benefit.description}`;
+    return label;
+  }
+
+  private announceBenefitChange(direction: string): void {
+    // Create a temporary announcement for screen readers
+    const announcement = document.createElement('div');
+    announcement.setAttribute('role', 'status');
+    announcement.setAttribute('aria-live', 'polite');
+    announcement.className = 'sr-only';
+    announcement.textContent = `${direction}: ${this.selectedBenefit?.title}`;
+    document.body.appendChild(announcement);
+    
+    // Remove after announcement
+    setTimeout(() => {
+      document.body.removeChild(announcement);
+    }, 1000);
+  }
+
+  @HostListener('keydown', ['$event'])
+  handleGlobalKeydown(event: KeyboardEvent): void {
+    // Handle Escape key to close detail view
+    if (event.key === 'Escape' && this.selectedBenefit) {
+      this.closeDetail();
+    }
+  }
 }

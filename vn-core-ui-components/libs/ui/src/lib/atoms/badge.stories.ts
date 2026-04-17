@@ -4,7 +4,7 @@ import { BadgeComponent } from './badge';
 const meta: Meta<BadgeComponent> = {
   title: 'Atoms/Badge',
   component: BadgeComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'screen-reader', 'color-contrast'],
   argTypes: {
     variant: { control: 'select', options: ['primary','secondary','success','warning','error','neutral'] },
     size: { control: 'radio', options: ['sm','md','lg'] },

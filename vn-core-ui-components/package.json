@@ -5,7 +5,9 @@
   "scripts": {
     "start": "nx serve",
     "build": "nx build",
-    "test": "nx test"
+    "test": "nx test",
+    "a11y:gen-tests": "node ./tools/generate-a11y-tests.js",
+    "test:a11y": "npm run a11y:gen-tests && nx test --testFile=libs/ui/src/lib/__generated__/a11y/**/*.spec.ts"
   },
   "private": true,
   "dependencies": {
@@ -37,6 +39,10 @@
     "@nx/jest": "22.5.4",
     "@nx/js": "22.6.0",
     "@nx/playwright": "22.5.4",
+    "@axe-core/playwright": "4.7.0",
+    "jest-axe": "5.4.0",
+    "axe-core": "5.4.0",
+    "@testing-library/angular": "13.0.0",
     "@nx/storybook": "^22.6.0",
     "@nx/web": "22.6.0",
     "@nx/workspace": "22.5.4",

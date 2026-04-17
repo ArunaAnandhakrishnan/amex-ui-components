@@ -4,7 +4,7 @@ import { ProgressBarComponent } from './progress-bar';
 const meta: Meta<ProgressBarComponent> = {
   title: 'Atoms/ProgressBar',
   component: ProgressBarComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'screen-reader', 'color-contrast'],
   argTypes: {
     value: { control: { type: 'range', min: 0, max: 100 } },
     variant: { control: 'select', options: ['primary','success','warning','error'] },

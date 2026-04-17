@@ -4,7 +4,7 @@ import { PaginationComponent } from './pagination';
 const meta: Meta<PaginationComponent> = {
   title: 'Atoms/Pagination',
   component: PaginationComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'keyboard-navigation', 'screen-reader'],
   argTypes: {
     currentPage: { control: { type: 'number', min: 1 } },
     totalPages: { control: { type: 'number', min: 1 } },

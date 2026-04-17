@@ -5,6 +5,10 @@ import { CommonModule } from '@angular/common';
 export interface RadioOption {
   label: string;
   value: string | number;
+  disabled?: boolean;
+  ariaLabel?: string;
+  ariaDescribedBy?: string;
+  ariaInvalid?: boolean;
 }
 
 @Component({
@@ -13,26 +17,41 @@ export interface RadioOption {
   imports: [CommonModule],
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => RadioGroupComponent), multi: true }],
   template: `
-    <div class="radio-group" [class.horizontal]="orientation === 'horizontal'">
-      <label *ngFor="let opt of options" class="radio-label" [class.disabled]="disabled">
+    <fieldset class="radio-group" [class.horizontal]="orientation === 'horizontal'" [attr.aria-label]="ariaLabel" [attr.aria-describedby]="ariaDescribedBy">
+      <legend *ngIf="legend" class="radio-legend">{{ legend }}</legend>
+      <label *ngFor="let opt of options; let i = index" class="radio-label" [class.disabled]="disabled">
         <input
           type="radio"
           [name]="name"
           [value]="opt.value"
           [checked]="opt.value === value"
-          [disabled]="disabled"
+          [disabled]="disabled || opt.disabled"
+          [attr.aria-checked]="opt.value === value"
+          [attr.aria-label]="opt.ariaLabel || opt.label"
+          [attr.aria-describedby]="opt.ariaDescribedBy"
+          [attr.aria-invalid]="opt.ariaInvalid"
+          [attr.aria-required]="required"
           (change)="onSelect(opt.value)"
           (blur)="onTouched()"
+          (keydown)="onKeydown($event, i)"
           class="radio-input"
         />
-        <span class="radio-circle"></span>
+        <span class="radio-circle" aria-hidden="true"></span>
         <span class="radio-text">{{ opt.label }}</span>
       </label>
-    </div>
+    </fieldset>
   `,
   styles: [`
-    .radio-group { display: flex; flex-direction: column; gap: 8px; }
+    .radio-group { display: flex; flex-direction: column; gap: 8px; border: none; padding: 0; margin: 0; }
     .radio-group.horizontal { flex-direction: row; flex-wrap: wrap; gap: 16px; }
+    .radio-legend {
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 8px;
+      padding: 0;
+    }
     .radio-label {
       display: inline-flex; align-items: center; gap: 8px;
       cursor: pointer; font-size: 14px; font-family: Arial, sans-serif;
@@ -65,6 +84,25 @@ export class RadioGroupComponent implements ControlValueAccessor {
   @Input() name = 'radio-group';
   @Input() orientation: 'vertical' | 'horizontal' = 'vertical';
   @Input() disabled = false;
+  @Input() legend = '';
+  @Input() ariaLabel = '';
+  @Input() ariaDescribedBy = '';
+  @Input() required = false;
+
+  onKeydown(event: KeyboardEvent, index: number) {
+    const max = this.options.length - 1;
+    let next = index;
+    
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+      next = index === max ? 0 : index + 1;
+      event.preventDefault();
+      this.onSelect(this.options[next].value);
+    } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+      next = index === 0 ? max : index - 1;
+      event.preventDefault();
+      this.onSelect(this.options[next].value);
+    }
+  }
 
   value: string | number = '';
   onChange = (_: string | number) => {};

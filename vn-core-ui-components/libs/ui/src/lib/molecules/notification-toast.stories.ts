@@ -4,7 +4,7 @@ import { NotificationToastComponent } from './notification-toast';
 const meta: Meta<NotificationToastComponent> = {
   title: 'Molecules/NotificationToast',
   component: NotificationToastComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'screen-reader', 'color-contrast'],
   argTypes: {
     variant: { control: 'select', options: ['info','success','warning','error'] },
     dismissed: { action: 'dismissed' },

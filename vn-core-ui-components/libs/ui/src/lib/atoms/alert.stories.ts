@@ -4,7 +4,7 @@ import { AlertComponent } from './alert';
 const meta: Meta<AlertComponent> = {
   title: 'Atoms/Alert',
   component: AlertComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'screen-reader', 'color-contrast'],
   argTypes: { variant: { control: 'select', options: ['info','success','warning','error'] } },
 };
 export default meta;

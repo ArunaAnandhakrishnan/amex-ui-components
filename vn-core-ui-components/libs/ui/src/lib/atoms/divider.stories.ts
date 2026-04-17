@@ -4,7 +4,7 @@ import { DividerComponent } from './divider';
 const meta: Meta<DividerComponent> = {
   title: 'Atoms/Divider',
   component: DividerComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'screen-reader'],
   argTypes: { orientation: { control: 'radio', options: ['horizontal','vertical'] }, label: { control: 'text' } },
 };
 export default meta;

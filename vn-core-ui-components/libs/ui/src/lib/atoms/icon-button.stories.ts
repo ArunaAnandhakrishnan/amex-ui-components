@@ -4,7 +4,7 @@ import { IconButtonComponent } from './icon-button';
 const meta: Meta<IconButtonComponent> = {
   title: 'Atoms/IconButton',
   component: IconButtonComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'screen-reader', 'keyboard-navigation'],
   argTypes: {
     variant: { control: 'radio', options: ['primary','ghost','danger'] },
     size: { control: 'radio', options: ['sm','md','lg'] },

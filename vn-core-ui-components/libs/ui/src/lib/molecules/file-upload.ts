@@ -6,9 +6,9 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="file-upload" [class.dragover]="dragging" [class.disabled]="disabled"
+    <div class="file-upload" role="button" tabindex="0" [attr.aria-disabled]="disabled" [class.dragover]="dragging" [class.disabled]="disabled"
       (dragover)="onDragOver($event)" (dragleave)="dragging=false" (drop)="onDrop($event)"
-      (click)="!disabled && fileInput.click()">
+      (click)="!disabled && fileInput.click()" (keydown)="onKeydown($event, fileInput)">
       <input #fileInput type="file" class="file-input" [accept]="accept" [multiple]="multiple"
         (change)="onFileChange($event)" />
       <div class="file-upload-content">
@@ -52,6 +52,14 @@ export class FileUploadComponent {
 
   files: File[] = [];
   dragging = false;
+
+  onKeydown(e: KeyboardEvent, fileInput: HTMLInputElement) {
+    if (this.disabled) return;
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      fileInput.click();
+    }
+  }
 
   onDragOver(e: DragEvent) { e.preventDefault(); if (!this.disabled) this.dragging = true; }
 

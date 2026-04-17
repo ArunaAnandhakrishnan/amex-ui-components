@@ -5,7 +5,7 @@ import { ButtonComponent } from '../atoms/button';
 const meta: Meta<ModalComponent> = {
   title: 'Molecules/Modal',
   component: ModalComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'focus-management', 'keyboard-navigation', 'screen-reader'],
   argTypes: { size: { control: 'radio', options: ['sm','md','lg'] } },
 };
 export default meta;

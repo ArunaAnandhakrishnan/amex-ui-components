@@ -10,8 +10,13 @@ import { NgIf } from '@angular/common';
   template: `
     <label class="toggle-label" [class.disabled]="disabled">
       <input type="checkbox" class="toggle-input" [checked]="checked" [disabled]="disabled"
-        (change)="onToggle($event)" (blur)="onTouched()" />
-      <span class="toggle-track">
+        [attr.aria-checked]="checked"
+        [attr.aria-label]="ariaLabel || label"
+        [attr.aria-describedby]="ariaDescribedBy"
+        [attr.aria-invalid]="ariaInvalid"
+        [attr.aria-required]="required"
+        (change)="onToggle($event)" (blur)="onTouched()" (keydown)="onKeydown($event)" />
+      <span class="toggle-track" aria-hidden="true">
         <span class="toggle-thumb"></span>
       </span>
       <span *ngIf="label" class="toggle-text">{{ label }}</span>
@@ -38,6 +43,18 @@ import { NgIf } from '@angular/common';
 export class ToggleComponent implements ControlValueAccessor {
   @Input() label = '';
   @Input() disabled = false;
+  @Input() ariaLabel = '';
+  @Input() ariaDescribedBy = '';
+  @Input() ariaInvalid = false;
+  @Input() required = false;
+
+  onKeydown(event: KeyboardEvent) {
+    if (event.key === ' ') {
+      event.preventDefault();
+      this.checked = !this.checked;
+      this.onChange(this.checked);
+    }
+  }
 
   checked = false;
   onChange = (_: boolean) => {};

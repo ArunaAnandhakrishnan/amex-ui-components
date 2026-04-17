@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface CardMemberDetails {
@@ -22,50 +22,70 @@ export interface CardMemberDetails {
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="cmdv" *ngIf="details">
+    <section class="cmdv" *ngIf="details" role="region" aria-label="Card member details">
       <div class="cmdv__panel">
-        <table class="cmdv__table">
-          <tr>
-            <td class="cmdv__label">Name</td>
-            <td class="cmdv__value">{{ details.name }}</td>
-          </tr>
-          <tr>
-            <td class="cmdv__label">User ID</td>
-            <td class="cmdv__value">{{ details.userId }}</td>
-          </tr>
-          <tr>
-            <td class="cmdv__label">Card No</td>
-            <td class="cmdv__value">{{ details.cardNumber }}</td>
-          </tr>
-          <tr>
-            <td class="cmdv__label">Status</td>
-            <td class="cmdv__value">
-              <span [class.cmdv__status--active]="details.status === 'Active'"
-                    [class.cmdv__status--inactive]="details.status !== 'Active'">
+        <dl class="cmdv__details-list">
+          <div class="cmdv__detail-row">
+            <dt class="cmdv__label" id="name-label">Name</dt>
+            <dd class="cmdv__value" aria-labelledby="name-label">{{ details.name }}</dd>
+          </div>
+          <div class="cmdv__detail-row">
+            <dt class="cmdv__label" id="userid-label">User ID</dt>
+            <dd class="cmdv__value" aria-labelledby="userid-label">{{ details.userId }}</dd>
+          </div>
+          <div class="cmdv__detail-row">
+            <dt class="cmdv__label" id="card-label">Card No</dt>
+            <dd class="cmdv__value" aria-labelledby="card-label">{{ details.cardNumber }}</dd>
+          </div>
+          <div class="cmdv__detail-row">
+            <dt class="cmdv__label" id="status-label">Status</dt>
+            <dd class="cmdv__value" aria-labelledby="status-label">
+              <span 
+                [class.cmdv__status--active]="details.status === 'Active'"
+                [class.cmdv__status--inactive]="details.status !== 'Active'"
+                [attr.aria-label]="'Account status: ' + details.status"
+                role="status"
+              >
                 {{ details.status }}
               </span>
-            </td>
-          </tr>
-          <tr>
-            <td class="cmdv__label">Account Type</td>
-            <td class="cmdv__value">{{ details.accountType }}</td>
-          </tr>
-          <tr *ngIf="details.hasOffers">
-            <td class="cmdv__label">Offers</td>
-            <td class="cmdv__value">
-              <span class="cmdv__link" (click)="offersClick.emit()">View Offers</span>
-            </td>
-          </tr>
-          <tr *ngIf="details.hasBenefits">
-            <td class="cmdv__label">Benefits</td>
-            <td class="cmdv__value">
-              <span class="cmdv__link" (click)="benefitsClick.emit()">View Benefits</span>
-            </td>
-          </tr>
-        </table>
+            </dd>
+          </div>
+          <div class="cmdv__detail-row">
+            <dt class="cmdv__label" id="account-label">Account Type</dt>
+            <dd class="cmdv__value" aria-labelledby="account-label">{{ details.accountType }}</dd>
+          </div>
+          <div class="cmdv__detail-row" *ngIf="details.hasOffers">
+            <dt class="cmdv__label" id="offers-label">Offers</dt>
+            <dd class="cmdv__value" aria-labelledby="offers-label">
+              <button 
+                class="cmdv__link" 
+                (click)="offersClick.emit()"
+                (keydown.enter)="offersClick.emit()"
+                (keydown.space)="onSpaceKey($event, offersClick)"
+                type="button"
+                aria-label="View available offers"
+                #offersButton
+              >View Offers</button>
+            </dd>
+          </div>
+          <div class="cmdv__detail-row" *ngIf="details.hasBenefits">
+            <dt class="cmdv__label" id="benefits-label">Benefits</dt>
+            <dd class="cmdv__value" aria-labelledby="benefits-label">
+              <button 
+                class="cmdv__link" 
+                (click)="benefitsClick.emit()"
+                (keydown.enter)="benefitsClick.emit()"
+                (keydown.space)="onSpaceKey($event, benefitsClick)"
+                type="button"
+                aria-label="View available benefits"
+                #benefitsButton
+              >View Benefits</button>
+            </dd>
+          </div>
+        </dl>
       </div>
-    </div>
-    <div *ngIf="!details" class="cmdv__empty">
+    </section>
+    <div *ngIf="!details" class="cmdv__empty" role="status" aria-live="polite">
       Search for a card or user to view details.
     </div>
   `,
@@ -77,25 +97,82 @@ export interface CardMemberDetails {
       display: inline-block;
       min-width: 340px;
     }
-    .cmdv__table { border-collapse: collapse; width: 100%; }
+    .cmdv__details-list {
+      margin: 0;
+      padding: 0;
+    }
+    .cmdv__detail-row {
+      display: flex;
+      border-bottom: 1px solid #d0e4f0;
+    }
     .cmdv__label {
-      padding: 7px 14px; font-size: 13px; color: #555;
-      font-weight: bold; border-bottom: 1px solid #d0e4f0;
-      width: 130px; background: #e8f4fb;
+      padding: 7px 14px; font-size: 13px; color: #333;
+      font-weight: bold; width: 130px; background: #e8f4fb;
+      flex-shrink: 0;
     }
     .cmdv__value {
       padding: 7px 14px; font-size: 13px; color: #1a1a1a;
-      border-bottom: 1px solid #d0e4f0;
+      flex: 1;
     }
-    .cmdv__status--active   { color: #2e7d32; font-weight: bold; }
-    .cmdv__status--inactive { color: #c62828; font-weight: bold; }
-    .cmdv__link { color: #006fcf; cursor: pointer; }
-    .cmdv__link:hover { text-decoration: underline; }
-    .cmdv__empty { font-size: 13px; color: #888; padding: 12px 0; }
+    .cmdv__status--active   { color: #1b5e20; font-weight: bold; }
+    .cmdv__status--inactive { color: #b71c1c; font-weight: bold; }
+    .cmdv__link { 
+      color: #006fcf; 
+      cursor: pointer; 
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 13px;
+      font-family: inherit;
+      text-decoration: underline;
+    }
+    .cmdv__link:hover, .cmdv__link:focus { 
+      text-decoration: underline; 
+      color: #003087;
+    }
+    .cmdv__link:focus {
+      outline: 2px solid #006fcf;
+      outline-offset: 1px;
+    }
+    .cmdv__empty { font-size: 13px; color: #666; padding: 12px; text-align: center; }
+    
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+      .cmdv__panel {
+        border: 2px solid currentColor;
+      }
+      .cmdv__label {
+        background: transparent;
+        border-right: 2px solid currentColor;
+      }
+    }
   `],
 })
 export class AmexCardMemberDetailsViewComponent {
   @Input() details: CardMemberDetails | null = null;
   @Output() offersClick   = new EventEmitter<void>();
   @Output() benefitsClick = new EventEmitter<void>();
+
+  @ViewChild('offersButton') offersButton!: ElementRef<HTMLButtonElement>;
+  @ViewChild('benefitsButton') benefitsButton!: ElementRef<HTMLButtonElement>;
+
+  onSpaceKey(event: KeyboardEvent, emitter: EventEmitter<void>): void {
+    if (event.key === ' ') {
+      event.preventDefault();
+      emitter.emit();
+    }
+  }
+
+  @HostListener('keydown', ['$event'])
+  handleGlobalKeydown(event: KeyboardEvent): void {
+    // Handle Escape key for focus management
+    if (event.key === 'Escape') {
+      // Reset focus to the first interactive element
+      if (this.offersButton) {
+        this.offersButton.nativeElement.focus();
+      } else if (this.benefitsButton) {
+        this.benefitsButton.nativeElement.focus();
+      }
+    }
+  }
 }

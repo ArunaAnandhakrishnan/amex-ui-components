@@ -1,10 +1,13 @@
-import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, ElementRef, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface TabItem {
   id: string;
   label: string;
   disabled?: boolean;
+  ariaLabel?: string;
+  ariaDescribedBy?: string;
+  ariaControls?: string;
 }
 
 @Component({
@@ -13,15 +16,28 @@ export interface TabItem {
   imports: [CommonModule],
   template: `
     <div class="tabs">
-      <div class="tabs-nav" role="tablist">
-        <button *ngFor="let tab of tabs" role="tab"
-          class="tab-btn" [class.active]="tab.id === activeTab" [disabled]="tab.disabled"
+      <div class="tabs-nav" role="tablist" [attr.aria-label]="ariaLabel">
+        <button *ngFor="let tab of tabs; let i = index" #tabButton 
+          role="tab"
+          class="tab-btn" 
+          [class.active]="tab.id === activeTab" 
+          [disabled]="tab.disabled"
           [attr.aria-selected]="tab.id === activeTab"
-          (click)="select(tab.id)">
+          [attr.aria-controls]="tab.ariaControls || 'tabpanel-' + tab.id"
+          [attr.aria-label]="tab.ariaLabel || tab.label"
+          [attr.aria-describedby]="tab.ariaDescribedBy"
+          [attr.tabindex]="tab.id === activeTab ? 0 : -1"
+          [id]="'tab-' + tab.id"
+          (click)="select(tab.id)" 
+          (keydown)="onKeydown($event, i)">
           {{ tab.label }}
         </button>
       </div>
-      <div class="tabs-content" role="tabpanel">
+      <div class="tabs-content" 
+        role="tabpanel" 
+        [attr.aria-labelledby]="'tab-' + activeTab"
+        [attr.aria-live]="'polite'"
+        [id]="'tabpanel-' + activeTab">
         <ng-content></ng-content>
       </div>
     </div>
@@ -41,17 +57,65 @@ export interface TabItem {
     .tabs-content { padding: 16px 0; font-size: 14px; color: #555; }
   `],
 })
-export class TabsComponent implements OnChanges {
+export class TabsComponent implements OnChanges, AfterViewInit {
   @Input() tabs: TabItem[] = [];
   @Input() activeTab = '';
+  @Input() ariaLabel = 'Tabs';
   @Output() tabChange = new EventEmitter<string>();
+  @ViewChildren('tabButton', { read: ElementRef }) tabButtons!: QueryList<ElementRef<HTMLButtonElement>>;
+
+  ngAfterViewInit() {
+    // ensure first tab is focusable if none focused
+    this.setTabIndexForButtons();
+  }
 
   ngOnChanges() {
     if (!this.activeTab && this.tabs.length) this.activeTab = this.tabs[0].id;
+    // update tabindex on buttons when inputs change
+    setTimeout(() => this.setTabIndexForButtons());
   }
 
   select(id: string) {
     this.activeTab = id;
     this.tabChange.emit(id);
+    // update tabindex so roving tabindex is maintained
+    setTimeout(() => this.setTabIndexForButtons());
+  }
+
+  onKeydown(e: KeyboardEvent, index: number) {
+    const max = this.tabs.length - 1;
+    let next = index;
+    if (e.key === 'ArrowRight') {
+      next = index === max ? 0 : index + 1;
+      e.preventDefault();
+      this.focusButton(next);
+      this.select(this.tabs[next].id);
+    } else if (e.key === 'ArrowLeft') {
+      next = index === 0 ? max : index - 1;
+      e.preventDefault();
+      this.focusButton(next);
+      this.select(this.tabs[next].id);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      this.focusButton(0);
+      this.select(this.tabs[0].id);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      this.focusButton(max);
+      this.select(this.tabs[max].id);
+    }
+  }
+
+  private focusButton(idx: number) {
+    const btn = this.tabButtons?.toArray()[idx];
+    if (btn && btn.nativeElement) btn.nativeElement.focus();
+  }
+
+  private setTabIndexForButtons() {
+    const arr = this.tabButtons?.toArray() || [];
+    arr.forEach((ref, i) => {
+      const el = ref.nativeElement;
+      el.setAttribute('tabindex', this.tabs[i].id === this.activeTab ? '0' : '-1');
+    });
   }
 }

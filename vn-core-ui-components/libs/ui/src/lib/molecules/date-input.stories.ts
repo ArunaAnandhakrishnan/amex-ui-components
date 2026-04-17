@@ -4,7 +4,7 @@ import { DateInputComponent } from './date-input';
 const meta: Meta<DateInputComponent> = {
   title: 'Molecules/DateInput',
   component: DateInputComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'form-validation', 'screen-reader', 'keyboard-navigation'],
   argTypes: { disabled: { control: 'boolean' }, error: { control: 'text' } },
 };
 export default meta;

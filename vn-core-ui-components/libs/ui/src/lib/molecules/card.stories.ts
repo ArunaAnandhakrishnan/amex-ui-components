@@ -6,7 +6,7 @@ import { ButtonComponent } from '../atoms/button';
 const meta: Meta<CardComponent> = {
   title: 'Molecules/Card',
   component: CardComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'screen-reader', 'color-contrast'],
   argTypes: { variant: { control: 'radio', options: ['elevated','flat'] }, hoverable: { control: 'boolean' } },
 };
 export default meta;

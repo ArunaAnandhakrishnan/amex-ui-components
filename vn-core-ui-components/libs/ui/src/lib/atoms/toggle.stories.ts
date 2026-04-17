@@ -4,7 +4,7 @@ import { ToggleComponent } from './toggle';
 const meta: Meta<ToggleComponent> = {
   title: 'Atoms/Toggle',
   component: ToggleComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'form-validation', 'screen-reader', 'keyboard-navigation'],
   argTypes: { label: { control: 'text' }, disabled: { control: 'boolean' } },
 };
 export default meta;

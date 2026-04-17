@@ -4,7 +4,7 @@ import { SpinnerComponent } from './spinner';
 const meta: Meta<SpinnerComponent> = {
   title: 'Atoms/Spinner',
   component: SpinnerComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'screen-reader', 'color-contrast'],
   argTypes: {
     size: { control: 'radio', options: ['sm','md','lg'] },
     color: { control: 'color' },

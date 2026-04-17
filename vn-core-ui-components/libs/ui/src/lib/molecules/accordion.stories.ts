@@ -10,7 +10,7 @@ const ITEMS = [
 const meta: Meta<AccordionComponent> = {
   title: 'Molecules/Accordion',
   component: AccordionComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'keyboard-navigation', 'screen-reader'],
   argTypes: { multiple: { control: 'boolean' } },
 };
 export default meta;

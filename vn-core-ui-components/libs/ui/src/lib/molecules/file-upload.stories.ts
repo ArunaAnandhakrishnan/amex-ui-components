@@ -4,7 +4,7 @@ import { FileUploadComponent } from './file-upload';
 const meta: Meta<FileUploadComponent> = {
   title: 'Molecules/FileUpload',
   component: FileUploadComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'form-validation', 'screen-reader', 'keyboard-navigation'],
   argTypes: { multiple: { control: 'boolean' }, disabled: { control: 'boolean' } },
 };
 export default meta;

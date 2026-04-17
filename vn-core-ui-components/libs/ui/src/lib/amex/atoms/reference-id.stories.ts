@@ -4,7 +4,7 @@ import { AmexReferenceIdComponent } from './reference-id';
 const meta: Meta<AmexReferenceIdComponent> = {
   title: 'AMEX/Atoms/ReferenceId',
   component: AmexReferenceIdComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'screen-reader', 'color-contrast'],
   argTypes: {
     id:     { control: 'text' },
     prefix: { control: 'text' },

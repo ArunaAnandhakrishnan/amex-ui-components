@@ -13,11 +13,17 @@ import { CommonModule } from '@angular/common';
         type="checkbox"
         [checked]="checked"
         [disabled]="disabled"
+        [attr.aria-checked]="checked"
+        [attr.aria-label]="ariaLabel || label"
+        [attr.aria-describedby]="ariaDescribedBy"
+        [attr.aria-invalid]="ariaInvalid"
+        [attr.aria-required]="required"
         (change)="onToggle($event)"
         (blur)="onTouched()"
+        (keydown)="onKeydown($event)"
         class="checkbox-input"
       />
-      <span class="checkbox-box"></span>
+      <span class="checkbox-box" aria-hidden="true"></span>
       <span class="checkbox-text">{{ label }}</span>
     </label>
   `,
@@ -60,6 +66,18 @@ import { CommonModule } from '@angular/common';
 export class CheckboxComponent implements ControlValueAccessor {
   @Input() label = '';
   @Input() disabled = false;
+  @Input() ariaLabel = '';
+  @Input() ariaDescribedBy = '';
+  @Input() ariaInvalid = false;
+  @Input() required = false;
+
+  onKeydown(event: KeyboardEvent) {
+    if (event.key === ' ') {
+      event.preventDefault();
+      this.checked = !this.checked;
+      this.onChange(this.checked);
+    }
+  }
 
   checked = false;
   onChange = (_: boolean) => {};

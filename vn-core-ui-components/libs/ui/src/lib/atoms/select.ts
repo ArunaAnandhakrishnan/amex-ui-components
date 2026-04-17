@@ -14,8 +14,18 @@ export interface SelectOption {
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => SelectComponent), multi: true }],
   template: `
     <div class="select-wrapper" [class.has-error]="error" [class.disabled]="disabled">
+      <label *ngIf="label" [for]="id" class="select-label">
+        {{ label }}
+        <span *ngIf="required" class="required-indicator" aria-label="required">*</span>
+      </label>
       <select
+        [id]="id"
         [disabled]="disabled"
+        [attr.aria-invalid]="error ? 'true' : null"
+        [attr.aria-describedby]="getDescriptionId()"
+        [attr.aria-required]="required"
+        [attr.aria-label]="ariaLabel"
+        [attr.aria-labelledby]="ariaLabelledBy"
         (change)="onChange($event)"
         (blur)="onTouched()"
         class="select"
@@ -25,12 +35,21 @@ export interface SelectOption {
           {{ opt.label }}
         </option>
       </select>
-      <span class="select-arrow">▾</span>
-      <span *ngIf="error" class="select-error">{{ error }}</span>
+      <span class="select-arrow" aria-hidden="true">▾</span>
+      <span *ngIf="error" class="select-error" [id]="id + '-error'" role="alert">{{ error }}</span>
+      <span *ngIf="helperText && !error" class="select-helper" [id]="id + '-helper'">{{ helperText }}</span>
     </div>
   `,
   styles: [`
     .select-wrapper { display: flex; flex-direction: column; gap: 4px; position: relative; }
+    .select-label {
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 4px;
+    }
+    .required-indicator { color: #f44336; margin-left: 2px; }
     .select {
       padding: 8px 32px 8px 12px;
       font-size: 14px;
@@ -51,6 +70,7 @@ export interface SelectOption {
     .disabled .select { background: #f5f5f5; cursor: not-allowed; color: #999; }
     .select-arrow { position: absolute; right: 12px; top: 10px; pointer-events: none; color: #666; font-size: 12px; }
     .select-error { font-size: 12px; color: #f44336; }
+    .select-helper { font-size: 12px; color: #666; }
   `],
 })
 export class SelectComponent implements ControlValueAccessor {
@@ -58,6 +78,19 @@ export class SelectComponent implements ControlValueAccessor {
   @Input() placeholder = '';
   @Input() disabled = false;
   @Input() error = '';
+  @Input() id = '';
+  @Input() label = '';
+  @Input() required = false;
+  @Input() helperText = '';
+  @Input() ariaLabel = '';
+  @Input() ariaLabelledBy = '';
+
+  getDescriptionId(): string {
+    const ids = [];
+    if (this.error) ids.push(this.id + '-error');
+    if (this.helperText && !this.error) ids.push(this.id + '-helper');
+    return ids.join(' ') || '';
+  }
 
   value: string | number = '';
   onChangeFn = (_: string | number) => {};

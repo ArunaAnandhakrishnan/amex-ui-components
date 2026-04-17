@@ -4,7 +4,7 @@ import { SearchBarComponent } from './search-bar';
 const meta: Meta<SearchBarComponent> = {
   title: 'Molecules/SearchBar',
   component: SearchBarComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'form-validation', 'screen-reader', 'keyboard-navigation'],
   argTypes: { placeholder: { control: 'text' }, disabled: { control: 'boolean' } },
 };
 export default meta;

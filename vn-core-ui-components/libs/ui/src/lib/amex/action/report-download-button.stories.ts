@@ -4,7 +4,7 @@ import { AmexReportDownloadButtonComponent } from './report-download-button';
 const meta: Meta<AmexReportDownloadButtonComponent> = {
   title: 'AMEX/Actions/ReportDownloadButton',
   component: AmexReportDownloadButtonComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'needs-improvement', 'keyboard-navigation', 'screen-reader'],
   argTypes: {
     download: { action: 'download' },
     back:     { action: 'back' },

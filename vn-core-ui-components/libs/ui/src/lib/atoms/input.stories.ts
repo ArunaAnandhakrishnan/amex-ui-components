@@ -4,7 +4,7 @@ import { InputComponent } from './input';
 const meta: Meta<InputComponent> = {
   title: 'Atoms/Input',
   component: InputComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'form-validation', 'screen-reader', 'keyboard-navigation'],
   argTypes: {
     type: { control: 'select', options: ['text', 'email', 'password', 'number'] },
     placeholder: { control: 'text' },

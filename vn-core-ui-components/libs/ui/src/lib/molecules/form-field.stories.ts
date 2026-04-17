@@ -7,7 +7,7 @@ import { CheckboxComponent } from '../atoms/checkbox';
 const meta: Meta<FormFieldComponent> = {
   title: 'Molecules/FormField',
   component: FormFieldComponent,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'a11y', 'accessibility', 'wcag', 'form-validation', 'screen-reader', 'keyboard-navigation'],
   argTypes: {
     label: { control: 'text' },
     hint: { control: 'text' },

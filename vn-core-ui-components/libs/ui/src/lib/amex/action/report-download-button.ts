@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener, ElementRef, ViewChild, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -62,18 +62,23 @@ const FORMAT_ICON: Record<ReportFormat, { svg: string; label: string }> = {
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="amex-rdb">
+    <div class="amex-rdb" role="region" aria-label="Report download options">
       <!-- Label row: "Export to Excel ★" -->
-      <div class="amex-rdb__label">
+      <div class="amex-rdb__label" id="download-label">
         {{ resolvedLabel }}
-        <span class="amex-rdb__star" aria-hidden="true">&#9733;</span>
+        <span class="amex-rdb__star" aria-label="required field">&#9733;</span>
       </div>
 
       <!-- Format icon or dropdown -->
       <div class="amex-rdb__icon-row">
         <ng-container *ngIf="multiFormat; else singleIcon">
           <!-- Dropdown when multiple formats -->
-          <select class="amex-rdb__dropdown" [(ngModel)]="selectedFormat">
+          <select class="amex-rdb__dropdown" 
+                  [(ngModel)]="selectedFormat"
+                  aria-labelledby="download-label"
+                  aria-label="Select report format"
+                  (keydown)="onKeydown($event)"
+                  #formatSelect>
             <option *ngFor="let f of resolvedFormats" [value]="f">
               {{ FORMAT_ICON[f].label }}
             </option>
@@ -84,6 +89,11 @@ const FORMAT_ICON: Record<ReportFormat, { svg: string; label: string }> = {
           <span
             class="amex-rdb__svg-icon"
             [innerHTML]="FORMAT_ICON[selectedFormat].svg"
+            role="img"
+            [attr.aria-label]="FORMAT_ICON[selectedFormat].label + ' format icon'"
+            tabindex="0"
+            (keydown)="onIconKeydown($event)"
+            #formatIcon
           ></span>
         </ng-template>
       </div>
@@ -93,8 +103,14 @@ const FORMAT_ICON: Record<ReportFormat, { svg: string; label: string }> = {
         class="amex-rdb__btn amex-rdb__btn--primary"
         [disabled]="config.loading"
         (click)="onSubmit()"
+        (keydown)="onKeydown($event)"
+        [attr.aria-pressed]="config.loading ? 'true' : 'false'"
+        [attr.aria-label]="config.loading ? 'Processing download request, please wait' : (config.submitLabel || 'Submit Request for ' + FORMAT_ICON[selectedFormat].label + ' format')"
+        type="submit"
+        #submitButton
       >
-        <span *ngIf="config.loading" class="amex-rdb__spinner"></span>
+        <span *ngIf="config.loading" class="amex-rdb__spinner" aria-hidden="true"></span>
+        <span *ngIf="config.loading" class="sr-only">Processing download request</span>
         {{ config.loading ? 'Processing…' : (config.submitLabel || 'Submit Request') }}
       </button>
 
@@ -103,6 +119,10 @@ const FORMAT_ICON: Record<ReportFormat, { svg: string; label: string }> = {
         *ngIf="showBack"
         class="amex-rdb__btn amex-rdb__btn--secondary"
         (click)="back.emit()"
+        (keydown)="onKeydown($event)"
+        [attr.aria-label]="config.backLabel || 'Back to main page'"
+        type="button"
+        #backButton
       >
         {{ config.backLabel || 'Back to main page' }}
       </button>
@@ -169,7 +189,11 @@ const FORMAT_ICON: Record<ReportFormat, { svg: string; label: string }> = {
       outline: none;
       min-width: 160px;
     }
-    .amex-rdb__dropdown:focus { border-color: #016FD0; }
+    .amex-rdb__dropdown:focus { 
+      border-color: #016FD0;
+      outline: 2px solid #016FD0;
+      outline-offset: 2px;
+    }
 
     /* ─── Buttons ────────────────────────────────────────────────  */
     .amex-rdb__btn {
@@ -196,6 +220,17 @@ const FORMAT_ICON: Record<ReportFormat, { svg: string; label: string }> = {
       color: #fff;
     }
     .amex-rdb__btn--secondary:hover { background: #0157a8; }
+    
+    .amex-rdb__btn:focus {
+      outline: 2px solid #016FD0;
+      outline-offset: 2px;
+    }
+    
+    .amex-rdb__svg-icon:focus {
+      outline: 2px solid #016FD0;
+      outline-offset: 2px;
+      border-radius: 8px;
+    }
 
     /* ─── Loading spinner ────────────────────────────────────────  */
     .amex-rdb__spinner {
@@ -210,6 +245,19 @@ const FORMAT_ICON: Record<ReportFormat, { svg: string; label: string }> = {
       vertical-align: middle;
     }
     @keyframes amex-spin { to { transform: rotate(360deg); } }
+    
+    /* Accessibility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
   `],
 })
 export class AmexReportDownloadButtonComponent {
@@ -224,7 +272,14 @@ export class AmexReportDownloadButtonComponent {
   /** Expose icon map to template */
   readonly FORMAT_ICON = FORMAT_ICON;
 
+  @ViewChild('formatSelect') formatSelect!: ElementRef<HTMLSelectElement>;
+  @ViewChild('formatIcon') formatIcon!: ElementRef<HTMLSpanElement>;
+  @ViewChild('submitButton') submitButton!: ElementRef<HTMLButtonElement>;
+  @ViewChild('backButton') backButton!: ElementRef<HTMLButtonElement>;
+
   selectedFormat: ReportFormat = 'excel';
+
+  constructor(private renderer: Renderer2) {}
 
   get resolvedFormats(): ReportFormat[] {
     return this.config.formats?.length ? this.config.formats : ['excel'];
@@ -249,9 +304,61 @@ export class AmexReportDownloadButtonComponent {
     return map[this.selectedFormat] ?? 'Export Report';
   }
 
+  ngAfterViewInit() {
+    // Set initial focus to submit button
+    if (this.submitButton) {
+      this.submitButton.nativeElement.focus();
+    }
+  }
+
+  onKeydown(event: KeyboardEvent): void {
+    // Handle Enter and Space keys for buttons
+    if (event.key === 'Enter' || event.key === ' ') {
+      if (event.target === this.submitButton?.nativeElement) {
+        event.preventDefault();
+        this.onSubmit();
+      } else if (event.target === this.backButton?.nativeElement) {
+        event.preventDefault();
+        this.back.emit();
+      }
+    }
+  }
+
+  onIconKeydown(event: KeyboardEvent): void {
+    // Handle keyboard interaction with format icon
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      // Announce current format to screen readers
+      this.announceFormat();
+    }
+  }
+
   onSubmit(): void {
     if (!this.config.loading) {
       this.download.emit(this.selectedFormat);
+    }
+  }
+
+  announceFormat(): void {
+    // Create a temporary announcement for screen readers
+    const announcement = document.createElement('div');
+    announcement.setAttribute('role', 'status');
+    announcement.setAttribute('aria-live', 'polite');
+    announcement.className = 'sr-only';
+    announcement.textContent = `Selected format: ${this.FORMAT_ICON[this.selectedFormat].label}`;
+    document.body.appendChild(announcement);
+    
+    // Remove after announcement
+    setTimeout(() => {
+      document.body.removeChild(announcement);
+    }, 1000);
+  }
+
+  @HostListener('keydown', ['$event'])
+  handleGlobalKeydown(event: KeyboardEvent): void {
+    // Handle Escape key to reset focus
+    if (event.key === 'Escape') {
+      this.submitButton?.nativeElement.focus();
     }
   }
 }
