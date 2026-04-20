@@ -1,0 +1,23 @@
+<!-- ✅ amex-top-nav-bar: blue strip (Global Sites | Log Out) + AMEX logo + title -->
+<amex-top-nav-bar
+  portalStyle="onls"
+  portalTitle="ONLS Helper Tool"
+  (logout)="showLogoutDialog = true">
+</amex-top-nav-bar>
+
+<!-- ✅ amex-tab-bar: document page 7 tabs -->
+<amex-tab-bar
+  portalStyle="onls"
+  [tabs]="tabs"
+  [activeTabId]="activeTabId"
+  (tabClick)="onTabClick($event)">
+</amex-tab-bar>
+
+<!-- ✅ amex-logout-confirmation: ONLS browser-style dialog -->
+<amex-logout-confirmation
+  [visible]="showLogoutDialog"
+  serverLabel="tst-websrv01 says"
+  message="Are you sure you want to log out?"
+  (confirm)="logout()"
+  (cancel)="showLogoutDialog = false">
+</amex-logout-confirmation>

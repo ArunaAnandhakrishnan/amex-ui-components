@@ -1,0 +1,168 @@
+<!-- ONLS-style full-page login wrapper -->
+<div class="onls-page">
+
+  <!-- Top bar -->
+  <div class="onls-topbar">
+    <a href="#">Global Sites</a>
+  </div>
+
+  <!-- Header -->
+  <div class="onls-header">
+    <div class="onls-header-left">
+      <div class="onls-logo-box">
+        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+          <rect width="36" height="36" rx="3" fill="#006fcf"/>
+          <text x="18" y="12" text-anchor="middle" fill="#fff" font-size="5.5" font-family="Arial" font-weight="bold">AMERICAN</text>
+          <text x="18" y="19" text-anchor="middle" fill="#fff" font-size="5.5" font-family="Arial" font-weight="bold">EXPRESS</text>
+          <text x="18" y="29" text-anchor="middle" fill="#fff" font-size="8" font-family="Arial" font-weight="bold">®</text>
+        </svg>
+      </div>
+      <span class="onls-header-title">ONLS Helper Tool</span>
+    </div>
+  </div>
+
+  <!-- Main body -->
+  <div class="onls-body">
+
+    <!-- Left decorative panel -->
+    <div class="onls-left-panel"></div>
+
+    <!-- Login / Register card -->
+    <div class="onls-content">
+      <div class="onls-card">
+
+        <!-- Tab switcher -->
+        <div class="onls-tabs">
+          <button class="onls-tab" [class.active]="mode === 'login'"    (click)="setMode('login')">
+            Login to your account
+          </button>
+          <button class="onls-tab" [class.active]="mode === 'register'" (click)="setMode('register')">
+            Create an account
+          </button>
+        </div>
+
+        <!-- Error / success messages -->
+        <div class="onls-alert onls-alert-error"   *ngIf="error">&#9888; {{ error }}</div>
+        <div class="onls-alert onls-alert-success" *ngIf="success">&#10003; {{ success }}</div>
+
+        <!-- ═══ LOGIN FORM ═══ -->
+        <form *ngIf="mode === 'login'" [formGroup]="loginForm" (ngSubmit)="login()" novalidate class="onls-form">
+
+          <div class="onls-field">
+            <label for="l-user">User ID</label>
+            <input id="l-user" type="text" formControlName="username"
+              autocomplete="username"
+              [class.onls-invalid]="lf['username'].invalid && lf['username'].touched" />
+            <small *ngIf="lf['username'].invalid && lf['username'].touched">
+              User ID is required (min 3 characters)
+            </small>
+          </div>
+
+          <div class="onls-field">
+            <label for="l-pwd">Password</label>
+            <div class="onls-input-row">
+              <input id="l-pwd" [type]="showPwd ? 'text' : 'password'"
+                formControlName="password" autocomplete="current-password"
+                [class.onls-invalid]="lf['password'].invalid && lf['password'].touched" />
+              <label class="onls-show-pwd">
+                <input type="checkbox" (change)="showPwd = !showPwd" /> Show
+              </label>
+            </div>
+            <small *ngIf="lf['password'].invalid && lf['password'].touched">
+              Password is required (min 4 characters)
+            </small>
+          </div>
+
+          <div class="onls-forgot">
+            <a href="#">Forgot Password ?</a>
+          </div>
+
+          <div class="onls-actions">
+            <button class="onls-btn-primary" type="submit" [disabled]="loading">
+              {{ loading ? 'Signing in…' : 'Login' }}
+            </button>
+          </div>
+
+        </form>
+
+        <!-- ═══ REGISTER FORM ═══ -->
+        <form *ngIf="mode === 'register'" [formGroup]="registerForm" (ngSubmit)="register()" novalidate class="onls-form">
+
+          <div class="onls-field">
+            <label for="r-user">Username</label>
+            <input id="r-user" type="text" formControlName="username"
+              placeholder="3–30 characters" autocomplete="username"
+              [class.onls-invalid]="rf['username'].invalid && rf['username'].touched" />
+            <small *ngIf="rf['username'].errors?.['required']  && rf['username'].touched">Username is required</small>
+            <small *ngIf="rf['username'].errors?.['minlength'] && rf['username'].touched">Min 3 characters</small>
+            <small *ngIf="rf['username'].errors?.['maxlength'] && rf['username'].touched">Max 30 characters</small>
+          </div>
+
+          <div class="onls-field">
+            <label for="r-email">Email</label>
+            <input id="r-email" type="email" formControlName="email"
+              placeholder="you@example.com" autocomplete="email"
+              [class.onls-invalid]="rf['email'].invalid && rf['email'].touched" />
+            <small *ngIf="rf['email'].errors?.['required'] && rf['email'].touched">Email is required</small>
+            <small *ngIf="rf['email'].errors?.['email']    && rf['email'].touched">Invalid email format</small>
+          </div>
+
+          <div class="onls-field">
+            <label for="r-pwd">Password</label>
+            <div class="onls-input-row">
+              <input id="r-pwd" [type]="showPwd ? 'text' : 'password'"
+                formControlName="password" placeholder="Min 6 characters"
+                autocomplete="new-password"
+                [class.onls-invalid]="rf['password'].invalid && rf['password'].touched" />
+              <label class="onls-show-pwd">
+                <input type="checkbox" (change)="showPwd = !showPwd; showConfirm = showPwd" /> Show
+              </label>
+            </div>
+            <small *ngIf="rf['password'].errors?.['required']  && rf['password'].touched">Password is required</small>
+            <small *ngIf="rf['password'].errors?.['minlength'] && rf['password'].touched">Min 6 characters</small>
+          </div>
+
+          <div class="onls-field">
+            <label for="r-confirm">Confirm Password</label>
+            <input id="r-confirm" [type]="showPwd ? 'text' : 'password'"
+              formControlName="confirmPassword" placeholder="Re-enter password"
+              autocomplete="new-password"
+              [class.onls-invalid]="(rf['confirmPassword'].touched && rf['confirmPassword'].invalid) || pwdMismatch" />
+            <small *ngIf="rf['confirmPassword'].errors?.['required'] && rf['confirmPassword'].touched">Please confirm password</small>
+            <small *ngIf="pwdMismatch">Passwords do not match</small>
+          </div>
+
+          <div class="onls-field">
+            <label for="r-role">Role</label>
+            <select id="r-role" formControlName="role" class="onls-select">
+              <option value="ROLE_USER">User</option>
+              <option value="ROLE_ADMIN">Admin</option>
+            </select>
+          </div>
+
+          <div class="onls-actions">
+            <button class="onls-btn-primary" type="submit" [disabled]="loading">
+              {{ loading ? 'Registering…' : 'Create Account' }}
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div><!-- /onls-body -->
+
+  <!-- Footer -->
+  <div class="onls-footer">
+    <div class="onls-footer-links">
+      <a href="#">American Express Web Site Rules and Regulations</a>
+      <span>|</span><a href="#">News Centre</a>
+      <span>|</span><a href="#">Fraud Protection Centre</a>
+      <span>|</span><a href="#">Trademarks</a>
+      <span>|</span><a href="#">Privacy Statement</a>
+    </div>
+    <div>Copyright &copy; 2025 American Express Company</div>
+  </div>
+
+</div>

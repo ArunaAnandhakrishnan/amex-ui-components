@@ -1,0 +1,95 @@
+/* ── Reset ── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; background: #fff; color: #333; font-size: 13px; }
+
+/* ── MFE loading bar ── */
+.mfe-loading-bar {
+  height: 2px; background: #006fcf;
+  position: fixed; top: 0; left: 0; width: 0;
+  transition: width 0.3s; z-index: 9999;
+}
+.mfe-loading-bar.visible { width: 60%; }
+
+/* ── Shell layout ── */
+/* Header (top-nav-bar + tab-bar) stacks at top, body below */
+.shell-wrap { display: flex; flex-direction: column; min-height: 100vh; background: #fff; }
+.shell-body { display: flex; flex: 1; min-height: 0; }
+
+/* Content area fills remaining space after hatched sidebar */
+.shell-main { flex: 1; overflow-y: auto; background: #fff; }
+
+/* ── Login page — ONLS style matching document image1 ── */
+.onls-page {
+  min-height: 100vh; display: flex; flex-direction: column;
+  background: #fff; font-family: Arial, sans-serif; font-size: 13px;
+}
+.onls-topbar {
+  background: #006fcf; text-align: right;
+  padding: 2px 10px; font-size: 11px;
+}
+.onls-topbar a { color: #fff; text-decoration: underline; cursor: pointer; }
+
+.onls-header {
+  background: #fff; border-bottom: 1px solid #d0d0d0;
+  display: flex; align-items: center; padding: 6px 10px; gap: 10px; min-height: 52px;
+}
+.onls-header-left  { display: flex; align-items: center; gap: 8px; }
+.onls-logo-box svg { width: 40px; height: 40px; }
+.onls-header-title { font-size: 18px; color: #333; font-weight: normal; }
+
+.onls-body { display: flex; flex: 1; }
+.onls-left-panel {
+  width: 110px; flex-shrink: 0; border-right: 3px solid #006fcf;
+  background: repeating-linear-gradient(
+    -45deg, #e8e8e8 0px, #e8e8e8 2px, #f5f5f5 2px, #f5f5f5 8px
+  );
+}
+.onls-content { flex: 1; display: flex; align-items: flex-start; padding: 32px 40px; }
+.onls-card    { width: 380px; }
+
+.onls-card-title  { font-size: 15px; font-weight: bold; color: #333; margin-bottom: 20px; }
+.onls-tabs { display: flex; border-bottom: 1px solid #ccc; margin-bottom: 20px; }
+.onls-tab  {
+  background: none; border: none; padding: 8px 16px 8px 0;
+  font-size: 13px; color: #006fcf; cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -1px; font-family: Arial, sans-serif;
+}
+.onls-tab.active { color: #003087; font-weight: bold; border-bottom: 2px solid #006fcf; }
+.onls-tab:hover  { text-decoration: underline; }
+
+.onls-form  { display: flex; flex-direction: column; gap: 12px; }
+.onls-field { display: flex; flex-direction: column; gap: 3px; }
+.onls-field label { font-size: 12px; color: #333; }
+.onls-field input, .onls-select {
+  border: 1px solid #aaa; padding: 4px 6px; font-size: 12px;
+  font-family: Arial, sans-serif; width: 200px; border-radius: 1px;
+}
+.onls-field input:focus { outline: 1px solid #006fcf; border-color: #006fcf; }
+.onls-invalid { border-color: #cc0000 !important; }
+.onls-field small { color: #cc0000; font-size: 11px; }
+.onls-input-row { display: flex; align-items: center; gap: 8px; }
+.onls-show-pwd  { font-size: 11px; color: #555; display: flex; align-items: center; gap: 3px; cursor: pointer; }
+.onls-forgot    { margin-top: 2px; }
+.onls-forgot a  { font-size: 12px; color: #006fcf; }
+.onls-actions   { margin-top: 8px; }
+.onls-btn-primary {
+  background: linear-gradient(to bottom, #5b9bd5, #2e74b5);
+  color: #fff; border: 1px solid #1e5a9c;
+  padding: 5px 22px; font-size: 12px; font-family: Arial, sans-serif;
+  cursor: pointer; border-radius: 2px;
+}
+.onls-btn-primary:hover    { opacity: 0.9; }
+.onls-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+.onls-alert { padding: 8px 12px; font-size: 12px; margin-bottom: 10px; border-radius: 2px; }
+.onls-alert-error   { background: #ffeaea; color: #cc0000; border: 1px solid #f5c6c6; }
+.onls-alert-success { background: #e6f9f0; color: #1a7a4a; border: 1px solid #b7e4ce; }
+
+.onls-footer {
+  background: #fff; border-top: 1px solid #ddd; padding: 6px 10px;
+  font-size: 10px; color: #555; display: flex;
+  justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px;
+}
+.onls-footer-links { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.onls-footer-links a    { color: #006fcf; text-decoration: none; font-size: 10px; }
+.onls-footer-links a:hover { text-decoration: underline; }
+.onls-footer-links span { color: #999; }
