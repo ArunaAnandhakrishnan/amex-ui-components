@@ -279,7 +279,6 @@ export class AmexReportDownloadButtonComponent {
 
   selectedFormat: ReportFormat = 'excel';
 
-  constructor(private renderer: Renderer2) {}
 
   get resolvedFormats(): ReportFormat[] {
     return this.config.formats?.length ? this.config.formats : ['excel'];

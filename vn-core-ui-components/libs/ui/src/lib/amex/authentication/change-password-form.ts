@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, HostListener, ElementRef, ViewChild, Renderer2 } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener, ElementRef, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -349,15 +349,10 @@ export class AmexChangePasswordFormComponent {
 
   data: ChangePasswordData = { currentPassword: '', newPassword: '', confirmPassword: '' };
 
-  constructor(private renderer: Renderer2) {}
-
-  ngAfterViewInit() {
-    // Set initial focus to current password field
-    const firstInput = this.portalStyle === 'onls' ? this.currentPasswordInput : this.currentPasswordInputOms;
-    if (firstInput) {
-      this.renderer.setAttribute(firstInput.nativeElement, 'autofocus', 'true');
-    }
-  }
+ngAfterViewInit() {
+  const firstInput = this.portalStyle === 'onls' ? this.currentPasswordInput : this.currentPasswordInputOms;
+  firstInput?.nativeElement.focus();
+}
 
   onKeydown(event: KeyboardEvent): void {
     // Handle Enter key navigation between form fields

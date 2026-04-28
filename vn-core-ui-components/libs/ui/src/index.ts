@@ -166,3 +166,6 @@ export * from './lib/amex/authentication/forgot-user-id-form';
 export * from './lib/amex/authentication/forgot-password-form';
 export * from './lib/amex/authentication/password-expiry-screen';
 export * from './lib/amex/authentication/change-password-form';
+
+// AMEX Layout
+export * from './lib/amex/layout/page-shell';
