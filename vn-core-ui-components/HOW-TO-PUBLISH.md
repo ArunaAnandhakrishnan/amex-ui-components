@@ -71,7 +71,7 @@ npm adduser --registry http://localhost:4873
 
 # Publish
 npm config set registry https://registry.npmjs.org/
-npm config set @vn-core-ui-components:registry http://172.19.16.1:4873
+npm config set @vn-core-ui-components:registry http://localhost:4873
 ```
 
 ### Your teammates install it:

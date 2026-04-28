@@ -170,7 +170,13 @@ export class App {
   group: 'AMEX Authentication',
   items: [
     { label: 'Authentication', path: '/amex/authentication' },
-  ]
-}
+    ]
+  },
+  {
+    group: 'AMEX Layout',
+    items: [
+      { label: 'Page Shell', path: '/amex/layout' },
+    ],
+  },
   ];
 }

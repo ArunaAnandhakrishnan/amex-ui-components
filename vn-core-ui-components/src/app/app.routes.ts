@@ -71,5 +71,9 @@ export const appRoutes: Route[] = [
   { path: 'amex/display-viewers', loadComponent: () => import('./pages/amex/display-viewers/display-viewers-page').then(m => m.AmexDisplayViewersPageComponent) },
   
   // AMEX Authentication
-{ path: 'amex/authentication', loadComponent: () => import('./pages/amex/authentication/authentication-page').then(m => m.AmexAuthenticationPageComponent) },
+  { path: 'amex/authentication', loadComponent: () => import('./pages/amex/authentication/authentication-page').then(m => m.AmexAuthenticationPageComponent) },
+
+  // AMEX Layout (Page Shell)
+  { path: 'amex/layout', loadComponent: () => import('./pages/amex/layout/layout-page').then(m => m.AmexLayoutPageComponent) },
+
 ];

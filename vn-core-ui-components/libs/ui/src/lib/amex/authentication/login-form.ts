@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, HostListener, ElementRef, ViewChild, Renderer2 } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener, ElementRef, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -236,14 +236,9 @@ export class AmexLoginFormComponent {
 
   credentials: LoginCredentials = { username: '', password: '' };
 
-  constructor(private renderer: Renderer2) {}
-
-  ngAfterViewInit() {
-    // Set initial focus to username field
-    if (this.usernameInput) {
-      this.renderer.setAttribute(this.usernameInput.nativeElement, 'autofocus', 'true');
-    }
-  }
+ngAfterViewInit() {
+  this.usernameInput?.nativeElement.focus();
+}
 
   onKeydown(event: KeyboardEvent) {
     // Handle Enter key in form fields
