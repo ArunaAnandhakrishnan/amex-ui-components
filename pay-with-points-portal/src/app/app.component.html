@@ -1,0 +1,99 @@
+<div class="portal-container">
+  <header class="portal-header">
+    <div class="brand">
+      <span class="amex-logo">AMEX</span>
+      <span class="divider">|</span>
+      <span class="portal-name">Pay with Points</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#">Dashboard</a>
+      <a href="#">History</a>
+      <a href="#">Earn More</a>
+    </nav>
+  </header>
+
+  <main class="portal-main">
+    <!-- Points Balance Banner -->
+    <section class="balance-banner">
+      <div class="balance-card">
+        <p class="balance-label">Your Membership Rewards® Points</p>
+        <h1 class="balance-points">{{ availablePoints | number }}</h1>
+        <p class="balance-value">≈ ${{ (availablePoints * pointValue).toFixed(2) }} value</p>
+      </div>
+    </section>
+
+    <div class="main-content">
+      <!-- Redeem Panel -->
+      <section class="redeem-panel">
+        <h2 class="panel-title">Redeem Points</h2>
+
+        <!-- Category Selector -->
+        <div class="category-grid">
+          <button
+            class="category-btn"
+            *ngFor="let cat of categories"
+            [class.active]="selectedCategory === cat.label"
+            (click)="selectedCategory = cat.label">
+            <span class="cat-icon">{{ cat.icon }}</span>
+            <span class="cat-label">{{ cat.label }}</span>
+            <span class="cat-rate">{{ cat.rate }}</span>
+          </button>
+        </div>
+
+        <!-- Points Input -->
+        <div class="input-group">
+          <label class="input-label">Points to Redeem</label>
+          <input
+            type="number"
+            class="points-input"
+            [(ngModel)]="pointsToRedeem"
+            [max]="availablePoints"
+            min="1000"
+            step="1000" />
+        </div>
+
+        <!-- Summary -->
+        <div class="redeem-summary">
+          <div class="summary-row">
+            <span>Points</span>
+            <span>{{ pointsToRedeem | number }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Dollar Value</span>
+            <span class="value-highlight">${{ dollarValue }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Remaining Points</span>
+            <span>{{ remainingPoints | number }}</span>
+          </div>
+        </div>
+
+        <button class="redeem-btn" (click)="redeem()" [class.success]="redeemed">
+          <span *ngIf="!redeemed">Redeem for {{ selectedCategory }}</span>
+          <span *ngIf="redeemed">✓ Redeemed Successfully!</span>
+        </button>
+      </section>
+
+      <!-- Transaction History -->
+      <section class="history-panel">
+        <h2 class="panel-title">Recent Redemptions</h2>
+        <div class="transaction-list">
+          <div class="transaction-item" *ngFor="let tx of recentTransactions">
+            <div class="tx-info">
+              <p class="tx-merchant">{{ tx.merchant }}</p>
+              <p class="tx-date">{{ tx.date }}</p>
+            </div>
+            <div class="tx-right">
+              <p class="tx-points">-{{ tx.points | number }} pts</p>
+              <span class="tx-status">{{ tx.status }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="portal-footer">
+    <p>© {{ 2025 }} American Express | Pay with Points Portal</p>
+  </footer>
+</div>

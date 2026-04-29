@@ -1,0 +1,40 @@
+<div class="portal-container">
+  <header class="portal-header">
+    <div class="brand">
+      <span class="amex-logo">AMEX</span>
+      <span class="divider">|</span>
+      <span class="portal-name">Wearables</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#">Explore</a>
+      <a href="#">My Wearables</a>
+      <a href="#">Support</a>
+    </nav>
+  </header>
+
+  <main class="portal-main">
+    <section class="hero">
+      <h1 class="hero-title">Pay Smarter, <br /><span class="highlight">Wear Simpler.</span></h1>
+      <p class="hero-sub">Tap-to-pay wearables built for your American Express Card.</p>
+      <button class="cta-btn">Explore Wearables</button>
+    </section>
+
+    <section class="products-section">
+      <h2 class="section-title">Available Wearables</h2>
+      <div class="product-grid">
+        <div class="product-card" *ngFor="let item of wearables">
+          <div class="product-icon">{{ item.icon }}</div>
+          <span class="badge" *ngIf="item.badge">{{ item.badge }}</span>
+          <h3 class="product-name">{{ item.name }}</h3>
+          <p class="product-category">{{ item.category }}</p>
+          <div class="product-points">{{ item.points | number }} pts</div>
+          <button class="redeem-btn">Redeem Now</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="portal-footer">
+    <p>© {{ 2025 }} American Express | Wearables Portal</p>
+  </footer>
+</div>

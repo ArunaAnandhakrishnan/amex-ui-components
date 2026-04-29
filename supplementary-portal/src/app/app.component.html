@@ -1,0 +1,54 @@
+<div class="portal-container">
+  <header class="portal-header">
+    <div class="brand">
+      <span class="amex-logo">AMEX</span>
+      <span class="divider">|</span>
+      <span class="portal-name">Supplementary Cards</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#">My Cards</a>
+      <a href="#">Add Member</a>
+      <a href="#">Manage</a>
+    </nav>
+  </header>
+
+  <main class="portal-main">
+    <section class="hero">
+      <div class="hero-content">
+        <span class="hero-tag">Supplementary Cards</span>
+        <h1 class="hero-title">Share the Benefits.<br /><span class="highlight">Extend Your Rewards.</span></h1>
+        <p class="hero-sub">Add family members or trusted individuals to your American Express account.</p>
+        <button class="cta-btn">Add a Cardholder</button>
+      </div>
+      <div class="hero-cards">
+        <div class="sample-card gold">
+          <span class="card-label">GOLD</span>
+          <span class="card-member">Supplementary</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="cards-section">
+      <h2 class="section-title">Choose a Card Type</h2>
+      <div class="cards-grid">
+        <div class="card-option" *ngFor="let card of cards">
+          <div class="card-header" [style.background]="card.color">
+            <h3 class="card-type">{{ card.type }}</h3>
+            <p class="card-holder">{{ card.holder }}</p>
+          </div>
+          <div class="card-body">
+            <p class="card-limit">Limit: <strong>{{ card.limit }}</strong></p>
+            <ul class="perks-list">
+              <li *ngFor="let perk of card.perks">✓ {{ perk }}</li>
+            </ul>
+            <button class="select-btn">Select</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="portal-footer">
+    <p>© {{ 2025 }} American Express | Supplementary Cards Portal</p>
+  </footer>
+</div>
