@@ -5,12 +5,15 @@
   (logout)="showLogoutDialog = true">
 </amex-top-nav-bar>
 
-<!-- ✅ amex-tab-bar: document page 7 tabs -->
+<!-- ✅ amex-tab-bar: 5 main tabs + optional Misc sub-items row -->
 <amex-tab-bar
   portalStyle="onls"
   [tabs]="tabs"
   [activeTabId]="activeTabId"
-  (tabClick)="onTabClick($event)">
+  [subItems]="showSubItems ? miscSubItems : []"
+  [activeSubId]="activeSubId"
+  (tabClick)="onTabClick($event)"
+  (subClick)="onSubClick($event)">
 </amex-tab-bar>
 
 <!-- ✅ amex-logout-confirmation: ONLS browser-style dialog -->

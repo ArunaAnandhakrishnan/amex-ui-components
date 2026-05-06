@@ -12,8 +12,9 @@ import { AmexTabItem } from '@vn-core-ui-components/ui';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   showLogoutDialog = false;
-  activeTabId = 'offers';
-  private subs = new Subscription();
+  activeTabId      = 'offers';
+  activeSubId      = '';
+  private subs     = new Subscription();
 
   /**
    * Exact 4 tabs from document image6 / image3 / image10:
@@ -24,13 +25,25 @@ export class HeaderComponent implements OnInit, OnDestroy {
    *   Supplementary Access Helper → /bta   (port 4203 MFE)
    *   Offers                   → /offers   (port 4204 MFE — Offers Catalogue)
    *   Benefits                 → /offers/benefits (port 4204 MFE — Benefits page)
+   *   wearables                 → /wearables (port 4205 MFE — Wearables page)
    */
+  /** Main tabs — document image */
   tabs: AmexTabItem[] = [
     { id: 'account',  label: 'Online Account Services'    },
     { id: 'supp',     label: 'Supplementary Access Helper' },
     { id: 'offers',   label: 'Offers'                     },
     { id: 'benefits', label: 'Benefits'                   },
+    { id: 'misc',     label: 'Misc'                       },
   ];
+
+  /** Sub-items shown under Misc tab */
+  miscSubItems: AmexTabItem[] = [
+    { id: 'wearables', label: 'AMEX Wearables' },
+  ];
+
+  get showSubItems(): boolean {
+    return this.activeTabId === 'misc';
+  }
 
   constructor(
     private auth:   AuthService,
@@ -44,10 +57,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
         .pipe(filter(e => e instanceof NavigationEnd))
         .subscribe((e: any) => {
           const url: string = e.urlAfterRedirects;
-          if      (url.startsWith('/offers/benefits')) this.activeTabId = 'benefits';
-          else if (url.startsWith('/offers'))           this.activeTabId = 'offers';
-          else if (url.startsWith('/bta'))              this.activeTabId = 'supp';
-          else if (url.startsWith('/account'))          this.activeTabId = 'account';
+          if      (url.startsWith('/wearables'))       { this.activeTabId = 'misc';     this.activeSubId = 'wearables'; }
+          else if (url.startsWith('/offers/benefits')) { this.activeTabId = 'benefits'; this.activeSubId = ''; }
+          else if (url.startsWith('/offers'))          { this.activeTabId = 'offers';   this.activeSubId = ''; }
+          else if (url.startsWith('/bta'))             { this.activeTabId = 'supp';     this.activeSubId = ''; }
+          else if (url.startsWith('/account'))         { this.activeTabId = 'account';  this.activeSubId = ''; }
         })
     );
   }
@@ -59,8 +73,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
       supp:     '/bta',
       offers:   '/offers',
       benefits: '/offers/benefits',   // Benefits is part of the Offers MFE
+      misc:     '/wearables',
     };
     if (routes[tabId]) this.router.navigate([routes[tabId]]);
+  }
+
+  onSubClick(subId: string): void {
+    this.activeSubId = subId;
+    if (subId === 'wearables') this.router.navigate(['/wearables']);
   }
 
   logout(): void {

@@ -6,8 +6,9 @@ const {
 const mfConfig = withModuleFederationPlugin({
   name: 'shell',
   remotes: {
-    btaPortal:    'btaPortal@http://localhost:4203/remoteEntry.js',
-    offersPortal: 'offersPortal@http://localhost:4204/remoteEntry.js',
+    btaPortal:       'btaPortal@http://localhost:4203/remoteEntry.js',
+    offersPortal:    'offersPortal@http://localhost:4204/remoteEntry.js',
+    wearablesPortal: 'wearablesPortal@http://localhost:4205/remoteEntry.js',
   },
   shared: {
     ...shareAll({
