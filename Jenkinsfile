@@ -116,7 +116,7 @@ pipeline {
                         echo "--- Waiting for app to start ---"
                         sleep(time: 25, unit: 'SECONDS')
                         echo "--- Running ZAP scan on ${folder} ---"
-                        bat "\"${zapPath}\" -cmd -quickurl http://localhost:${port} -quickprogress -quickout \"${WORKSPACE}\\${folder}\\zap-report.html\" -silent"
+                        bat "cd \"C:\\Program Files\\ZAP\\Zed Attack Proxy\" && zap.bat -cmd -quickurl http://localhost:${port} -quickprogress -quickout \"${WORKSPACE}\\${folder}\\zap-report.html\" -silent"
                         echo "--- Stopping app: ${folder} ---"
                         bat 'taskkill /F /IM node.exe /T 2>nul || exit 0'
                         sleep(time: 5, unit: 'SECONDS')
