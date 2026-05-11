@@ -8,7 +8,8 @@ pipeline {
     environment {
         SONAR_HOST_URL = 'http://localhost:9000'
         // Format: 'folder-name:sonar-project-key'
-        PROJECTS = 'shell:amex-shell bta-portal:amex-bta-portal offers-portal:amex-offers-portal pay-with-points-portal:amex-pay-with-points supplementary-portal:amex-supplementary-portal wearables-portal:amex-wearables-portal'
+        PROJECTS = 'shell:amex-shell bta-portal:amex-bta-portal'
+    //    PROJECTS = 'shell:amex-shell bta-portal:amex-bta-portal offers-portal:amex-offers-portal pay-with-points-portal:amex-pay-with-points supplementary-portal:amex-supplementary-portal wearables-portal:amex-wearables-portal'
     }
 
     stages {
