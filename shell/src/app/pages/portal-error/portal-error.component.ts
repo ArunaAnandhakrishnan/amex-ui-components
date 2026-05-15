@@ -32,11 +32,12 @@ export class PortalErrorComponent implements OnInit {
   startCmds: { label: string; command: string }[] = [];
 
   private readonly portals: Record<string, { name: string; dir: string; port: number }> = {
-    account:   { name: 'Online Account Services', dir: 'online-account',    port: 4201 },
-    bcrb:      { name: 'BCRB Report Portal',       dir: 'bcrb-portal',      port: 4202 },
-    bta:       { name: 'BTA Portal',               dir: 'bta-portal',       port: 4203 },
-    offers:    { name: 'AEME Offers & Benefits',   dir: 'offers-portal',    port: 4204 },
-    wearables: { name: 'AMEX Wearables',           dir: 'wearables-portal', port: 4206 },
+    account: { name: 'Online Account Services', dir: 'online-account', port: 4201 },
+    bcrb:    { name: 'BCRB Report Portal',       dir: 'bcrb-portal',    port: 4202 },
+    bta:     { name: 'BTA Portal',               dir: 'bta-portal',     port: 4203 },
+    offers:  { name: 'AEME Offers & Benefits',   dir: 'offers-portal',  port: 4204 },
+    wearables:  { name: 'AMEX Wearables',  dir: 'wearables-portal',       port: 4206 },
+    pay_with_points:   { name: 'Pay With Points', dir: 'pay-with-points-portal', port: 4207 },
   };
 
   constructor(private route: ActivatedRoute) {}
