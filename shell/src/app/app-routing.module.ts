@@ -80,8 +80,8 @@ const routes: Routes = [
     path: 'misc/wearables',
     canActivate: [AuthGuard],
     loadChildren: () =>
-      loadRemoteModule({ type: 'module', remoteEntry: 'http://localhost:4207/remoteEntry.js', exposedModule: './Module' })
-        .then(m => m.PayWithPointsRemoteEntryModule).catch(portalFallback),
+      loadRemoteModule({ type: 'module', remoteEntry: 'http://localhost:4206/remoteEntry.js', exposedModule: './Module' })
+        .then(m => m.WearablesRemoteEntryModule).catch(portalFallback),
   },
 
   
@@ -99,7 +99,7 @@ const routes: Routes = [
       .catch(portalFallback),
   },
 
-  { path: '**', redirectTo: 'bta' },
+  // { path: '**', redirectTo: 'bta' },
 ];
 
 @NgModule({

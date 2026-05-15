@@ -34,14 +34,15 @@ import { AmexTabItem }                  from '@vn-core-ui-components/ui';
 export class HeaderComponent implements OnInit, OnDestroy {
 
   showLogoutDialog = false;
-  activeTabId      = 'supp';   // default tab on shell load
+  activeTabId      = 'bta';   // default tab on shell load
   activeSubId      = '';
   showSubMenu      = false;
 
   private subs = new Subscription();
 
   /** Main navigation tabs */
-  tabs: AmexTabItem[] = [
+  tabs: AmexTabItem[] = [    
+    { id: 'bta',      label: 'BTA'                  },
     { id: 'account',  label: 'Online Account Services'     },
     { id: 'supp',     label: 'Supplementary Access Helper'  },
     { id: 'offers',   label: 'Offers'                      },
@@ -99,8 +100,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private syncFromUrl(url: string): void {
     if (url.startsWith('/offers/benefits')) { this.activeTabId = 'benefits'; this.activeSubId = ''; return; }
     if (url.startsWith('/offers'))          { this.activeTabId = 'offers';   this.activeSubId = ''; return; }
-    if (url.startsWith('/bta'))             { this.activeTabId = 'supp';     this.activeSubId = ''; return; }
+    if (url.startsWith('/supp'))             { this.activeTabId = 'supp';     this.activeSubId = ''; return; }
     if (url.startsWith('/account'))         { this.activeTabId = 'account';  this.activeSubId = ''; return; }
+    if (url.startsWith('/bta'))             { this.activeTabId = 'bta';     this.activeSubId = ''; return; }
 
     // Check all misc sub-routes
     for (const [subId, route] of Object.entries(this.subRouteMap)) {
@@ -132,7 +134,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     const routeMap: Record<string, string> = {
       account:  '/account',
-      supp:     '/bta',
+      supp:     '/supp',
+      bta:      '/bta',
       offers:   '/offers',
       benefits: '/offers/benefits',
     };
@@ -159,11 +162,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   /** Returns the label for the currently active sub-item (for breadcrumb) */
   getActiveSubLabel(): string {
     return this.miscSubItems.find(s => s.id === this.activeSubId)?.label ?? '';
-  }
-
-  onSubClick(subId: string): void {
-    this.activeSubId = subId;
-    if (subId === 'wearables') this.router.navigate(['/wearables']);
   }
 
   logout(): void {
