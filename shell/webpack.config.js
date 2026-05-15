@@ -6,8 +6,11 @@ const {
 const mfConfig = withModuleFederationPlugin({
   name: 'shell',
   remotes: {
-    btaPortal:    'btaPortal@http://localhost:4203/remoteEntry.js',
-    offersPortal: 'offersPortal@http://localhost:4204/remoteEntry.js',
+    // ── IMPORTANT: remote name MUST match the `name` in each remote's webpack.config.js ──
+    btaPortal:           'btaPortal@http://localhost:4203/remoteEntry.js',
+    offersPortal:        'offersPortal@http://localhost:4204/remoteEntry.js',
+    // payWithPointsPortal name matches webpack.config.js `name: 'payWithPointsPortal'`
+    payWithPointsPortal: 'payWithPointsPortal@http://localhost:4207/remoteEntry.js',
   },
   shared: {
     ...shareAll({
@@ -20,10 +23,9 @@ const mfConfig = withModuleFederationPlugin({
 
 mfConfig.output = {
   ...mfConfig.output,
-  publicPath: 'http://localhost:4200/',
-  scriptType: 'text/javascript',
+  publicPath:  'http://localhost:4200/',
+  scriptType:  'text/javascript',
+  uniqueName:  'shell',
 };
-
-// @vn-core-ui-components/ui resolves naturally via node_modules (built Angular library)
 
 module.exports = mfConfig;
