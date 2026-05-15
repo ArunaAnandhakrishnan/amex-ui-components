@@ -10,7 +10,10 @@
   portalStyle="onls"
   [tabs]="tabs"
   [activeTabId]="activeTabId"
-  (tabClick)="onTabClick($event)">
+  [subItems]="showSubItems ? miscSubItems : []"
+  [activeSubId]="activeSubId"
+  (tabClick)="onTabClick($event)"
+  (subClick)="onSubClick($event)">
 </amex-tab-bar>
 
 <!-- ✅ Misc sub-menu: shown when misc tab is active and showSubMenu=true -->

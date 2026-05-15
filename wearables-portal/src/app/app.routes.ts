@@ -1,3 +1,10 @@
 import { Routes } from '@angular/router';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  {
+    path: '',
+    loadComponent: () =>
+      import('./wearables/wearables-shell-wrapper.component')
+        .then(m => m.WearablesShellWrapperComponent),
+  },
+];

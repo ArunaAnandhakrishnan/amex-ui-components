@@ -161,6 +161,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     return this.miscSubItems.find(s => s.id === this.activeSubId)?.label ?? '';
   }
 
+  onSubClick(subId: string): void {
+    this.activeSubId = subId;
+    if (subId === 'wearables') this.router.navigate(['/wearables']);
+  }
+
   logout(): void {
     this.bus.emit({ type: 'USER_LOGGED_OUT' });
     this.auth.logout();

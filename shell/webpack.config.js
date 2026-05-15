@@ -6,10 +6,9 @@ const {
 const mfConfig = withModuleFederationPlugin({
   name: 'shell',
   remotes: {
-    // ── IMPORTANT: remote name MUST match the `name` in each remote's webpack.config.js ──
-    btaPortal:           'btaPortal@http://localhost:4203/remoteEntry.js',
-    offersPortal:        'offersPortal@http://localhost:4204/remoteEntry.js',
-    // payWithPointsPortal name matches webpack.config.js `name: 'payWithPointsPortal'`
+    btaPortal:       'btaPortal@http://localhost:4203/remoteEntry.js',
+    offersPortal:    'offersPortal@http://localhost:4204/remoteEntry.js',
+    wearablesPortal: 'wearablesPortal@http://localhost:4206/remoteEntry.js',
     payWithPointsPortal: 'payWithPointsPortal@http://localhost:4207/remoteEntry.js',
   },
   shared: {

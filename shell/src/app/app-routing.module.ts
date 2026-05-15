@@ -84,6 +84,21 @@ const routes: Routes = [
         .then(m => m.PayWithPointsRemoteEntryModule).catch(portalFallback),
   },
 
+  
+  // ── AMEX Wearables (port 4206) ────────────────────────────
+  {
+    path: 'wearables',
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      loadRemoteModule({
+        type:          'module',
+        remoteEntry:  'http://localhost:4206/remoteEntry.js',
+        exposedModule: './Module',
+      })
+      .then(m => m.WearablesRemoteEntryModule)
+      .catch(portalFallback),
+  },
+
   { path: '**', redirectTo: 'bta' },
 ];
 
