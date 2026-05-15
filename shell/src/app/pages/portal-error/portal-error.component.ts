@@ -36,7 +36,7 @@ export class PortalErrorComponent implements OnInit {
     bcrb:      { name: 'BCRB Report Portal',       dir: 'bcrb-portal',      port: 4202 },
     bta:       { name: 'BTA Portal',               dir: 'bta-portal',       port: 4203 },
     offers:    { name: 'AEME Offers & Benefits',   dir: 'offers-portal',    port: 4204 },
-    wearables: { name: 'AMEX Wearables',           dir: 'wearables-portal', port: 4205 },
+    wearables: { name: 'AMEX Wearables',           dir: 'wearables-portal', port: 4206 },
   };
 
   constructor(private route: ActivatedRoute) {}

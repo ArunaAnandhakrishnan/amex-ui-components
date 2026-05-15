@@ -78,14 +78,14 @@ const routes: Routes = [
   },
 
   
-  // ── AMEX Wearables (port 4205) ────────────────────────────
+  // ── AMEX Wearables (port 4206) ────────────────────────────
   {
     path: 'wearables',
     canActivate: [AuthGuard],
     loadChildren: () =>
       loadRemoteModule({
         type:          'module',
-        remoteEntry:   'http://localhost:4205/remoteEntry.js',
+        remoteEntry:  'http://localhost:4206/remoteEntry.js',
         exposedModule: './Module',
       })
       .then(m => m.WearablesRemoteEntryModule)
