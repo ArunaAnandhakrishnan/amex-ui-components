@@ -1,19 +1,42 @@
-<!-- ✅ amex-top-nav-bar: blue strip (Global Sites | Log Out) + AMEX logo + title -->
+<!-- Top navigation bar: AMEX logo + portal title + logout -->
 <amex-top-nav-bar
   portalStyle="onls"
   portalTitle="ONLS Helper Tool"
   (logout)="showLogoutDialog = true">
 </amex-top-nav-bar>
 
-<!-- ✅ amex-tab-bar: document page 7 tabs -->
+<!-- Main tab bar -->
 <amex-tab-bar
   portalStyle="onls"
   [tabs]="tabs"
   [activeTabId]="activeTabId"
-  (tabClick)="onTabClick($event)">
+  [activeSubId]="activeSubId"
+  (tabClick)="onTabClick($event)"
+  (subClick)="onSubClick($event)">
 </amex-tab-bar>
 
-<!-- ✅ amex-logout-confirmation: ONLS browser-style dialog -->
+<!-- ✅ Misc sub-menu: shown when misc tab is active and showSubMenu=true -->
+<div class="misc-submenu" *ngIf="activeTabId === 'misc' && showSubMenu">
+  <div class="misc-submenu__inner">
+    <span
+      *ngFor="let sub of miscSubItems"
+      class="misc-submenu__item"
+      [class.misc-submenu__item--active]="activeSubId === sub.id"
+      (click)="onSubClick(sub.id)">
+      {{ sub.label }}
+    </span>
+  </div>
+</div>
+
+<!-- Breadcrumb when sub-item selected and dropdown is closed -->
+<div class="misc-breadcrumb" *ngIf="activeTabId === 'misc' && activeSubId && !showSubMenu">
+  <span>Misc</span>
+  <span class="misc-breadcrumb__sep"> › </span>
+  <span class="misc-breadcrumb__current">{{ getActiveSubLabel() }}</span>
+  <span class="misc-breadcrumb__change" (click)="showSubMenu = true"> (change)</span>
+</div>
+
+<!-- Logout confirmation dialog -->
 <amex-logout-confirmation
   [visible]="showLogoutDialog"
   serverLabel="tst-websrv01 says"
