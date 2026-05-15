@@ -4,11 +4,55 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 type Step = 'search' | 'cards' | 'issue' | 'done';
+type IssueView = 'select' | 'review' | 'success';
 
 interface CardInfo { cardNumber: string; cardType: string; status: string; }
-interface WearableProduct { name: string; color: string; icon: string; }
+interface WearableColor { hex: string; label: string; }
+interface WearableProduct {
+  name: string;
+  type: string;
+  colors: WearableColor[];
+  icon: string;
+}
 
 const API_BASE = 'http://localhost:8080/api';
+
+// ── Mock data matching V2__seed_data.sql exactly ─────────────────────────────
+const MOCK_MEMBERS: Record<string, { name: string; cards: CardInfo[] }> = {
+  '12345': {
+    name: 'John Doe',
+    cards: [
+      { cardNumber: '3744 XXXXXX 9008', cardType: 'Centurion', status: 'Active' },
+      { cardNumber: '3782 XXXXXX 0005', cardType: 'Platinum',  status: 'Active' },
+      { cardNumber: '3711 XXXXXX 1234', cardType: 'Gold',      status: 'Inactive' },
+    ],
+  },
+  '67890': {
+    name: 'Jane Smith',
+    cards: [
+      { cardNumber: '3701 XXXXXX 4321', cardType: 'Platinum', status: 'Active' },
+    ],
+  },
+  '11111': {
+    name: 'Robert Brown',
+    cards: [
+      { cardNumber: '3799 XXXXXX 8888', cardType: 'Gold', status: 'Active' },
+    ],
+  },
+  '22222': {
+    name: 'Emily Carter',
+    cards: [
+      { cardNumber: '3755 XXXXXX 2200', cardType: 'Centurion', status: 'Active' },
+      { cardNumber: '3766 XXXXXX 3311', cardType: 'Platinum',  status: 'Active' },
+    ],
+  },
+  '33333': {
+    name: 'Michael Chen',
+    cards: [
+      { cardNumber: '3788 XXXXXX 5500', cardType: 'Gold', status: 'Active' },
+    ],
+  },
+};
 
 @Component({
   selector: 'app-wearables',
@@ -17,10 +61,22 @@ const API_BASE = 'http://localhost:8080/api';
   template: `
     <div class="wp">
 
+      <!-- ── Backend status banner ───────────────────────────────────────── -->
+      <div class="wp__status-bar" *ngIf="backendStatus !== 'online'">
+        <span class="wp__status-dot"
+              [class.wp__status-dot--checking]="backendStatus === 'checking'"
+              [class.wp__status-dot--offline]="backendStatus === 'offline'"></span>
+        <span *ngIf="backendStatus === 'checking'" class="wp__status-msg wp__status-msg--checking">
+          Connecting to backend…
+        </span>
+        <span *ngIf="backendStatus === 'offline'" class="wp__status-msg wp__status-msg--offline">
+          Backend unavailable — showing demo data
+        </span>
+      </div>
+
       <!-- ═══ STEP 1 & 2: Enter Client Number + Card Selection ═══ -->
       <ng-container *ngIf="step === 'search' || step === 'cards'">
 
-        <!-- Enter Client Number -->
         <div class="wp__section">
           <div class="wp__title">Enter Client Number</div>
           <div class="wp__divider"></div>
@@ -35,7 +91,13 @@ const API_BASE = 'http://localhost:8080/api';
 
         <ng-container *ngIf="step === 'cards'">
 
-          <!-- Please Select Basic Card -->
+          <!-- Member name row -->
+          <div class="wp__member-row" *ngIf="memberName">
+            <span class="wp__member-label">Member</span>
+            <span class="wp__member-name">{{ memberName }}</span>
+            <span class="wp__mock-badge" *ngIf="usingMockData">Demo</span>
+          </div>
+
           <div class="wp__section">
             <div class="wp__title">Please Select Basic Card</div>
             <div class="wp__divider"></div>
@@ -47,7 +109,6 @@ const API_BASE = 'http://localhost:8080/api';
             </select>
           </div>
 
-          <!-- Card Selection art -->
           <div class="wp__section" *ngIf="selectedCard">
             <div class="wp__title">Card Selection</div>
             <div class="wp__divider"></div>
@@ -64,7 +125,6 @@ const API_BASE = 'http://localhost:8080/api';
             </div>
           </div>
 
-          <!-- Apply row -->
           <div class="wp__apply-row">
             <span class="wp__apply-text">Want to apply for a new wearable?</span>
             <button class="wp__apply-btn" (click)="onApply()">Apply</button>
@@ -92,56 +152,172 @@ const API_BASE = 'http://localhost:8080/api';
           </div>
         </div>
 
-        <!-- Product carousel card -->
-        <div class="wp__product-card" *ngIf="currentProduct">
-          <div class="wp__product-card__top">
-            <span class="wp__product-link">
-              The American Express {{ selectedCard?.cardType }} Credit Card
-              - Card Ending {{ selectedCard?.cardNumber | slice:-4 }}
-            </span>
-            <button class="wp__faq-btn">?</button>
-          </div>
-          <div class="wp__product-name">{{ currentProduct.name }}</div>
-          <div class="wp__carousel">
-            <button class="wp__carousel-arrow"
-                    (click)="prevProduct()"
-                    [disabled]="selectedWearableIndex === 0">&#8592;</button>
-            <div class="wp__product-img-area">
-              <span class="wp__product-img-icon">{{ currentProduct.icon }}</span>
-            </div>
-            <button class="wp__carousel-arrow"
-                    (click)="nextProduct()"
-                    [disabled]="selectedWearableIndex >= currentProducts.length - 1">&#8594;</button>
-          </div>
-        </div>
+        <!-- Content area: single-col (select) or two-col (review/success) -->
+        <div class="wp__issue-layout" [class.wp__issue-layout--split]="issueView !== 'select'">
 
-        <!-- T&C + Submit -->
-        <div class="wp__tc-area">
-          <p class="wp__tc-notice">
-            Please make sure you are happy with your selection before submitting.
-            Your Wearable selection cannot be edited after submission.
-          </p>
-          <div class="wp__tc-row">
-            <input type="checkbox" id="wptc" [(ngModel)]="tcAccepted" />
-            <label for="wptc">
-              I accept the <span class="wp__tc-link">Terms &amp; Conditions</span>
-            </label>
-          </div>
-          <button class="wp__submit-btn" [disabled]="!tcAccepted || submitting"
-                  (click)="onSubmit()">
-            {{ submitting ? 'Submitting...' : 'Submit' }}
-          </button>
-          <div class="wp__back-row">
-            <button class="wp__back-link" (click)="step = 'cards'">&#8592; Back to Card Selection</button>
-          </div>
-        </div>
+          <!-- LEFT: Product card -->
+          <div class="wp__product-card" *ngIf="currentProduct">
+
+            <div class="wp__product-card__top">
+              <span class="wp__product-link">
+                The American Express {{ selectedCard?.cardType }} Credit Card
+                &ndash; Card Ending {{ selectedCard?.cardNumber | slice:-4 }}
+              </span>
+              <button class="wp__faq-btn" title="FAQ">
+                <span>?</span>
+                <span class="wp__faq-label">FAQ</span>
+              </button>
+            </div>
+
+            <div class="wp__product-name">{{ currentProduct.name }}</div>
+
+            <!-- Carousel -->
+            <div class="wp__carousel">
+              <button class="wp__carousel-arrow"
+                      (click)="prevProduct()"
+                      [disabled]="selectedWearableIndex === 0">&#8592;</button>
+
+              <div class="wp__product-img-area">
+                <div class="wp__product-img-shell">
+                  <img *ngIf="selectedWearableType === 'Watch'"
+                      src="https://www.titan.co.in/dw/image/v2/BKDD_PRD/on/demandware.static/-/Sites-titan-master-catalog/default/dw46845574/images/Titan/Catalog/2649WL04_3.jpg?sw=600&sh=600"
+                      alt="Amex Leather Watch" class="wp__product-img" />
+                  <img *ngIf="selectedWearableType === 'band'"
+                      src="https://i.dailymail.co.uk/i/pix/2014/09/16/1410878725038_wps_7_Black_jpg.jpg"
+                      alt="Amex Sport Band" class="wp__product-img" />
+                  <img *ngIf="selectedWearableType === 'ring'"
+                      src="https://th.bing.com/th/id/OIP.0-DKtEkXttYBSqhPb0ParQHaHa?w=192&h=192&c=7&r=0&o=7&pid=1.7&rm=3"
+                      alt="Amex Ring" class="wp__product-img" />
+                </div>
+              </div>
+
+              <button class="wp__carousel-arrow"
+                      (click)="nextProduct()"
+                      [disabled]="selectedWearableIndex >= currentProducts.length - 1">&#8594;</button>
+            </div>
+
+            <!-- Pagination dots -->
+            <div class="wp__dots">
+              <span *ngFor="let p of currentProducts; let i = index"
+                    class="wp__dot"
+                    [class.wp__dot--active]="i === selectedWearableIndex"
+                    (click)="selectedWearableIndex = i; selectedColorIndex = 0"></span>
+            </div>
+
+            <!-- Select Color -->
+            <div class="wp__attr-row">
+              <span class="wp__attr-label">Select Color</span>
+              <div class="wp__color-swatches">
+                <div *ngFor="let c of currentProduct.colors; let i = index"
+                     class="wp__color-dot"
+                     [class.wp__color-dot--active]="selectedColorIndex === i"
+                     [style.background]="c.hex"
+                     (click)="selectedColorIndex = i"
+                     [title]="c.label"></div>
+              </div>
+            </div>
+
+            <!-- Wearable Name -->
+            <div class="wp__attr-row">
+              <span class="wp__attr-label">Wearable Name</span>
+              <input class="wp__name-input" [(ngModel)]="wearableName" maxlength="20" />
+            </div>
+
+            <!-- Action buttons -->
+            <div class="wp__action-btns">
+              <button class="wp__create-btn" (click)="onCreateWearable()">Create My Amex Wearable</button>
+              <button class="wp__goback-btn" (click)="step = 'cards'">Go Back</button>
+            </div>
+
+          </div><!-- /wp__product-card -->
+
+          <!-- RIGHT PANEL: shown when issueView is review or success -->
+          <div class="wp__right-panel" *ngIf="issueView !== 'select'">
+
+            <!-- Review -->
+            <ng-container *ngIf="issueView === 'review'">
+              <div class="wp__right-inner">
+                <div class="wp__rp-title">My Amex Wearable</div>
+                <div class="wp__rp-card-link">
+                  The American Express {{ selectedCard?.cardType }} Credit Card
+                  &ndash; Card Ending {{ selectedCard?.cardNumber | slice:-4 }}
+                </div>
+
+                <table class="wp__rp-table">
+                  <tr>
+                    <td class="wp__rp-label">Wearable Type</td>
+                    <td class="wp__rp-value">{{ currentProduct?.type }}</td>
+                  </tr>
+                  <tr>
+                    <td class="wp__rp-label">Color Selected</td>
+                    <td class="wp__rp-value">
+                      <div class="wp__rp-color-swatch" [style.background]="currentSelectedColor.hex"></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="wp__rp-label">Wearable Name</td>
+                    <td class="wp__rp-value wp__rp-value--blue">{{ wearableName }}</td>
+                  </tr>
+                </table>
+
+                <!-- Thumbnail image -->
+                <div class="wp__rp-thumb-row">
+                  <div class="wp__rp-thumb">
+                    <img *ngIf="selectedWearableType === 'Watch'"
+                         src="https://images.unsplash.com/photo-1573408301185-9519f94977f1?auto=format&w=120&q=80"
+                         alt="Watch thumbnail" class="wp__rp-thumb-img" />
+                    <img *ngIf="selectedWearableType === 'band'"
+                         src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&w=120&q=80"
+                         alt="Band thumbnail" class="wp__rp-thumb-img" />
+                    <ng-container *ngIf="selectedWearableType === 'ring'">
+                      <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
+                        <ellipse cx="60" cy="50" rx="38" ry="38" [attr.fill]="currentSelectedColor.hex" stroke="#888" stroke-width="1"/>
+                        <ellipse cx="60" cy="50" rx="22" ry="22" fill="#f5f5f5"/>
+                      </svg>
+                    </ng-container>
+                  </div>
+                </div>
+
+                <p class="wp__rp-notice">
+                  Please make sure you are happy with your selection before submitting.
+                  Your Wearable selection cannot be edited after submission.
+                </p>
+
+                <div class="wp__rp-tc-row">
+                  <input type="checkbox" id="rp-tc" [(ngModel)]="tcAccepted" />
+                  <label for="rp-tc"><span class="wp__rp-tc-link">Terms &amp; Conditions apply</span></label>
+                </div>
+
+                <button class="wp__rp-submit-btn" [disabled]="!tcAccepted || submitting" (click)="onSubmit()">
+                  {{ submitting ? 'Submitting...' : 'Submit' }}
+                </button>
+              </div>
+            </ng-container>
+
+            <!-- Success -->
+            <ng-container *ngIf="issueView === 'success'">
+              <div class="wp__right-inner wp__right-inner--success">
+                <div class="wp__success-icon">
+                  <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="36" cy="36" r="33" stroke="#4CAF50" stroke-width="3"/>
+                    <path d="M21 36 L31 46 L51 26" stroke="#4CAF50" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="wp__success-text">Wearable requested successfully</div>
+                <!-- FIX: step=done was unreachable before — this button connects it -->
+                <button class="wp__view-summary-btn" (click)="step = 'done'">View Summary</button>
+              </div>
+            </ng-container>
+
+          </div><!-- /wp__right-panel -->
+
+        </div><!-- /wp__issue-layout -->
 
       </ng-container>
 
-      <!-- ═══ STEP 4: YOUR AMEX WEARABLES ═══ -->
+      <!-- ═══ STEP 4: YOUR AMEX WEARABLES (done) ═══ -->
       <ng-container *ngIf="step === 'done' && issuedDevice">
 
-        <!-- Client Number still at top -->
         <div class="wp__section">
           <div class="wp__title">Enter Client Number</div>
           <div class="wp__divider"></div>
@@ -151,7 +327,6 @@ const API_BASE = 'http://localhost:8080/api';
           </div>
         </div>
 
-        <!-- Summary -->
         <div class="wp__summary">
           <div class="wp__summary-title">YOUR AMEX WEARABLES</div>
           <table class="wp__summary-table">
@@ -180,14 +355,12 @@ const API_BASE = 'http://localhost:8080/api';
               <td class="wp__sv">{{ issuedDevice.orderDate }}</td>
             </tr>
           </table>
-          <div class="wp__summary-img-row">
-            <span class="wp__summary-icon">{{ issuedDevice.icon }}</span>
-          </div>
         </div>
 
         <div style="padding: 12px 0;">
           <button class="wp__back-link" (click)="reset()">Search Another Client</button>
         </div>
+
       </ng-container>
 
     </div>
@@ -197,14 +370,46 @@ const API_BASE = 'http://localhost:8080/api';
 
     .wp { background: #fff; padding: 20px 24px; min-height: 400px; }
 
+    /* ── Backend status banner ── */
+    .wp__status-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 14px; margin-bottom: 14px; border-radius: 3px;
+      font-size: 13px;
+    }
+    .wp__status-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .wp__status-dot--checking {
+      background: #f0a500;
+      animation: wp-pulse 1.2s ease-in-out infinite;
+    }
+    .wp__status-dot--offline { background: #d9534f; }
+    @keyframes wp-pulse {
+      0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+    }
+    .wp__status-msg { font-size: 13px; }
+    .wp__status-msg--checking { color: #856404; }
+    .wp__status-bar:has(.wp__status-msg--checking) { background: #fff8e1; border: 1px solid #f0c040; }
+    .wp__status-msg--offline { color: #721c24; }
+    .wp__status-bar:has(.wp__status-msg--offline) { background: #fdf0f0; border: 1px solid #f5c6cb; }
+
+    /* ── Member name row ── */
+    .wp__member-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 6px 0 16px;
+    }
+    .wp__member-label { font-size: 13px; color: #666; }
+    .wp__member-name { font-size: 15px; font-weight: bold; color: #1a1a1a; }
+    .wp__mock-badge {
+      font-size: 10px; background: #f0a500; color: #fff;
+      padding: 2px 7px; border-radius: 10px; font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
     /* ── Section ── */
     .wp__section { margin-bottom: 24px; }
-    .wp__title {
-      font-size: 22px; font-weight: normal; color: #1a1a1a; margin-bottom: 8px;
-    }
-    .wp__divider {
-      height: 2px; background: #1a6cb8; margin-bottom: 16px;
-    }
+    .wp__title { font-size: 22px; font-weight: normal; color: #1a1a1a; margin-bottom: 8px; }
+    .wp__divider { height: 2px; background: #1a6cb8; margin-bottom: 16px; }
 
     /* ── Input row ── */
     .wp__input-row { display: flex; align-items: stretch; }
@@ -219,9 +424,7 @@ const API_BASE = 'http://localhost:8080/api';
       cursor: pointer; border: 1px solid #ccc; background: #f5f5f5; color: #777;
       white-space: nowrap;
     }
-    .wp__enter-btn--filled {
-      background: #1a6cb8; color: #fff; border-color: #1a6cb8;
-    }
+    .wp__enter-btn--filled { background: #1a6cb8; color: #fff; border-color: #1a6cb8; }
     .wp__enter-btn--filled:hover { background: #155a9e; }
 
     /* ── Card dropdown ── */
@@ -244,12 +447,8 @@ const API_BASE = 'http://localhost:8080/api';
       display: flex; flex-direction: column;
       align-items: center; justify-content: center; padding: 2px;
     }
-    .wp__card-logo-am {
-      color: #fff; font-size: 5.5px; font-weight: 900; letter-spacing: 0.5px;
-    }
-    .wp__card-logo-ex {
-      color: #fff; font-size: 9px; font-weight: 900; letter-spacing: 0.5px;
-    }
+    .wp__card-logo-am { color: #fff; font-size: 5.5px; font-weight: 900; letter-spacing: 0.5px; }
+    .wp__card-logo-ex { color: #fff; font-size: 9px; font-weight: 900; letter-spacing: 0.5px; }
     .wp__card-art__number { font-size: 11px; color: #fff; font-family: monospace; letter-spacing: 1px; }
     .wp__card-art__type { font-size: 10px; color: rgba(255,255,255,0.85); }
     .wp__card-masked { font-size: 14px; color: #333; font-family: monospace; letter-spacing: 1px; }
@@ -280,66 +479,156 @@ const API_BASE = 'http://localhost:8080/api';
     }
     .wp__type-tab:hover { color: #1a6cb8; }
     .wp__type-tab--active { color: #1a6cb8; border-bottom-color: #1a6cb8; }
-    .wp__type-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+    .wp__type-icon {
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+    }
     .wp__type-label { font-size: 13px; font-weight: bold; }
 
-    /* ── Product card ── */
-    .wp__product-card {
-      border: 1px solid #ddd; padding: 18px 20px; max-width: 580px;
-      margin-bottom: 24px;
+    /* ── Issue layout (single vs split) ── */
+    .wp__issue-layout { display: flex; gap: 0; align-items: flex-start; }
+    .wp__issue-layout--split .wp__product-card { flex: 0 0 55%; max-width: 55%; }
+    .wp__issue-layout--split .wp__right-panel {
+      flex: 0 0 45%; max-width: 45%;
+      border-left: 1px solid #e0e0e0; min-height: 480px;
     }
+
+    /* ── Product card ── */
+    .wp__product-card { border: 1px solid #ddd; flex: 1; }
     .wp__product-card__top {
       display: flex; justify-content: space-between; align-items: flex-start;
-      margin-bottom: 8px;
+      padding: 14px 16px 0;
     }
-    .wp__product-link { color: #006fcf; font-size: 13px; cursor: pointer; }
+    .wp__product-link { color: #006fcf; font-size: 13px; cursor: pointer; flex: 1; }
     .wp__faq-btn {
       background: none; border: 2px solid #006fcf; color: #006fcf;
-      width: 26px; height: 26px; border-radius: 50%; cursor: pointer;
-      font-size: 14px; font-weight: bold; line-height: 1;
-      display: flex; align-items: center; justify-content: center; padding: 0;
-      flex-shrink: 0;
+      width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+      font-size: 13px; font-weight: bold;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 0; flex-shrink: 0; line-height: 1; gap: 1px;
     }
-    .wp__product-name { font-size: 16px; font-weight: bold; color: #1a1a1a; margin-bottom: 14px; }
+    .wp__faq-label { font-size: 8px; font-weight: normal; }
+    .wp__product-name { font-size: 15px; font-weight: bold; color: #1a1a1a; padding: 10px 16px 6px; }
+
+    /* ── Carousel ── */
     .wp__carousel {
-      display: flex; align-items: center; gap: 10px;
-      justify-content: space-between; min-height: 180px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 4px; min-height: 200px;
     }
     .wp__carousel-arrow {
-      background: #f0f0f0; border: 1px solid #bbb;
-      width: 38px; height: 38px; cursor: pointer; font-size: 18px;
+      background: #555; border: none; color: #fff;
+      width: 36px; height: 36px; cursor: pointer; font-size: 16px;
       display: flex; align-items: center; justify-content: center;
-      border-radius: 2px; flex-shrink: 0;
+      border-radius: 2px; flex-shrink: 0; font-family: Arial, sans-serif;
     }
-    .wp__carousel-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
-    .wp__carousel-arrow:not(:disabled):hover { background: #e0e0e0; }
+    .wp__carousel-arrow:disabled { opacity: 0.25; cursor: not-allowed; }
+    .wp__carousel-arrow:not(:disabled):hover { background: #333; }
     .wp__product-img-area {
       flex: 1; display: flex; align-items: center; justify-content: center;
-      min-height: 160px;
+      padding: 10px 8px;
     }
-    .wp__product-img-icon { font-size: 90px; }
+    .wp__product-img-shell {
+      width: 100%; max-width: 300px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    /* FIX: was missing — images were rendering broken */
+    .wp__product-img {
+      width: 100%; max-width: 260px; height: 180px;
+      object-fit: contain; display: block;
+    }
+    .wp__product-svg { width: 100%; height: auto; }
 
-    /* ── T&C ── */
-    .wp__tc-area { max-width: 560px; }
-    .wp__tc-notice { font-size: 12px; color: #555; line-height: 1.6; margin-bottom: 12px; }
-    .wp__tc-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-size: 13px; }
-    .wp__tc-link { color: #006fcf; text-decoration: underline; cursor: pointer; }
-    .wp__submit-btn {
-      width: 100%; max-width: 360px; display: block;
-      background: #1a3a6b; color: #fff; border: none;
-      padding: 12px 0; font-size: 15px; font-weight: bold;
-      cursor: pointer; font-family: Arial, sans-serif; margin-bottom: 12px;
+    /* ── Pagination dots ── */
+    .wp__dots { display: flex; justify-content: center; gap: 8px; padding: 6px 0 14px; }
+    .wp__dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: #ccc; cursor: pointer; transition: background 0.15s;
     }
-    .wp__submit-btn:hover:not(:disabled) { background: #16304f; }
-    .wp__submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .wp__back-row { margin-top: 6px; }
+    .wp__dot--active { background: #555; }
+
+    /* ── Attr rows ── */
+    .wp__attr-row { display: flex; align-items: center; gap: 14px; padding: 8px 16px; }
+    .wp__attr-label { font-size: 13px; color: #333; min-width: 110px; font-weight: normal; }
+    .wp__color-swatches { display: flex; gap: 8px; align-items: center; }
+    .wp__color-dot {
+      width: 20px; height: 20px; border-radius: 50%; cursor: pointer;
+      border: 2px solid transparent; transition: border-color 0.15s;
+    }
+    .wp__color-dot--active { border-color: #1a6cb8; }
+    .wp__color-dot:not(.wp__color-dot--active):hover { border-color: #999; }
+    .wp__name-input {
+      border: none; border-bottom: 1px solid #ccc; outline: none;
+      font-size: 13px; color: #006fcf; font-family: Arial, sans-serif;
+      padding: 2px 4px; background: transparent; width: 120px;
+    }
+    .wp__name-input:focus { border-bottom-color: #1a6cb8; }
+
+    /* ── Action buttons ── */
+    .wp__action-btns { display: flex; gap: 10px; padding: 16px 16px 20px; align-items: center; }
+    .wp__create-btn {
+      background: #1a6cb8; color: #fff; border: none;
+      padding: 10px 22px; font-size: 14px; font-family: Arial, sans-serif;
+      cursor: pointer; font-weight: normal; border-radius: 2px; white-space: nowrap;
+    }
+    .wp__create-btn:hover { background: #155a9e; }
+    .wp__goback-btn {
+      background: #fff; color: #333; border: 1px solid #aaa;
+      padding: 10px 28px; font-size: 14px; font-family: Arial, sans-serif;
+      cursor: pointer; border-radius: 2px;
+    }
+    .wp__goback-btn:hover { background: #f5f5f5; }
+
+    /* ── Right panel ── */
+    .wp__right-panel { display: flex; flex-direction: column; }
+    .wp__right-inner { padding: 20px 24px; display: flex; flex-direction: column; gap: 12px; }
+    .wp__rp-title { font-size: 17px; font-weight: bold; color: #1a1a1a; margin-bottom: 2px; }
+    .wp__rp-card-link { color: #006fcf; font-size: 13px; line-height: 1.4; }
+    .wp__rp-table { border-collapse: collapse; width: 100%; margin: 4px 0; }
+    .wp__rp-table tr td { padding: 8px 0; vertical-align: middle; }
+    .wp__rp-label { font-size: 13px; color: #555; width: 130px; vertical-align: middle; }
+    .wp__rp-value { font-size: 13px; color: #333; }
+    .wp__rp-value--blue { color: #006fcf; }
+    .wp__rp-color-swatch { width: 80px; height: 18px; border-radius: 2px; }
+    .wp__rp-thumb-row { display: flex; justify-content: flex-start; padding: 4px 0; }
+    .wp__rp-thumb { width: 80px; height: 60px; }
+    .wp__rp-thumb svg { width: 100%; height: 100%; }
+    .wp__rp-notice { font-size: 12px; color: #555; line-height: 1.6; margin: 0; }
+    .wp__rp-tc-row { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+    .wp__rp-tc-row input[type=checkbox] { accent-color: #1a6cb8; }
+    .wp__rp-tc-link { color: #006fcf; text-decoration: underline; cursor: pointer; }
+    .wp__rp-submit-btn {
+      display: block; width: 100%;
+      background: #1a3a6b; color: #fff; border: none;
+      padding: 13px 0; font-size: 15px; font-weight: bold;
+      cursor: pointer; font-family: Arial, sans-serif; border-radius: 2px; margin-top: 4px;
+    }
+    .wp__rp-submit-btn:hover:not(:disabled) { background: #16304f; }
+    .wp__rp-submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Success ── */
+    .wp__right-inner--success {
+      align-items: center; justify-content: center;
+      min-height: 300px; text-align: center;
+    }
+    .wp__success-icon { width: 72px; height: 72px; }
+    .wp__success-icon svg { width: 100%; height: 100%; }
+    .wp__success-text { font-size: 14px; color: #1a1a1a; margin-top: 12px; font-weight: normal; }
+    /* FIX: added button to reach the summary/done step which was previously unreachable */
+    .wp__view-summary-btn {
+      margin-top: 16px; background: #1a6cb8; color: #fff; border: none;
+      padding: 10px 28px; font-size: 14px; font-family: Arial, sans-serif;
+      cursor: pointer; border-radius: 2px;
+    }
+    .wp__view-summary-btn:hover { background: #155a9e; }
+
+    /* ── Back link ── */
     .wp__back-link {
       background: none; border: none; color: #006fcf;
       font-size: 13px; cursor: pointer; text-decoration: underline;
       font-family: Arial, sans-serif; padding: 0;
     }
 
-    /* ── Summary ── */
+    /* ── Summary (done step) ── */
     .wp__summary { padding: 8px 0 16px; }
     .wp__summary-title {
       font-size: 16px; font-weight: bold; color: #1a1a1a;
@@ -351,8 +640,6 @@ const API_BASE = 'http://localhost:8080/api';
       font-weight: bold; color: #333; white-space: nowrap; vertical-align: top;
     }
     .wp__sv { padding: 8px 0; font-size: 13px; color: #006fcf; }
-    .wp__summary-img-row { display: flex; justify-content: flex-start; margin-top: 10px; }
-    .wp__summary-icon { font-size: 90px; }
   `],
 })
 export class WearablesComponent implements OnInit {
@@ -364,20 +651,26 @@ export class WearablesComponent implements OnInit {
   ngOnInit(): void { this.checkBackendHealth(); }
 
   step: Step = 'search';
-  apiOnline: boolean | null = null;
+  issueView: IssueView = 'select';
+  // FIX: was boolean | null (unused) — now 3-state so banner actually works
+  backendStatus: 'checking' | 'online' | 'offline' = 'checking';
+  // FIX: new flag — shows Demo badge when falling back to mock data
+  usingMockData = false;
   clientCode = '';
   memberName = '';
   cards: CardInfo[] = [];
   selectedCard: CardInfo | null = null;
   submitting = false;
-  selectedWearableType = 'bracelet';
+  selectedWearableType = 'Watch';
   selectedWearableIndex = 0;
+  selectedColorIndex = 0;
+  wearableName = 'QARR';
   tcAccepted = false;
   issuedDevice: any = null;
 
   wearableTypes = [
     {
-      id: 'bracelet', label: 'Bracelet',
+      id: 'Watch', label: 'Watch',
       svg: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M16 28C10.477 28 6 23.523 6 18V14C6 8.477 10.477 4 16 4C21.523 4 26 8.477 26 14V18C26 23.523 21.523 28 16 28Z" stroke="currentColor" stroke-width="2" fill="none"/>
         <path d="M10 14C10 11.239 12.686 9 16 9C19.314 9 22 11.239 22 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
@@ -405,32 +698,69 @@ export class WearablesComponent implements OnInit {
   ];
 
   wearableProducts: Record<string, WearableProduct[]> = {
-    bracelet: [
-      { name: 'Amex Leather Bracelet',  color: 'Leather Bracelet', icon: '🟤' },
-      { name: 'Amex Sport Bracelet',    color: 'Black',            icon: '⚫' },
+    Watch: [
+      {
+        name: 'Amex Leather Watch', type: 'Leather Watch',
+        colors: [{ hex: '#8B5E3C', label: 'Brown' }, { hex: '#1a1a1a', label: 'Black' }],
+        icon: '⌚',
+      },
+      {
+        name: 'Amex Sport Watch', type: 'Sport Watch',
+        colors: [{ hex: '#1a1a1a', label: 'Black' }, { hex: '#e8e8e8', label: 'Silver' }],
+        icon: '⌚',
+      },
     ],
     band: [
-      { name: 'Amex Sport Band',        color: 'Black',            icon: '⌚' },
-      { name: 'Amex Silicone Band',     color: 'Navy Blue',        icon: '🔵' },
+      {
+        name: 'Amex Sport Band', type: 'Sport Band',
+        colors: [{ hex: '#1a1a1a', label: 'Black' }, { hex: '#00274c', label: 'Navy' }],
+        icon: '⌚',
+      },
+      {
+        name: 'Amex Silicone Band', type: 'Silicone Band',
+        colors: [{ hex: '#003087', label: 'Navy Blue' }, { hex: '#8b0000', label: 'Red' }],
+        icon: '⌚',
+      },
     ],
     ring: [
-      { name: 'Amex Ceramic Ring',      color: 'White',            icon: '💍' },
-      { name: 'Amex Titanium Ring',     color: 'Silver',           icon: '🩶' },
+      {
+        name: 'Amex Ceramic Ring', type: 'Ceramic Ring',
+        colors: [{ hex: '#e8e8e8', label: 'White' }, { hex: '#1a1a1a', label: 'Black' }],
+        icon: '💍',
+      },
+      {
+        name: 'Amex Titanium Ring', type: 'Titanium Ring',
+        colors: [{ hex: '#aab0bb', label: 'Silver' }, { hex: '#4a3728', label: 'Bronze' }],
+        icon: '💍',
+      },
     ],
   };
 
-  get currentProducts(): WearableProduct[] {
-    return this.wearableProducts[this.selectedWearableType] ?? [];
+  get currentProducts(): WearableProduct[] { return this.wearableProducts[this.selectedWearableType] ?? []; }
+  get currentProduct(): WearableProduct | null { return this.currentProducts[this.selectedWearableIndex] ?? null; }
+
+  get currentSelectedColor() {
+    const p = this.currentProduct;
+    if (!p) return { hex: '#888', label: '', highlight: '#aaa', shadow: '#555', inner: '#666' };
+    const c = p.colors[this.selectedColorIndex] ?? p.colors[0];
+    return { ...c, highlight: this.lighten(c.hex, 0.3), shadow: this.darken(c.hex, 0.35), inner: this.darken(c.hex, 0.15) };
   }
 
-  get currentProduct(): WearableProduct | null {
-    return this.currentProducts[this.selectedWearableIndex] ?? null;
+  private lighten(hex: string, amt: number): string { return this.adjustColor(hex, amt); }
+  private darken(hex: string, amt: number): string { return this.adjustColor(hex, -amt); }
+  private adjustColor(hex: string, amt: number): string {
+    const n = parseInt(hex.replace('#', ''), 16);
+    const r = Math.min(255, Math.max(0, Math.round(((n >> 16) & 0xff) + 255 * amt)));
+    const g = Math.min(255, Math.max(0, Math.round(((n >> 8) & 0xff) + 255 * amt)));
+    const b = Math.min(255, Math.max(0, Math.round((n & 0xff) + 255 * amt)));
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
   }
 
   private checkBackendHealth(): void {
+    this.backendStatus = 'checking';
     this.http.get<any>(`${API_BASE}/health`).subscribe({
-      next: () => { this.apiOnline = true; },
-      error: () => { this.apiOnline = false; },
+      next: () => { this.backendStatus = 'online'; },
+      error: () => { this.backendStatus = 'offline'; },
     });
   }
 
@@ -438,21 +768,19 @@ export class WearablesComponent implements OnInit {
     if (!this.clientCode.trim()) return;
     this.http.get<any>(`${API_BASE}/wearables/client/${this.clientCode.trim()}`).subscribe({
       next: (res) => {
-        // ✅ FIX: Backend wraps response in ApiResponse<T> → res.data has the actual payload
-        this.memberName  = res.data?.memberName ?? 'Unknown Member';
-        this.cards       = res.data?.cards ?? [];
+        this.usingMockData = false;
+        this.memberName = res.data?.memberName ?? 'Unknown Member';
+        this.cards = res.data?.cards ?? [];
         this.selectedCard = this.cards[0] ?? null;
         this.step = 'cards';
       },
       error: () => {
-        // Mock fallback when backend offline
-        this.memberName = 'John Doe';
-        this.cards = [
-          { cardNumber: '3744 XXXXXX 9008', cardType: 'Centurion', status: 'Active'   },
-          { cardNumber: '3782 XXXXXX 0005', cardType: 'Platinum',  status: 'Active'   },
-          { cardNumber: '3711 XXXXXX 1234', cardType: 'Gold',      status: 'Inactive' },
-        ];
-        this.selectedCard = this.cards[0];
+        // FIX: was only 3 hardcoded clients — now mirrors all 5 from V2__seed_data.sql
+        this.usingMockData = true;
+        const mock = MOCK_MEMBERS[this.clientCode.trim()];
+        this.memberName = mock?.name ?? 'Unknown Member';
+        this.cards = mock?.cards ?? [];
+        this.selectedCard = this.cards[0] ?? null;
         this.step = 'cards';
       },
     });
@@ -460,21 +788,30 @@ export class WearablesComponent implements OnInit {
 
   onApply(): void {
     if (!this.selectedCard) return;
-    this.selectedWearableType  = 'bracelet';
+    this.selectedWearableType = 'Watch';
     this.selectedWearableIndex = 0;
+    this.selectedColorIndex = 0;
+    this.wearableName = 'QARR';
     this.tcAccepted = false;
+    this.issueView = 'select';
     this.step = 'issue';
   }
 
   selectType(id: string): void {
-    this.selectedWearableType  = id;
+    this.selectedWearableType = id;
     this.selectedWearableIndex = 0;
+    this.selectedColorIndex = 0;
   }
 
-  prevProduct(): void { if (this.selectedWearableIndex > 0) this.selectedWearableIndex--; }
-  nextProduct(): void {
-    if (this.selectedWearableIndex < this.currentProducts.length - 1) this.selectedWearableIndex++;
+  prevProduct(): void {
+    if (this.selectedWearableIndex > 0) { this.selectedWearableIndex--; this.selectedColorIndex = 0; }
   }
+
+  nextProduct(): void {
+    if (this.selectedWearableIndex < this.currentProducts.length - 1) { this.selectedWearableIndex++; this.selectedColorIndex = 0; }
+  }
+
+  onCreateWearable(): void { this.tcAccepted = false; this.issueView = 'review'; }
 
   onSubmit(): void {
     if (!this.tcAccepted || !this.currentProduct || !this.selectedCard) return;
@@ -484,48 +821,54 @@ export class WearablesComponent implements OnInit {
       clientCode:    this.clientCode,
       selectedCard:  this.selectedCard.cardNumber,
       wearableType:  this.selectedWearableType,
-      colorSelected: this.currentProduct.color,
-      wearableName:  this.currentProduct.name,
+      colorSelected: this.currentSelectedColor.label,
+      wearableName:  this.wearableName,
       tcAccepted:    true,
     };
 
     this.http.post<any>(`${API_BASE}/wearables/issue`, payload).subscribe({
       next: (res) => {
-        // ✅ FIX: ApiResponse<WearableDevice> → res.data has WearableDevice fields
         const d = res.data;
         this.issuedDevice = {
           selectedCardUci: this.selectedCard?.cardNumber ?? '',
           wearableUci:     d?.serialNo   ?? '',
           wearableType:    d?.deviceType ?? '',
-          colorSelected:   this.currentProduct?.color ?? '',
-          wearableName:    this.currentProduct?.name  ?? '',
+          colorSelected:   this.currentSelectedColor.label,
+          wearableName:    this.wearableName,
           orderDate:       d?.issueDate  ?? new Date().toLocaleDateString('en-GB'),
-          icon:            this.currentProduct?.icon  ?? '',
         };
         this.submitting = false;
-        this.step = 'done';
+        this.issueView = 'success';
       },
       error: () => {
-        // Mock fallback
         this.issuedDevice = {
           selectedCardUci: this.selectedCard?.cardNumber ?? '',
           wearableUci:     'SN-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
-          wearableType:    this.selectedWearableType.charAt(0).toUpperCase() + this.selectedWearableType.slice(1),
-          colorSelected:   this.currentProduct?.color ?? '',
-          wearableName:    this.currentProduct?.name  ?? '',
+          wearableType:    this.currentProduct?.type ?? '',
+          colorSelected:   this.currentSelectedColor.label,
+          wearableName:    this.wearableName,
           orderDate:       new Date().toLocaleDateString('en-GB'),
-          icon:            this.currentProduct?.icon  ?? '',
         };
         this.submitting = false;
-        this.step = 'done';
+        this.issueView = 'success';
       },
     });
   }
 
   reset(): void {
-    this.step = 'search'; this.clientCode = ''; this.memberName = '';
-    this.cards = []; this.selectedCard = null; this.issuedDevice = null;
-    this.tcAccepted = false; this.submitting = false;
-    this.selectedWearableType = 'bracelet'; this.selectedWearableIndex = 0;
+    this.step = 'search';
+    this.issueView = 'select';
+    this.clientCode = '';
+    this.memberName = '';
+    this.cards = [];
+    this.selectedCard = null;
+    this.issuedDevice = null;
+    this.tcAccepted = false;
+    this.submitting = false;
+    this.usingMockData = false;
+    this.selectedWearableType = 'Watch';
+    this.selectedWearableIndex = 0;
+    this.selectedColorIndex = 0;
+    this.wearableName = 'QARR';
   }
 }

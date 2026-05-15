@@ -20,7 +20,6 @@ import { WearablesComponent } from './wearables.component';
       (subClick)="onSubClick($event)"
       (logout)="onLogout()">
 
-      <!-- showPageHeader=false → shell already renders pageTitle banner above -->
       <app-wearables [showPageHeader]="false"></app-wearables>
 
     </amex-page-shell>
