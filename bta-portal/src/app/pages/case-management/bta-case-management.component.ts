@@ -139,7 +139,7 @@ export class BtaCaseManagementComponent {
       c.caseId.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
       c.subject.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
-  }
+  } 
 
   getStatus(s: string): any {
     return { 'Open':'active','Pending':'pending','Closed':'completed','Resolved':'approved' }[s] || 'inactive';
