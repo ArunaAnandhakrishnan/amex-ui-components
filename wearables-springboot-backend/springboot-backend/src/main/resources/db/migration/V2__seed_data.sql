@@ -1,56 +1,35 @@
--- Members
-INSERT INTO members (client_code, member_name) VALUES ('12345', 'John Doe');
-INSERT INTO members (client_code, member_name) VALUES ('67890', 'Jane Smith');
-INSERT INTO members (client_code, member_name) VALUES ('11111', 'Robert Brown');
-INSERT INTO members (client_code, member_name) VALUES ('22222', 'Emily Carter');
-INSERT INTO members (client_code, member_name) VALUES ('33333', 'Michael Chen');
+-- ── Members (matches frontend MOCK_MEMBERS exactly) ──────────────────────────
+INSERT INTO members (client_code, full_name) VALUES
+    ('12345', 'John Doe'),
+    ('67890', 'Jane Smith'),
+    ('11111', 'Robert Brown'),
+    ('22222', 'Emily Carter'),
+    ('33333', 'Michael Chen');
 
--- Cards for John Doe
-INSERT INTO cards (member_id, card_number, card_type, status)
-    SELECT id, '3744 XXXXXX 9008', 'Centurion', 'Active'   FROM members WHERE client_code = '12345';
-INSERT INTO cards (member_id, card_number, card_type, status)
-    SELECT id, '3782 XXXXXX 0005', 'Platinum',  'Active'   FROM members WHERE client_code = '12345';
-INSERT INTO cards (member_id, card_number, card_type, status)
-    SELECT id, '3711 XXXXXX 1234', 'Gold',      'Inactive' FROM members WHERE client_code = '12345';
+-- ── Cards ────────────────────────────────────────────────────────────────────
+-- John Doe (12345)
+INSERT INTO cards (member_id, card_number, card_type, status) VALUES
+    (1, '3744 XXXXXX 9008', 'Centurion', 'Active'),
+    (1, '3782 XXXXXX 0005', 'Platinum',  'Active'),
+    (1, '3711 XXXXXX 1234', 'Gold',      'Inactive');
 
--- Cards for Jane Smith
-INSERT INTO cards (member_id, card_number, card_type, status)
-    SELECT id, '3701 XXXXXX 4321', 'Platinum', 'Active'    FROM members WHERE client_code = '67890';
+-- Jane Smith (67890)
+INSERT INTO cards (member_id, card_number, card_type, status) VALUES
+    (2, '3701 XXXXXX 4321', 'Platinum', 'Active');
 
--- Cards for Robert Brown
-INSERT INTO cards (member_id, card_number, card_type, status)
-    SELECT id, '3799 XXXXXX 8888', 'Gold', 'Active'        FROM members WHERE client_code = '11111';
+-- Robert Brown (11111)
+INSERT INTO cards (member_id, card_number, card_type, status) VALUES
+    (3, '3799 XXXXXX 8888', 'Gold', 'Active');
 
--- Cards for Emily Carter
-INSERT INTO cards (member_id, card_number, card_type, status)
-    SELECT id, '3755 XXXXXX 2200', 'Centurion', 'Active'   FROM members WHERE client_code = '22222';
-INSERT INTO cards (member_id, card_number, card_type, status)
-    SELECT id, '3766 XXXXXX 3311', 'Platinum',  'Active'   FROM members WHERE client_code = '22222';
+-- Emily Carter (22222)
+INSERT INTO cards (member_id, card_number, card_type, status) VALUES
+    (4, '3755 XXXXXX 2200', 'Centurion', 'Active'),
+    (4, '3766 XXXXXX 3311', 'Platinum',  'Active');
 
--- Cards for Michael Chen
-INSERT INTO cards (member_id, card_number, card_type, status)
-    SELECT id, '3788 XXXXXX 5500', 'Gold', 'Active'        FROM members WHERE client_code = '33333';
+-- Michael Chen (33333)
+INSERT INTO cards (member_id, card_number, card_type, status) VALUES
+    (5, '3788 XXXXXX 5500', 'Gold', 'Active');
 
--- Devices — John Doe card 1
-INSERT INTO wearable_devices (card_id, device_type, status, issue_date, serial_no, nfc_enabled)
-    SELECT id, 'Bracelet', 'Issued',   '2025-01-12', 'SN-A1B2C3', TRUE  FROM cards WHERE card_number = '3744 XXXXXX 9008';
-INSERT INTO wearable_devices (card_id, device_type, status, issue_date, serial_no, nfc_enabled)
-    SELECT id, 'Ring',     'Inactive', '2024-03-05', 'SN-D4E5F6', FALSE FROM cards WHERE card_number = '3744 XXXXXX 9008';
-
--- Devices — John Doe card 2
-INSERT INTO wearable_devices (card_id, device_type, status, issue_date, serial_no, nfc_enabled)
-    SELECT id, 'Band', 'Issued', '2024-11-01', 'SN-G7H8I9', TRUE        FROM cards WHERE card_number = '3782 XXXXXX 0005';
-
--- Devices — Jane Smith
-INSERT INTO wearable_devices (card_id, device_type, status, issue_date, serial_no, nfc_enabled)
-    SELECT id, 'Ring', 'Issued', '2025-02-20', 'SN-J1K2L3', TRUE        FROM cards WHERE card_number = '3701 XXXXXX 4321';
-
--- Devices — Emily Carter
-INSERT INTO wearable_devices (card_id, device_type, status, issue_date, serial_no, nfc_enabled)
-    SELECT id, 'Bracelet', 'Issued',    '2025-03-15', 'SN-M4N5O6', TRUE  FROM cards WHERE card_number = '3755 XXXXXX 2200';
-INSERT INTO wearable_devices (card_id, device_type, status, issue_date, serial_no, nfc_enabled)
-    SELECT id, 'Band',     'Suspended', '2024-09-10', 'SN-P7Q8R9', FALSE FROM cards WHERE card_number = '3755 XXXXXX 2200';
-
--- Devices — Michael Chen
-INSERT INTO wearable_devices (card_id, device_type, status, issue_date, serial_no, nfc_enabled)
-    SELECT id, 'Band', 'Issued', '2025-04-01', 'SN-S1T2U3', TRUE        FROM cards WHERE card_number = '3788 XXXXXX 5500';
+-- ── Pre-seeded wearable device (John Doe's Centurion card) ───────────────────
+INSERT INTO wearable_devices (card_id, serial_no, device_type, color_selected, wearable_name, status, nfc_enabled, issue_date)
+VALUES (1, 'SN-SEED001', 'Leather Watch', 'Brown', 'AMEX1', 'Issued', TRUE, '01 Jan 2025');

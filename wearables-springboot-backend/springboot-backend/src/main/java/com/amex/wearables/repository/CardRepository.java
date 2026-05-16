@@ -1,13 +1,11 @@
 package com.amex.wearables.repository;
 
-import com.amex.wearables.model.entity.CardEntity;
+import com.amex.wearables.entity.Card;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
-public interface CardRepository extends JpaRepository<CardEntity, Long> {
-    List<CardEntity>       findByMember_ClientCode(String clientCode);
-    Optional<CardEntity>   findByCardNumber(String cardNumber);
+public interface CardRepository extends JpaRepository<Card, Long> {
+    List<Card>       findByMemberId(Long memberId);
+    Optional<Card>   findByCardNumber(String cardNumber);
 }

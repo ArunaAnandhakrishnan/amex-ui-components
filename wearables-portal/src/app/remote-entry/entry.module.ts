@@ -1,5 +1,5 @@
 import { NgModule, Component } from '@angular/core';
-import { CommonModule }        from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { SHELL_HOSTED } from '../core/tokens/shell.token';
@@ -17,8 +17,17 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () =>
-          import('../wearables/wearables.module').then(m => m.WearablesModule),
+        loadComponent: () =>
+          import('../wearables/wearables-shell-wrapper.component').then(
+            (m) => m.WearablesShellWrapperComponent
+          ),
+
+        providers: [
+          {
+            provide: SHELL_HOSTED,
+            useValue: true,
+          },
+        ],
       },
     ],
   },
@@ -26,12 +35,10 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [WearablesEntryComponent],
-  imports: [CommonModule, RouterModule.forChild(routes)],
-  providers: [
-    // ✅ Tells WearablesComponent it's running inside the shell.
-    //    The component will skip rendering AmexPageShellComponent
-    //    (the shell already provides chrome) to avoid double-layout.
-    { provide: SHELL_HOSTED, useValue: true },
+
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
   ],
 })
 export class WearablesRemoteEntryModule {}

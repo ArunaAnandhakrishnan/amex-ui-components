@@ -1,9 +1,6 @@
 package com.amex.wearables.controller;
 
-import com.amex.wearables.model.ApiResponse;
-import com.amex.wearables.model.ClientWearableData;
-import com.amex.wearables.model.WearableDevice;
-import com.amex.wearables.model.WearableIssuanceRequest;
+import com.amex.wearables.model.*;
 import com.amex.wearables.service.WearablesService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,16 +11,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * WearablesController
+ * WearablesController  —  base path: /api/wearables
  *
- * Base path: /api/wearables
- *
- * Endpoints consumed by Angular wearables-portal:
- *
- *   GET  /api/health                              → HealthController (see HealthController.java)
- *   GET  /api/wearables/client/{clientCode}       → client info + cards
- *   GET  /api/wearables/devices/{cardNumber}      → existing devices for a card
- *   POST /api/wearables/issue                     → issue new wearable
+ *  GET  /api/health                              → HealthController
+ *  GET  /api/wearables/client/{clientCode}       → member info + cards
+ *  GET  /api/wearables/devices/{cardNumber}      → existing devices for a card
+ *  POST /api/wearables/issue                     → issue new wearable
+ *  POST /api/wearables/action/{serialNo}         → suspend / activate / terminate
  */
 @RestController
 @RequestMapping("/api/wearables")
@@ -32,10 +26,7 @@ public class WearablesController {
 
     private final WearablesService wearablesService;
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // GET /api/wearables/client/{clientCode}
-    // Angular: onSearch(clientCode) → http.get(`${API_BASE}/wearables/client/${clientCode}`)
-    // ──────────────────────────────────────────────────────────────────────────
+    // ── GET /api/wearables/client/{clientCode} ────────────────────────────────
     @GetMapping("/client/{clientCode}")
     public ResponseEntity<ApiResponse<ClientWearableData>> getClientData(
             @PathVariable String clientCode) {
@@ -44,12 +35,7 @@ public class WearablesController {
         return ResponseEntity.ok(ApiResponse.ok(data));
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // GET /api/wearables/devices/{cardNumber}
-    // Angular: onCardSelect(card) → http.get(`${API_BASE}/wearables/devices/${card.cardNumber}`)
-    // Note: cardNumber contains spaces e.g. "3744 XXXXXX 9008" so it's
-    //       URL-encoded by Angular's HttpClient automatically.
-    // ──────────────────────────────────────────────────────────────────────────
+    // ── GET /api/wearables/devices/{cardNumber} ───────────────────────────────
     @GetMapping("/devices/{cardNumber}")
     public ResponseEntity<ApiResponse<Map<String, List<WearableDevice>>>> getDevicesForCard(
             @PathVariable String cardNumber) {
@@ -58,10 +44,7 @@ public class WearablesController {
         return ResponseEntity.ok(ApiResponse.ok(Map.of("devices", devices)));
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // POST /api/wearables/issue
-    // Angular: confirmIssuance() → http.post(`${API_BASE}/wearables/issue`, form)
-    // ──────────────────────────────────────────────────────────────────────────
+    // ── POST /api/wearables/issue ─────────────────────────────────────────────
     @PostMapping("/issue")
     public ResponseEntity<ApiResponse<WearableDevice>> issueWearable(
             @Valid @RequestBody WearableIssuanceRequest request) {
@@ -73,5 +56,16 @@ public class WearablesController {
 
         WearableDevice issued = wearablesService.issueWearable(request);
         return ResponseEntity.ok(ApiResponse.ok(issued));
+    }
+
+    // ── POST /api/wearables/action/{serialNo} ─────────────────────────────────
+    // Action: { "action": "SUSPEND" | "ACTIVATE" | "TERMINATE", "reason": "..." }
+    @PostMapping("/action/{serialNo}")
+    public ResponseEntity<ApiResponse<WearableDevice>> performAction(
+            @PathVariable String serialNo,
+            @Valid @RequestBody WearableActionRequest request) {
+
+        WearableDevice updated = wearablesService.performAction(serialNo, request);
+        return ResponseEntity.ok(ApiResponse.ok(updated));
     }
 }
