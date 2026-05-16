@@ -75,12 +75,12 @@ export class InputComponent implements ControlValueAccessor {
   @Input() ariaLabel = '';
   @Input() ariaLabelledBy = '';
 
-  getDescriptionId(): string {
-    const ids = [];
-    if (this.error) ids.push(this.id + '-error');
-    if (this.helperText && !this.error) ids.push(this.id + '-helper');
-    return ids.join(' ') || null;
-  }
+    getDescriptionId(): string | null {
+      const ids: string[] = [];
+      if (this.error) ids.push(this.id + '-error');
+      if (this.helperText && !this.error) ids.push(this.id + '-helper');
+      return ids.length ? ids.join(' ') : null;
+    }
 
   value = '';
   onChange = (_: string) => {};
