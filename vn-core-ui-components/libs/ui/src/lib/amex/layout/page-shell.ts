@@ -175,7 +175,7 @@ export interface AmexPortalLayoutConfig {
     AmexDashboardMenuBarComponent,
   ],
   template: `
-    <div class="shell" [attr.data-portal]="portalStyle">
+    <div class="shell" [attr.data-theme]="resolvedTheme">
 
       <!-- ══════════════════════════════════════════════════════════════
            APPROACH 4: Template injection for header
@@ -213,11 +213,11 @@ export interface AmexPortalLayoutConfig {
           *ngIf="!headerTemplate && !resolvedHeaderComponent && !showCustomHeader"
         >
           <amex-top-nav-bar
-            [portalStyle]="portalStyle"
+            [portalStyle]="resolvedTheme"
             [portalTitle]="resolvedPortalTitle"
-            [username]="username"
+            [username]="resolvedUsername" 
             [omsServiceName]="omsServiceName"
-            (logout)="logout.emit()"
+            (logout)="onLogout()"
             (menuToggle)="menuToggle.emit()">
           </amex-top-nav-bar>
         </ng-container>
