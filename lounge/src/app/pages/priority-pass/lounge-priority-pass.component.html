@@ -1,0 +1,201 @@
+<div class="lpp">
+
+    <div class="lpp__header">PRIORITY PASS™ ENROLLMENT</div>
+
+    <div class="lpp__body">
+
+        <!-- ── SEARCH (always visible, hides after customer found) e.g. C123456 ── -->
+        <div class="lcs__wrap">
+            <form [formGroup]="searchForm" (ngSubmit)="onSearch()" novalidate>
+                <div class="lcs__field-row">
+                    <input id="clientCode" class="lcs__input"
+                        [class.lcs__input--invalid]="submitted && f['clientCode'].errors" formControlName="clientCode"
+                        placeholder="Enter Client Code" autocomplete="off" />
+                    <button class="lcs__submit-btn" type="submit" [disabled]="loading">
+                        {{ loading ? 'Searching...' : 'SUBMIT' }}
+                    </button>
+                </div>
+                <div *ngIf="submitted && f['clientCode'].errors" class="lcs__field-error">
+                    Client code is required.
+                </div>
+            </form>
+            <div *ngIf="errorMsg" class="lcs__error-msg">{{ errorMsg }}</div>
+        </div>
+
+        <!-- ── ENROLLMENT (shown after customer found) ── -->
+        <ng-container *ngIf="customer">
+
+            <div *ngIf="enrollSuccess" class="lpp__success-banner">
+                <strong>✔ Enrollment Successful!</strong> {{ enrollSuccessMsg }}
+                <span *ngIf="referenceId" class="lpp__ref-id">Reference: {{ referenceId }}</span>
+            </div>
+            <div *ngIf="enrollError" class="lpp__error-msg">{{ enrollError }}</div>
+
+            <!-- ── Contact Details ── -->
+            <div class="lpp__section">
+                <div class="lpp__section-title">Contact Details</div>
+                <p class="lpp__section-note">Please confirm we have the correct contact details for your new Priority
+                    Pass™.</p>
+                <p class="lpp__section-warning">
+                    <strong>Note:</strong> Any updates on your contact details will reflect across all our
+                    systems including the transaction SMS and e-statements.
+                </p>
+                <br />
+
+                <div class="lpp__contact-box">
+                    <div class="lpp__contact-row">
+                        <span class="lpp__contact-label">Mobile</span>
+                        <input class="lpp__contact-input" [value]="customer.mobile" readonly />
+                        <button class="lpp__edit-btn" (click)="toggleEdit('mobile')">EDIT</button>
+                    </div>
+                    <div class="lpp__contact-row lpp__contact-row--last">
+                        <span class="lpp__contact-label">Email</span>
+                        <input class="lpp__contact-input" [value]="customer.email" readonly />
+                        <button class="lpp__edit-btn" (click)="toggleEdit('email')">EDIT</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Basic Card ── -->
+            <div class="lpp__section">
+                <div class="lpp__section-title">Please select the Basic Card you wish to enroll</div>
+                <select class="lpp__card-select" [(ngModel)]="selectedBasicCard">
+                    <option value="" disabled>— Select a card —</option>
+                    <option *ngFor="let c of uniqueCards" [value]="c">
+                        {{ c }}
+                    </option>
+                </select>
+            </div>
+
+            <!-- ── Card Selection ── -->
+            <div class="lpp__section">
+                <div class="lpp__section-title">Card Selection</div>
+                <p class="lpp__section-note">Please select the Card you wish to enroll</p>
+
+                <div *ngFor="let card of filteredCards" class="lpp__card-row">
+
+                    <!-- bullet + checkbox -->
+                    <div class="lpp__card-bullet">
+                        <span class="lpp__bullet">•</span>
+                        <input type="checkbox" [(ngModel)]="card.selected" [id]="'card-' + card.cardNumber" />
+                    </div>
+
+                    <!-- Card logo + details together -->
+                    <div class="lpp__card-info-block">
+
+                        <!-- logo -->
+                        <div class="lpp__card-art">
+                            <div class="lpp__card-art-inner">
+                                <div class="lpp__card-chip"></div>
+                                <div class="lpp__card-logo">AMEX</div>
+                            </div>
+                        </div>
+
+                        <!-- details below logo Card Details -->
+                        <div class="lpp__card-info">
+                            <div class="lpp__card-type">{{ card.cardType }}</div>
+                            <div class="lpp__card-num">{{ card.cardNumber }}</div>
+                            <div class="lpp__card-variant">{{ card.variant }}</div>
+                        </div>
+
+                    </div>
+
+                    <!-- entitlements -->
+                    <div class="lpp__card-ent">
+                        <p class="lpp__ent-intro">As an American Express Corporate Cardmember you are entitled to:</p>
+                        <ul class="lpp__ent-list">
+                            <li *ngFor="let e of card.entitlements">{{ e }}</li>
+                        </ul>
+                        <div class="lpp__card-status" [class.lpp__card-status--yes]="card.enrolled"
+                            [class.lpp__card-status--no]="!card.enrolled">
+                            STATUS: {{ card.enrolled ? 'ENROLLED' : 'NOT ENROLLED' }}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ── T&C ── -->
+            <div class="lpp__tnc">
+                <p class="lpp__tnc-text">
+                    <strong>To complete your enrolment please confirm that:</strong><br />
+                    You accept the charges levied by Priority Pass if your Priority Pass lounge usage is
+                    more than the complimentary allowance on your Card.<br />
+                    You accept the Terms &amp; Conditions of Priority Pass and of the American Express
+                    Lounge Benefit.<br />
+                    <em>If a customer asks about the terms, they should be redirected to the terms online.</em>
+                </p>
+                <label class="lpp__tnc-check">
+                    <input type="checkbox" [(ngModel)]="termsAccepted" />
+                    I accept the <a href="#" (click)="$event.preventDefault()">Terms &amp; Conditions</a>
+                </label>
+            </div>
+
+            <div class="lpp__actions">
+                <button class="lpp__enroll-btn" [disabled]="!canEnroll || enrollLoading" (click)="onConfirmEnroll()">
+                    {{ enrollLoading ? 'Processing...' : 'CONFIRM &amp; ENROLL' }}
+                </button>
+                <br />
+                <br />
+                <br />
+            </div>
+
+            <!-- ── MOBILE POPUP ── -->
+            <div *ngIf="editMode === 'mobile'" class="lpp__overlay" (click)="cancelEdit()">
+                <div class="lpp__popup" (click)="$event.stopPropagation()">
+                    <div class="lpp__popup-hd">Mobile Number</div>
+                    <div class="lpp__popup-body">
+                        <div class="lpp__edit-field">
+                            <label class="lpp__edit-field-label">Country Code</label>
+                            <div class="lpp__select-wrapper">
+                                <span class="lpp__phone-icon">
+                                    <i class="fa fa-mobile-alt"></i>
+                                </span>
+                                <select class="lpp__underline-select" [(ngModel)]="editMobileCountry">
+                                    <option *ngFor="let c of countryCodes" [value]="c.value">{{ c.label }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="lpp__edit-field">
+                            <label class="lpp__edit-field-label">Mobile Number</label>
+                            <input class="lpp__underline-input" type="tel" [(ngModel)]="editMobileNumber"
+                                placeholder="50 123 4567" />
+                        </div>
+                        <p class="lpp__edit-note">
+                            Note: Any change to your mobile number will reflect across all our systems and
+                            the transaction SMS will be sent on this number going forward.
+                        </p>
+                        <div class="lpp__edit-btns">
+                            <button class="lpp__submit-btn" (click)="submitMobile()">SUBMIT</button>
+                            <button class="lpp__cancel-btn" (click)="cancelEdit()">CANCEL</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── EMAIL POPUP ── -->
+            <div *ngIf="editMode === 'email'" class="lpp__overlay" (click)="cancelEdit()">
+                <div class="lpp__popup" (click)="$event.stopPropagation()">
+                    <div class="lpp__popup-hd">E-mail (e-statement)</div>
+                    <div class="lpp__popup-body">
+                        <div class="lpp__edit-field">
+                            <label class="lpp__edit-field-label">Email Address</label>
+                            <input class="lpp__underline-input" type="email" [(ngModel)]="editEmail"
+                                placeholder="name@company.com" />
+                        </div>
+                        <p class="lpp__edit-note">
+                            Note: Any change to your e-mail address will reflect across all our systems and
+                            the e-statements will be sent on this e-mail address going forward.
+                        </p>
+                        <div class="lpp__edit-btns">
+                            <button class="lpp__submit-btn" (click)="submitEmail()">SUBMIT</button>
+                            <button class="lpp__cancel-btn" (click)="cancelEdit()">CANCEL</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </ng-container>
+    </div>
+
+</div>
