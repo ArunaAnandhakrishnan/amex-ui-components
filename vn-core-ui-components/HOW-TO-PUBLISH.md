@@ -70,6 +70,9 @@ cd dist/vn-core-ui-components
 npm adduser --registry http://localhost:4873
 
 # Publish
+npm publish --registry http://localhost:4873
+
+# To set registry
 npm config set registry https://registry.npmjs.org/
 npm config set @vn-core-ui-components:registry http://localhost:4873
 ```
