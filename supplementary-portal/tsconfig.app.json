@@ -5,9 +5,10 @@
     "types": []
   },
   "files": [
-    "src/main.ts"
+    "src/main.ts",
+    "src/bootstrap.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
+    "src/**/*.ts"
   ]
 }
