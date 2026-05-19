@@ -49,6 +49,20 @@ const routes: Routes = [
         .then(m => m.OffersRemoteEntryModule).catch(portalFallback),
   },
 
+   // ── Supplementary Access helper Portal (port 4205) ────────────────────────────
+   {
+    path: 'supp',
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      loadRemoteModule({
+        type:          'module',
+        remoteEntry:   'http://localhost:4205/remoteEntry.js',
+        exposedModule: './Module',
+      })
+        .then(m => m.SuppRemoteEntryModule)
+        .catch(portalFallback),
+  },
+
   // ── Pay With Points (port 4207) ───────────────────────────────────
   // Shell mounts the remote at /pay-with-points.
   // The remote's PayWithPointsModule registers child route '' → PayWithPointsComponent.

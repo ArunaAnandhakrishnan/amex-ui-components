@@ -1,54 +1,28 @@
 import { Component, Optional, Inject } from '@angular/core';
-import { CommonModule }                from '@angular/common';
-import { AmexPageShellComponent, AmexTabItem } from '@vn-core-ui-components/ui';
-import { WearablesComponent }          from './wearables.component';
-import { SHELL_HOSTED }                from '../core/tokens/shell.token';
+import { CommonModule } from '@angular/common';
+import {
+  AmexPageShellComponent,
+  AmexPortalLayoutConfig,
+  AmexTabItem,
+} from '@vn-core-ui-components/ui';
+import { WearablesComponent } from './wearables.component';
+import { SHELL_HOSTED } from '../core/tokens/shell.token';
 
-/**
- * WearablesShellWrapperComponent
- *
- * Single entry point for wearables content in BOTH scenarios:
- *
- * ── Standalone (port 4206 direct) ──────────────────────────────────────────
- *   SHELL_HOSTED token is NOT provided → @Optional() returns null → isShellHosted=false
- *   → renders full <amex-page-shell> chrome wrapping <app-wearables>
- *
- * ── Shell-hosted (MFE via shell router) ────────────────────────────────────
- *   WearablesRemoteEntryModule injects SHELL_HOSTED=true at route level
- *   → isShellHosted=true → renders ONLY <app-wearables> (no double chrome)
- *   Shell owns the outer chrome (AmexTopNavBar + AmexTabBar + AmexSidebar).
- *
- * AmexPageShellComponent is always imported/consumed by this component.
- */
 @Component({
   selector: 'app-wearables-shell-wrapper',
   standalone: true,
   imports: [CommonModule, AmexPageShellComponent, WearablesComponent],
   template: `
-    <!-- ── Shell-hosted: shell owns the chrome, just render content ── -->
-    <ng-container *ngIf="isShellHosted">
+    <amex-page-shell
+      portalStyle="onls"
+      portalTitle="ONLS Helper Tool"
+      [config]="shellConfig"
+      (tabClick)="onTabClick($event)"
+      (subClick)="onSubClick($event)"
+      (logout)="onLogout()"
+    >
       <app-wearables></app-wearables>
-    </ng-container>
-
-    <!-- ── Standalone: wrap with AmexPageShellComponent for full chrome ── -->
-    <ng-container *ngIf="!isShellHosted">
-      <amex-page-shell
-        portalStyle="onls"
-        portalTitle="ONLS Helper Tool"
-        pageTitle="AMEX WEARABLES"
-        [tabs]="tabs"
-        activeTabId="misc"
-        [subItems]="miscSubItems"
-        activeSubId="wearables"
-        [showSidebar]="true"
-        (tabClick)="onTabClick($event)"
-        (subClick)="onSubClick($event)"
-        (logout)="onLogout()">
-
-        <app-wearables [showPageHeader]="false"></app-wearables>
-
-      </amex-page-shell>
-    </ng-container>
+    </amex-page-shell>
   `,
 })
 export class WearablesShellWrapperComponent {
@@ -59,7 +33,42 @@ export class WearablesShellWrapperComponent {
     this.isShellHosted = !!shellHosted;
   }
 
-  // ── Matches shell's header tabs exactly ────────────────────────────────────
+  // Note: The shellConfig getter determines the layout configuration based on whether the component is shell-hosted or standalone.
+        // [tabs]="tabs"
+      //   pageTitle="AMEX WEARABLES"
+      // pageSubtitle="Manage wearable devices for cardmembers"
+      //   activeTabId="misc"
+      // [subItems]="miscSubItems"
+      // activeSubId="wearables"
+
+  /**
+   * KEY LOGIC:
+   * Shell-hosted  → header=false, footer=false, sidebar=false
+   *                 Shell already provides its own chrome.
+   *                 AmexPageShellComponent still consumed — just embedded mode.
+   *
+   * Standalone    → header=true, footer=true, sidebar=false
+   *                 Full ONLS chrome rendered by AmexPageShellComponent.
+   *                 Sidebar false because wearables has no sidebar nav.
+   */
+  get shellConfig(): AmexPortalLayoutConfig {
+    if (this.isShellHosted) {
+      return {
+        header:  { visible: false },
+        footer:  { visible: false },
+        sidebar: { visible: false },
+      };
+    }
+    return {
+      header:  { visible: true },
+      footer:  { visible: true, text: '© American Express. All rights reserved.' },
+      sidebar: { visible: true, items: [] },
+    };
+  }
+
+  // Tabs shown only in standalone mode
+  // (shell has its own tabs — these are ignored when shell-hosted
+  //  because the shell renders the tab bar itself)
   tabs: AmexTabItem[] = [
     { id: 'bta',      label: 'BTA'                        },
     { id: 'account',  label: 'Online Account Services'     },
@@ -69,7 +78,6 @@ export class WearablesShellWrapperComponent {
     { id: 'misc',     label: 'Misc'                        },
   ];
 
-  // ── Matches shell's Misc sub-items exactly ─────────────────────────────────
   miscSubItems: AmexTabItem[] = [
     { id: 'pay-with-points', label: 'Select & Pay With Points'  },
     { id: 'digital-wallet',  label: 'Digital Wallet'            },
@@ -78,10 +86,13 @@ export class WearablesShellWrapperComponent {
     { id: 'sms-status',      label: 'SMS Status'                },
     { id: 'priority-pass',   label: 'ENROLL FOR PRIORITY PASS™' },
     { id: 'valueback',       label: 'ValueBack'                 },
-    { id: 'pccm-ftp',        label: 'Pccm Ftp Sequence Status'  },
+    { id: 'pccm-ftp',        label: 'Pccm Ftp Sequence Number'  },
   ];
 
-  onTabClick(_id: string) {}
-  onSubClick(_id: string) {}
-  onLogout() { localStorage.clear(); window.location.reload(); }
+  onTabClick(_id: string): void {}
+  onSubClick(_id: string): void {}
+  onLogout(): void {
+    localStorage.clear();
+    window.location.reload();
+  }
 }
