@@ -11,9 +11,6 @@ import { AppComponent }     from './app.component';
     AppComponent,
     RouterModule.forRoot([
       {
-        // Standalone: always load WearablesShellWrapperComponent.
-        // SHELL_HOSTED is NOT provided here → @Optional() returns null
-        // → wrapper renders full AmexPageShellComponent chrome.
         path: '',
         loadComponent: () =>
           import('./wearables/wearables-shell-wrapper.component')
