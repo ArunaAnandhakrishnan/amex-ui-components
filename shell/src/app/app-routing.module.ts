@@ -1,9 +1,9 @@
-import { NgModule }        from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { loadRemoteModule }     from '@angular-architects/module-federation';
+import { loadRemoteModule } from '@angular-architects/module-federation';
 
-import { LoginComponent }  from './pages/login/login.component';
-import { AuthGuard }       from './core/guards/auth.guard';
+import { LoginComponent } from './pages/login/login.component';
+import { AuthGuard } from './core/guards/auth.guard';
 
 const portalFallback = () =>
   import('./pages/portal-error/portal-error.module').then(m => m.PortalErrorModule);
@@ -11,7 +11,7 @@ const portalFallback = () =>
 const routes: Routes = [
 
   { path: 'login', component: LoginComponent },
-  { path: '',      redirectTo: 'bta', pathMatch: 'full' },
+  { path: '', redirectTo: 'bta', pathMatch: 'full' },
 
   // ── Online Account Services (port 4201) ──────────────────────────
   {
@@ -58,8 +58,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     loadChildren: () =>
       loadRemoteModule({
-        type:          'module',
-        remoteEntry:   'http://localhost:4207/remoteEntry.js',
+        type: 'module',
+        remoteEntry: 'http://localhost:4207/remoteEntry.js',
         exposedModule: './Module',
       })
         .then(m => m.PayWithPointsRemoteEntryModule)
@@ -84,19 +84,33 @@ const routes: Routes = [
         .then(m => m.WearablesRemoteEntryModule).catch(portalFallback),
   },
 
-  
+
   // ── AMEX Wearables (port 4206) ────────────────────────────
   {
     path: 'wearables',
     canActivate: [AuthGuard],
     loadChildren: () =>
       loadRemoteModule({
-        type:          'module',
-        remoteEntry:  'http://localhost:4206/remoteEntry.js',
+        type: 'module',
+        remoteEntry: 'http://localhost:4206/remoteEntry.js',
         exposedModule: './Module',
       })
-      .then(m => m.WearablesRemoteEntryModule)
-      .catch(portalFallback),
+        .then(m => m.WearablesRemoteEntryModule)
+        .catch(portalFallback),
+  },
+
+  // ── Lounge / Priority Pass (port 4209) ───────────────────────────
+  {
+    path: 'misc/priority-pass',
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      loadRemoteModule({
+        type: 'module',
+        remoteEntry: 'http://localhost:4209/remoteEntry.js',
+        exposedModule: './Module',
+      })
+        .then(m => m.LoungeRemoteEntryModule)
+        .catch(portalFallback),
   },
 
   // { path: '**', redirectTo: 'bta' },
@@ -106,4 +120,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

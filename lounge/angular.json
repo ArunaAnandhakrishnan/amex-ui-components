@@ -46,6 +46,7 @@
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
             "buildTarget": "lounge:build:development",
+            "liveReload": false,
             "port": 4209,
             "headers": {
               "Access-Control-Allow-Origin": "*",

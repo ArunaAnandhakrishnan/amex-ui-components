@@ -1,6 +1,7 @@
 import { NgModule, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes, Router } from '@angular/router';
+import { LoungePriorityPassComponent } from '../pages/priority-pass/lounge-priority-pass.component'; // ✅ ADD
 
 @Component({
   selector: 'lounge-entry',
@@ -35,14 +36,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'priority-pass',
-        pathMatch: 'full',
-      },
-      {
-        path: 'priority-pass',
-        loadChildren: () =>
-          import('../pages/priority-pass/lounge-priority-pass.module')
-            .then(m => m.LoungePriorityPassModule),
+        component: LoungePriorityPassComponent, // ✅ Direct — no loadChildren, no extra chunk
       },
     ],
   },
