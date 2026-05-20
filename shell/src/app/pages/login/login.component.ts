@@ -105,7 +105,9 @@ export class LoginComponent implements OnInit {
       },
     });
   }
-
+  goForgot(): void {
+  this.router.navigate(['/forgot-password']);
+}
   get lf() { return this.loginForm.controls; }
   get rf() { return this.registerForm.controls; }
   get pwdMismatch(): boolean {

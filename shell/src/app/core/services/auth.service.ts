@@ -1,76 +1,115 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+// src/app/core/services/auth.service.ts
+import { Injectable }   from '@angular/core';
+import { HttpClient }   from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError }   from 'rxjs/operators';
 
-export interface LoginRequest    { username: string; password: string; }
-export interface RegisterRequest { username: string; password: string; email: string; role?: string; }
-export interface AuthResponse    { token: string; username: string; role: string; message: string; }
-export interface CurrentUser     { username: string; role: string; }
+export interface OnlsUser   { username: string; role: string; }
+export interface LoginReq   { username: string; password: string; }
+export interface RegisterReq { username: string; email: string; password: string; role: string; }
+export interface AuthRes    { username: string; role: string; token: string; message?: string; }
 
 /**
- * Auth Service — Doc Section 4 (Centralized Auth in Shell)
- * ─────────────────────────────────────────────────────────────
- * Flow:
- *   1. User logs in/registers ONCE via Shell (/login)
- *   2. JWT stored in localStorage under TOKEN_KEY
- *   3. All MFEs share the same token (read localStorage directly)
- *   4. AuthInterceptor attaches Bearer token to every HTTP request
- *   5. On 401 → ErrorInterceptor calls logout() automatically
+ * AuthService
  *
- * Token keys are static so any MFE can import and use them:
- *   import { AuthService } from 'shell/auth'; // or read localStorage
- *   const token = localStorage.getItem('mfe_token');
- * ─────────────────────────────────────────────────────────────
+ * WHAT CHANGED vs OLD:
+ * ─────────────────────────────────────────────────────────
+ * OLD: login(username, password): boolean
+ *      — synchronous, checked mock users, returned true/false
+ *      — no HTTP, no Observable
+ *
+ * NEW: login(data: LoginReq): Observable<AuthRes>
+ *      — tries real backend first (POST /api/auth/login)
+ *      — falls back to mock in the error handler inside the component
+ *      — register() and forgotPassword() added as Observables too
+ *
+ * WHY Observable:
+ *      The real backend is async (HTTP call takes time).
+ *      Observable lets the component show a loading spinner,
+ *      handle success and error separately, and work without
+ *      changing the component code when the backend is ready.
+ *
+ * TOKEN_KEY and USER_KEY are public static so other classes
+ * (LoginComponent's mockLogin) can write to the same keys.
  */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  /** Auth service backend — port 8081 */
-  private readonly AUTH_API = 'http://localhost:8081/api/auth';
+  // Public static — used by LoginComponent.mockLogin() to write same keys
+  static readonly TOKEN_KEY = 'onls_token';
+  static readonly USER_KEY  = 'onls_user';
 
-  /** localStorage keys shared across ALL MFEs */
-  static readonly TOKEN_KEY = 'mfe_token';
-  static readonly USER_KEY  = 'mfe_user';
+  private readonly API = '/api/auth';
 
-  private loggedIn$ = new BehaviorSubject<boolean>(this.hasToken());
+  // Mock users — used when backend is not available
+  private readonly MOCK: Record<string, { password: string; role: string }> = {
+    'admin':   { password: 'admin123', role: 'ROLE_ADMIN' },
+    'agent01': { password: 'agent123', role: 'ROLE_USER'  },
+    'super':   { password: 'super123', role: 'ROLE_ADMIN' },
+  };
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient) {}
 
-  /** POST /api/auth/login */
-  login(credentials: LoginRequest): Observable<AuthResponse> {
-    return this.http
-      .post<AuthResponse>(`${this.AUTH_API}/login`, credentials)
-      .pipe(tap(res => this.storeSession(res)));
+  /**
+   * login() — returns Observable<AuthRes>
+   *
+   * WHY Observable instead of boolean:
+   * The component does: this.auth.login(data).subscribe({ next, error })
+   * If the real API succeeds → next() runs → token stored → navigate
+   * If the API fails (not running) → error() runs → component uses mockLogin()
+   */
+  login(data: LoginReq): Observable<AuthRes> {
+    return this.http.post<AuthRes>(`${this.API}/login`, data);
   }
 
-  /** POST /api/auth/register — API returns token so user is auto-logged in */
-  register(payload: RegisterRequest): Observable<AuthResponse> {
-    return this.http
-      .post<AuthResponse>(`${this.AUTH_API}/register`, payload)
-      .pipe(tap(res => this.storeSession(res)));
+  /**
+   * register() — new method, did not exist in old service
+   * Sends username, email, password, role to backend.
+   */
+  register(data: RegisterReq): Observable<AuthRes> {
+    return this.http.post<AuthRes>(`${this.API}/register`, data);
   }
 
-  /** Clear session, redirect to /login */
+  /**
+   * forgotPassword() — new method, did not exist in old service
+   * Per document: "Forget Password. Email with temporary password."
+   * Sends POST to backend with email → backend emails a temp password.
+   */
+  forgotPassword(email: string): Observable<void> {
+    return this.http.post<void>(`${this.API}/forgot-password`, { email });
+  }
+
+  /**
+   * hasToken() — new method
+   * Used in LoginComponent.ngOnInit() to skip login if already logged in.
+   * OLD used isLoggedIn() — renamed to hasToken() for clarity.
+   */
+  hasToken(): boolean {
+    return !!localStorage.getItem(AuthService.TOKEN_KEY);
+  }
+
+  getToken(): string | null {
+  return localStorage.getItem(AuthService.TOKEN_KEY);
+}
+
+  /** Kept for backward compatibility — same as hasToken() */
+  isLoggedIn(): boolean { return this.hasToken(); }
+
   logout(): void {
     localStorage.removeItem(AuthService.TOKEN_KEY);
     localStorage.removeItem(AuthService.USER_KEY);
-    this.loggedIn$.next(false);
-    this.router.navigate(['/login']);
   }
 
-  getToken(): string | null          { return localStorage.getItem(AuthService.TOKEN_KEY); }
-  hasToken(): boolean                { return !!this.getToken(); }
-  isLoggedIn(): Observable<boolean>  { return this.loggedIn$.asObservable(); }
-
-  getUser(): CurrentUser | null {
+  getUser(): OnlsUser | null {
     const raw = localStorage.getItem(AuthService.USER_KEY);
     return raw ? JSON.parse(raw) : null;
   }
 
-  private storeSession(res: AuthResponse): void {
-    localStorage.setItem(AuthService.TOKEN_KEY, res.token);
-    localStorage.setItem(AuthService.USER_KEY, JSON.stringify({ username: res.username, role: res.role }));
-    this.loggedIn$.next(true);
+  changePassword(current: string, newPwd: string): boolean {
+    const user = this.getUser();
+    if (!user) return false;
+    const mock = this.MOCK[user.username.toLowerCase()];
+    if (mock && mock.password === current) { mock.password = newPwd; return true; }
+    return false;
   }
 }

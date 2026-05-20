@@ -165,9 +165,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    this.bus.emit({ type: 'USER_LOGGED_OUT' });
-    this.auth.logout();
-  }
+
+  // close logout popup
+  this.showLogoutDialog = false;
+
+  // emit event
+  this.bus.emit({ type: 'USER_LOGGED_OUT' });
+
+  // clear token + user
+  this.auth.logout();
+
+  // navigate login page
+  this.router.navigate(['/login']);
+
+}
 
   ngOnDestroy(): void { this.subs.unsubscribe(); }
 }
