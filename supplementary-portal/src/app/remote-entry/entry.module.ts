@@ -1,26 +1,25 @@
 import { NgModule, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Routes, Router } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+import { AmexPageShellComponent } from '@vn-core-ui-components/ui';
 
 import { SuppSearchComponent } from '../pages/search/supp-search.component';
 
 @Component({
   selector: 'supp-entry',
+  standalone: false,
   template: `
-    <div class="supp-shell">
-      <div class="supp-content">
-        <router-outlet></router-outlet>
-      </div>
-    </div>
+    <amex-page-shell
+      portalStyle="onls"
+      pageTitle="SUPPLEMENTARY ACCESS HELPER"
+      [showHeader]="false"
+      [showFooter]="false"
+      [showSidebar]="false">
+      <router-outlet></router-outlet>
+    </amex-page-shell>
   `,
-  styles: [`
-    .supp-shell   { display: block; width: 100%; font-family: Arial, sans-serif; }
-    .supp-content { width: 100%; overflow: auto; }
-  `],
 })
-export class SuppEntryComponent {
-  constructor(private router: Router) {}
-}
+export class SuppEntryComponent {}
 
 const routes: Routes = [
   {
@@ -37,6 +36,7 @@ const routes: Routes = [
   declarations: [SuppEntryComponent],
   imports: [
     CommonModule,
+    AmexPageShellComponent,
     RouterModule.forChild(routes),
   ],
 })
