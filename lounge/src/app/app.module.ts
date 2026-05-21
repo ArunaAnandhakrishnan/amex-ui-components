@@ -12,9 +12,13 @@ import { AppComponent } from './app.component';
     BrowserModule,
     AppComponent,   // standalone component imported here
     RouterModule.forRoot([
-      { path: '',       redirectTo: 'lounge', pathMatch: 'full' },
-      { path: 'lounge', loadChildren: () => import('./remote-entry/entry.module').then(m => m.LoungeRemoteEntryModule) },
-      { path: '**',     redirectTo: 'lounge' },
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/priority-pass/lounge-shell-wrapper.component')
+            .then(m => m.LoungeShellWrapperComponent),
+      },
+      { path: '**', redirectTo: '' },
     ]),
   ],
   bootstrap: [AppComponent],
