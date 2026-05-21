@@ -28,7 +28,7 @@
 }
 
 /* HEADER – screenshot maari compact */
-.lpp__header {
+/* .lpp__header {
   background: #005295;
   color: #fff;
   font-size: 16px;
@@ -37,7 +37,7 @@
   border: 1px solid #5a7da0;
   margin-bottom: 24px;
   text-transform: uppercase;
-}
+} */
 
 /* SEARCH NUMBER */
 .lcs__input {
