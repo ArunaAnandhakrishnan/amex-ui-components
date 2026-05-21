@@ -2,23 +2,25 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: Arial, sans-serif; background: #fff; color: #333; font-size: 13px; }
 
-/* ── MFE loading bar ── */
+/* ── MFE loading bar — fixed top edge indicator ── */
 .mfe-loading-bar {
-  height: 2px; background: #006fcf;
-  position: fixed; top: 0; left: 0; width: 0;
-  transition: width 0.3s; z-index: 9999;
+  height: 3px;
+  background: transparent;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 9999;
+  transition: background 0.2s;
 }
-.mfe-loading-bar.visible { width: 60%; }
+.mfe-loading-bar.visible {
+  background: linear-gradient(90deg, #006fcf 0%, #00a6ff 60%, #006fcf 100%);
+  animation: mfe-loading 1.2s linear infinite;
+}
+@keyframes mfe-loading {
+  0%   { background-position: -200px 0; }
+  100% { background-position: calc(100% + 200px) 0; }
+}
 
-/* ── Shell layout ── */
-/* Header (top-nav-bar + tab-bar) stacks at top, body below */
-.shell-wrap { display: flex; flex-direction: column; min-height: 100vh; background: #fff; }
-.shell-body { display: flex; flex: 1; min-height: 0; }
-
-/* Content area fills remaining space after hatched sidebar */
-.shell-main { flex: 1; overflow-y: auto; background: #fff; }
-
-/* ── Login page — ONLS style matching document image1 ── */
+/* ── Login page — ONLS style ── */
 .onls-page {
   min-height: 100vh; display: flex; flex-direction: column;
   background: #fff; font-family: Arial, sans-serif; font-size: 13px;
@@ -94,7 +96,8 @@ body { font-family: Arial, sans-serif; background: #fff; color: #333; font-size:
 .onls-footer-links a:hover { text-decoration: underline; }
 .onls-footer-links span { color: #999; }
 
-/* ── Misc Sub-Menu (header) ────────────────────────────────────── */
+/* ── Misc Sub-Menu ── */
+/* Lives in the custom header projection slot inside amex-page-shell */
 .misc-submenu {
   background: #f0f4fa;
   border-bottom: 2px solid #006fcf;
@@ -115,10 +118,7 @@ body { font-family: Arial, sans-serif; background: #fff; color: #333; font-size:
   white-space: nowrap;
   user-select: none;
 }
-.misc-submenu__item:hover {
-  background: #e0eeff;
-  text-decoration: underline;
-}
+.misc-submenu__item:hover { background: #e0eeff; text-decoration: underline; }
 .misc-submenu__item--active {
   background: #003087;
   color: #fff;
@@ -126,7 +126,7 @@ body { font-family: Arial, sans-serif; background: #fff; color: #333; font-size:
   border-color: #003087;
 }
 
-/* ── Misc Breadcrumb ───────────────────────────────────────────── */
+/* ── Misc Breadcrumb ── */
 .misc-breadcrumb {
   background: #f5f5f5;
   border-bottom: 1px solid #ddd;
@@ -138,21 +138,3 @@ body { font-family: Arial, sans-serif; background: #fff; color: #333; font-size:
 .misc-breadcrumb__current { color: #003087; font-weight: bold; }
 .misc-breadcrumb__change  { color: #006fcf; cursor: pointer; margin-left: 6px; }
 .misc-breadcrumb__change:hover { text-decoration: underline; }
-
-/* ── MFE loading bar ───────────────────────────────────────────── */
-.mfe-loading-bar {
-  height: 3px;
-  background: transparent;
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 9999;
-  transition: background 0.2s;
-}
-.mfe-loading-bar.visible {
-  background: linear-gradient(90deg, #006fcf 0%, #00a6ff 60%, #006fcf 100%);
-  animation: mfe-loading 1.2s linear infinite;
-}
-@keyframes mfe-loading {
-  0%   { background-position: -200px 0; }
-  100% { background-position: calc(100% + 200px) 0; }
-}

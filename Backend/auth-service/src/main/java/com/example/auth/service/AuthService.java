@@ -5,7 +5,7 @@ import com.example.auth.model.RefreshToken;
 import com.example.auth.model.User;
 import com.example.auth.repository.RefreshTokenRepository;
 import com.example.auth.repository.UserRepository;
-import com.example.common.security.JwtUtil;
+import com.example.auth.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

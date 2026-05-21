@@ -1,8 +1,8 @@
 package com.example.auth.controller;
 
+import com.example.auth.dto.ApiResponse;
 import com.example.auth.dto.AuthDtos.*;
 import com.example.auth.service.AuthService;
-import com.example.common.dto.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
