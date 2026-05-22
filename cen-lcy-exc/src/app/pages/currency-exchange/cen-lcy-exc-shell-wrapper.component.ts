@@ -4,32 +4,34 @@ import {
   AmexPageShellComponent,
   AmexTabItem,
 } from '@vn-core-ui-components/ui';
-import { LoungePriorityPassComponent } from './lounge-priority-pass.component';
+import { CenLcyExcComponent } from './cen-lcy-exc.component';
 import { SHELL_HOSTED } from '../../core/tokens/shell.token';
+
 @Component({
-  selector: 'app-lounge-shell-wrapper',
+  selector: 'app-cen-lcy-exc-shell-wrapper',
   standalone: true,
-  imports: [CommonModule, AmexPageShellComponent, LoungePriorityPassComponent],
+  imports: [CommonModule, AmexPageShellComponent, CenLcyExcComponent],
   template: `
     <amex-page-shell
       portalStyle="onls"
       portalTitle="ONLS Helper Tool"
       [config]="shellConfig"
       [showSidebar]="false"
-      pageTitle="PRIORITY PASS™ ENROLLMENT"
-      pageSubtitle="Manage Priority Pass benefit for cardmembers"
+      
       (tabClick)="onTabClick($event)"
       (logout)="onLogout()"
     >
-      <app-lounge-priority-pass></app-lounge-priority-pass>
+      <app-cen-lcy-exc></app-cen-lcy-exc>
     </amex-page-shell>
   `,
 })
-export class LoungeShellWrapperComponent {
+export class CenLcyExcShellWrapperComponent {
   isShellHosted: boolean;
+
   constructor(@Optional() @Inject(SHELL_HOSTED) shellHosted: boolean) {
     this.isShellHosted = !!shellHosted;
   }
+
   get shellConfig() {
     if (this.isShellHosted) {
       return {
@@ -44,10 +46,13 @@ export class LoungeShellWrapperComponent {
       sidebar: { visible: false },
     };
   }
+
   tabs: AmexTabItem[] = [
-    { id: 'lounge', label: 'Lounge Rationalization' },
+    { id: 'cen-lcy-exc', label: 'Cen LCY EXC' },
   ];
+
   onTabClick(_id: string): void {}
+
   onLogout(): void {
     localStorage.clear();
     window.location.reload();

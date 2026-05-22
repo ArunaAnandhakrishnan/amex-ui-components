@@ -1,0 +1,270 @@
+/* ── OUTER CONTAINER ── */
+.clce {
+  background: #ffffff;
+  min-height: 100vh;
+  padding: 12px 16px 0 16px;
+}
+
+.clce__body {
+  width: 100%;
+  max-width: 900px;
+  min-width: 820px;
+}
+
+/* ── TOP DIVIDER ── */
+.clce__top-divider {
+  border: none;
+  border-top: 1.5px dashed #b0bec5;
+  margin-bottom: 18px;
+}
+
+/* ── ALREADY-SUBMITTED ERROR ── */
+.clce__already-error {
+  background: #fde8e8;
+  border: 1px solid #f5c6c6;
+  color: #b00020;
+  padding: 10px 14px;
+  font-size: 13px;
+  border-radius: 2px;
+  margin-bottom: 14px;
+}
+
+/* ── CLIENT ID SECTION ── */
+.clce__search-wrap {
+  width: 720px;
+}
+
+.clce__field-label {
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.clce__client-input {
+  width: 240px;
+  height: 34px;
+  border: 1.5px solid #96bde0;
+  border-radius: 2px;
+  font-size: 13px;
+  padding: 0 10px;
+  outline: none;
+  display: block;
+}
+
+.clce__client-input:focus {
+  border-color: #1583dd;
+}
+
+.clce__client-input--invalid {
+  border-color: #cc0000;
+}
+
+.clce__field-error {
+  color: #cc0000;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.clce__submit-btn {
+  margin-top: 12px;
+  background: #0078d4;
+  color: #ffffff;
+  border: none;
+  padding: 7px 22px;
+  font-size: 13px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.clce__submit-btn:hover:not(:disabled) {
+  background: #005a9e;
+}
+
+.clce__submit-btn:disabled {
+  background: #aaaaaa;
+  cursor: not-allowed;
+}
+
+.clce__search-error {
+  color: #cc0000;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+/* ── CARD + HIGHLIGHTS SECTION ── */
+.clce__result {
+  margin-top: 24px;
+}
+
+/* Card table + AMEX image row */
+.clce__card-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+  margin-bottom: 28px;
+}
+
+.clce__card-table {
+  border-collapse: collapse;
+  width: 380px;
+}
+
+.clce__card-table td {
+  padding: 10px 16px;
+  font-size: 13px;
+  border: 1px solid #d0d0d0;
+  vertical-align: middle;
+}
+
+.clce__card-table td:first-child {
+  color: #555;
+  width: 140px;
+}
+
+/* AMEX card visual */
+.clce__amex-card {
+  width: 162px;
+  height: 104px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px 14px;
+  flex-shrink: 0;
+}
+
+.clce__amex-brand {
+  font-size: 9px;
+  color: #cccccc;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.clce__amex-chip {
+  width: 28px;
+  height: 20px;
+  background: #c8a83a;
+  border-radius: 3px;
+}
+
+.clce__amex-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.clce__amex-holder {
+  color: #ffffff;
+  font-size: 8px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.clce__amex-logo {
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+}
+
+/* ── HIGHLIGHTS ── */
+.clce__highlights-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #111;
+  margin-bottom: 14px;
+}
+
+.clce__highlights-lead {
+  font-weight: bold;
+  font-size: 13px;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.clce__highlight {
+  background: #aaff00;
+  padding: 0 2px;
+}
+
+.clce__bullet-list {
+  padding-left: 22px;
+  margin-bottom: 0;
+}
+
+.clce__bullet-list li {
+  font-size: 13px;
+  line-height: 1.75;
+  margin-bottom: 6px;
+}
+
+/* ── TERMS & CONDITIONS ── */
+.clce__tnc {
+  margin-top: 20px;
+}
+
+.clce__tnc-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.clce__tnc-label input[type="checkbox"] {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.clce__tnc-link {
+  color: #0078d4;
+  text-decoration: none;
+}
+
+.clce__tnc-link:hover {
+  text-decoration: underline;
+}
+
+/* ── FINAL SUBMIT ── */
+.clce__actions {
+  margin-top: 16px;
+  margin-bottom: 40px;
+}
+
+/* ── SUCCESS / ERROR BANNERS ── */
+.clce__success-banner {
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  color: #1b5e20;
+  padding: 10px 14px;
+  font-size: 13px;
+  border-radius: 2px;
+  margin-bottom: 12px;
+}
+
+.clce__error-banner {
+  background: #fde8e8;
+  border: 1px solid #f5c6c6;
+  color: #b00020;
+  padding: 10px 14px;
+  font-size: 13px;
+  border-radius: 2px;
+  margin-bottom: 12px;
+}
+
+.clce__ok-btn {
+  background: #0078d4;
+  color: #ffffff;
+  border: none;
+  padding: 7px 28px;
+  font-size: 13px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.clce__ok-btn:hover {
+  background: #005a9e;
+}

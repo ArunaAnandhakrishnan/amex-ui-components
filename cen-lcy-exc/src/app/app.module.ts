@@ -5,8 +5,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 
 /**
- * AppModule — local dev bootstrap only (port 4209).
- * Shell loads LoungeRemoteEntryModule directly via Module Federation.
+ * AppModule — local dev bootstrap only (port 4210).
+ * Shell loads CenLcyExcRemoteEntryModule directly via Module Federation.
  */
 @NgModule({
   imports: [
@@ -17,8 +17,8 @@ import { AppComponent } from './app.component';
       {
         path: '',
         loadComponent: () =>
-          import('./pages/priority-pass/lounge-shell-wrapper.component')
-            .then(m => m.LoungeShellWrapperComponent),
+          import('./pages/currency-exchange/cen-lcy-exc-shell-wrapper.component')
+            .then(m => m.CenLcyExcShellWrapperComponent),
       },
       { path: '**', redirectTo: '' },
     ]),

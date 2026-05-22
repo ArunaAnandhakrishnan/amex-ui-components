@@ -10,7 +10,7 @@
                 <div class="lcs__field-row">
                     <input id="clientCode" class="lcs__input"
                         [class.lcs__input--invalid]="submitted && f['clientCode'].errors" formControlName="clientCode"
-                        placeholder="Enter Client Code" autocomplete="off" />
+                        placeholder="Enter Client Code Eg: C123456" autocomplete="off" />
                     <button class="lcs__submit-btn" type="submit" [disabled]="loading">
                         {{ loading ? 'Searching...' : 'SUBMIT' }}
                     </button>
