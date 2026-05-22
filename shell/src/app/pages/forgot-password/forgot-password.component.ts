@@ -7,7 +7,7 @@ import {
   Validators
 } from '@angular/forms';
 import { Router } from '@angular/router';
-
+import { AuthService } from '../../core/services/auth.service';
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
@@ -409,7 +409,8 @@ export class ForgotPasswordComponent {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+     private auth: AuthService
   ) {
 
     this.fpForm = this.fb.group({
@@ -419,40 +420,55 @@ export class ForgotPasswordComponent {
 
   }
 
-  onSubmit(): void {
+ onSubmit(): void {
 
-    if (this.fpForm.invalid) {
-      this.fpForm.markAllAsTouched();
-      return;
-    }
+  if (this.fpForm.invalid) {
 
-    this.loading = true;
-    this.error = '';
+    this.fpForm.markAllAsTouched();
+    return;
 
-    setTimeout(() => {
-
-  this.loading = false;
-
-  this.submitted = true;
-
-  this.sentUserId =
-    this.fpForm.value.userId;
-
-  this.sentEmail =
-    this.fpForm.value.email;
-
-  // Fade out after 2 seconds
-  setTimeout(() => {
-
-    this.submitted = false;
-
-    // Navigate to login page
-    this.router.navigate(['/login']);
-
-  }, 2000);
-
-}, 600);
   }
+
+  this.loading = true;
+  this.error = '';
+
+  const userId = this.fpForm.value.userId;
+  const email  = this.fpForm.value.email;
+
+  this.auth.forgotPassword(userId, email)
+    .subscribe({
+
+      next: (res) => {
+
+        this.loading = false;
+
+        this.submitted = true;
+
+        this.sentUserId = userId;
+        this.sentEmail  = email;
+
+        // Auto redirect after success
+        setTimeout(() => {
+
+          this.router.navigate(['/login']);
+
+        }, 3000);
+
+      },
+
+      error: (err) => {
+
+        this.loading = false;
+
+        this.error =
+          err?.error?.message ||
+          'Unable to process forgot password request';
+
+      }
+
+    });
+
+}
 
   goLogin(): void {
     this.router.navigate(['/login']);

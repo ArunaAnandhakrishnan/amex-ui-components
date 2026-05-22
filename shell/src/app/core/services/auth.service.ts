@@ -39,7 +39,7 @@ export class AuthService {
   static readonly TOKEN_KEY = 'onls_token';
   static readonly USER_KEY  = 'onls_user';
 
-  private readonly API = '/api/auth';
+  private readonly API = 'http://localhost:8080/api/auth'
 
   // Mock users — used when backend is not available
   private readonly MOCK: Record<string, { password: string; role: string }> = {
@@ -75,9 +75,17 @@ export class AuthService {
    * Per document: "Forget Password. Email with temporary password."
    * Sends POST to backend with email → backend emails a temp password.
    */
-  forgotPassword(email: string): Observable<void> {
-    return this.http.post<void>(`${this.API}/forgot-password`, { email });
-  }
+  forgotPassword(userId: string, email: string): Observable<any> {
+
+  return this.http.post(
+    `${this.API}/forgot-password`,
+    {
+      userId,
+      email
+    }
+  );
+
+}
 
   /**
    * hasToken() — new method
