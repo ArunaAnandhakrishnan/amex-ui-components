@@ -9,6 +9,7 @@ pipeline {
         SONAR_HOST_URL = 'http://localhost:9000'
         PROJECTS       = 'shell:amex-shell:4200 bta-portal:amex-bta-portal:4201'
         ZAP_HOME       = 'C:\\Program Files\\ZAP\\Zed Attack Proxy'
+        ZAP_REPORT     = 'C:\\Users\\V00554\\Downloads\\ZAP-Report.xml'
     }
 
     stages {
@@ -62,7 +63,6 @@ pipeline {
             }
         }
 
-        // ── ZAP MUST run BEFORE SonarQube so the XML report exists ──────────
         stage('ZAP Security Scan') {
             steps {
                 script {
@@ -79,8 +79,6 @@ pipeline {
                         echo "--- Waiting 30s for app to start ---"
                         sleep(time: 30, unit: 'SECONDS')
 
-                        // Output XML report (required by sonar-zap-plugin)
-                        // Output HTML report (for human reading)
                         echo "--- Running ZAP scan on ${folder} (port ${port}) ---"
                         bat """
                             cd "${env.ZAP_HOME}" && ^
@@ -89,13 +87,18 @@ pipeline {
                               -dir "${WORKSPACE}\\zap-home-${folder}" ^
                               -quickurl http://localhost:${port} ^
                               -quickprogress ^
-                              -quickout "${WORKSPACE}\\${folder}\\zap-report.xml" ^
+                              -quickout "${env.ZAP_REPORT}" ^
                               -silent ^
                             || exit 0
                         """
 
-                        // Also generate HTML for the publishHTML step
-                        // ZAP -quickout only supports one output; convert or copy
+                        echo "--- Copying ZAP report to workspace ---"
+                        bat """
+                            copy "${env.ZAP_REPORT}" ^
+                                 "${WORKSPACE}\\${folder}\\zap-report.xml" ^
+                            2>nul || exit 0
+                        """
+
                         bat """
                             copy "${WORKSPACE}\\${folder}\\zap-report.xml" ^
                                  "${WORKSPACE}\\${folder}\\zap-report.html" ^
@@ -106,7 +109,6 @@ pipeline {
                         bat 'taskkill /F /IM node.exe /T 2>nul || exit 0'
                         sleep(time: 5, unit: 'SECONDS')
 
-                        // Verify the report was created
                         bat """
                             if not exist "${WORKSPACE}\\${folder}\\zap-report.xml" (
                                 echo ERROR: ZAP report not generated for ${folder}
@@ -120,7 +122,6 @@ pipeline {
             }
         }
 
-        // ── SonarQube runs AFTER ZAP so zap-report.xml already exists ───────
         stage('SonarQube Analysis') {
             steps {
                 script {
@@ -132,7 +133,6 @@ pipeline {
                         dir(folder) {
                             withSonarQubeEnv('SonarQube') {
                                 def scannerHome = tool 'SonarQubeScanner'
-                                // Pass ZAP report path as absolute to avoid ambiguity
                                 bat """
                                     "${scannerHome}\\bin\\sonar-scanner.bat" ^
                                     -Dsonar.zaproxy.reportPath="${WORKSPACE}\\${folder}\\zap-report.xml" ^
@@ -149,8 +149,6 @@ pipeline {
             steps {
                 echo '--- Waiting for SonarQube Quality Gate result ---'
                 timeout(time: 5, unit: 'MINUTES') {
-                    // abortPipeline: false — ZAP findings won't kill the build
-                    // change to true once your baseline is clean
                     waitForQualityGate abortPipeline: false
                 }
             }
