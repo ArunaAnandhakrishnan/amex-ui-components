@@ -1,5 +1,6 @@
 package com.example.auth.config;
 
+import com.example.auth.filter.JwtAuthenticationFilter;
 import com.example.auth.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -24,29 +26,29 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final UserDetailsServiceImpl userDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable)
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                // Public endpoints
-                .requestMatchers(
-                    "/api/auth/register",
-                    "/api/auth/login",
-                    "/api/auth/refresh",
-                    "/api/auth/validate",    // called internally by gateway
-                    "/actuator/health",
-                    "/h2-console/**"
-                ).permitAll()
-                // Everything else requires authentication
-                .anyRequest().authenticated()
-            )
-            .authenticationProvider(authenticationProvider())
-            // Allow h2-console frames (dev only)
-            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/auth/register",
+                                "/api/auth/login",
+                                "/api/auth/refresh",
+                                "/api/auth/validate",
+                                "/api/auth/forgot-password",
+                                "/actuator/health"
+                        ).permitAll()
+                        .requestMatchers("/api/auth/admin/**").hasRole("SYS_ADMIN")
+                        .anyRequest().authenticated()
+                )
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 
         return http.build();
     }

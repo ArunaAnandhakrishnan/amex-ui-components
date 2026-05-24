@@ -31,11 +31,19 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    // ADDED: fullName and avatarInitials
+    @Column(nullable = false)
+    private String fullName;
+
+    @Column(length = 5)
+    private String avatarInitials;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
     @Builder.Default
-    private Set<String> roles = new HashSet<>(Set.of("ROLE_USER"));
+    // CHANGED: default role is ROLE_VIEWER (not ROLE_USER)
+    private Set<String> roles = new HashSet<>(Set.of("ROLE_VIEWER"));
 
     @Builder.Default
     private boolean enabled = true;
