@@ -7,7 +7,7 @@ spring:
 
   # CHANGED: H2 → MySQL (taken from Auth/application.properties)
   datasource:
-    url: jdbc:mysql://localhost:3306/iso8583_auth?createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3306/amex_auth?createDatabaseIfNotExist=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root

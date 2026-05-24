@@ -93,7 +93,17 @@ public class DataInitializer implements CommandLineRunner {
                     .roles(Set.of(Roles.SOC_BUSINESS_USER))
                     .build());
 
-            log.info("Seeded 7 AEME users: sys.admin / csa.agent / risk.user / mrm.user / corp.admin / ta.admin / soc.user");
+            // ONLS Admin — Wearables + Helper Portal read access
+            userRepository.save(User.builder()
+                    .username("onls.admin")
+                    .email("onls.admin@aeme.com")
+                    .password(passwordEncoder.encode("Onls@1234"))
+                    .fullName("Khalid Al Nasser")
+                    .avatarInitials("KN")
+                    .roles(Set.of(Roles.ONLS_ADMIN))
+                    .build());
+
+            log.info("Seeded 8 AEME users: sys.admin / csa.agent / onls.admin / risk.user / mrm.user / corp.admin / ta.admin / soc.user");
         }
     }
 }
