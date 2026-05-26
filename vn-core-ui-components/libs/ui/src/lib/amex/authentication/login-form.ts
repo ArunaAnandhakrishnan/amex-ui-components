@@ -91,13 +91,6 @@ export interface LoginCredentials {
 
             <div class="form-links">
               <a class="form-link" 
-                 (click)="forgotUserId.emit()" 
-                 (keydown.enter)="forgotUserId.emit()"
-                 (keydown.space)="forgotUserId.emit()"
-                 role="button"
-                 tabindex="0"
-                 aria-label="Forgot User ID">Forgot User ID?</a>
-              <a class="form-link" 
                  (click)="forgotPassword.emit()" 
                  (keydown.enter)="forgotPassword.emit()"
                  (keydown.space)="forgotPassword.emit()"
@@ -226,7 +219,6 @@ export class AmexLoginFormComponent {
   @Input() showRegister = false;
 
   @Output() loginSubmit = new EventEmitter<LoginCredentials>();
-  @Output() forgotUserId = new EventEmitter<void>();
   @Output() forgotPassword = new EventEmitter<void>();
   @Output() registerClick = new EventEmitter<void>();
 
@@ -236,9 +228,9 @@ export class AmexLoginFormComponent {
 
   credentials: LoginCredentials = { username: '', password: '' };
 
-ngAfterViewInit() {
-  this.usernameInput?.nativeElement.focus();
-}
+  ngAfterViewInit() {
+    this.usernameInput?.nativeElement.focus();
+  }
 
   onKeydown(event: KeyboardEvent) {
     // Handle Enter key in form fields
