@@ -123,7 +123,7 @@ const routes: Routes = [
         .catch(portalFallback),
   },
 
-  // ── Centurion 2.0 ────────────────────────────────────────────────
+  // ── Centurion 2.0 (port 4211) ────────────────────────────────────
   {
     path: 'centurion/centurion-2.0',
     canActivate: [AuthGuard],
@@ -133,6 +133,7 @@ const routes: Routes = [
         remoteEntry: 'http://localhost:4211/remoteEntry.js',
         exposedModule: './Module',
       })
+        .then(m => m.CenturionRemoteEntryModule)  // ← FIX: Added module extraction
         .catch(portalFallback),
   },
 
@@ -142,8 +143,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     loadChildren: () =>
       loadRemoteModule({
-        type:          'module',
-        remoteEntry:   'http://localhost:4210/remoteEntry.js',
+        type: 'module',
+        remoteEntry: 'http://localhost:4210/remoteEntry.js',
         exposedModule: './Module',
       })
         .then(m => m.CenLcyExcRemoteEntryModule)

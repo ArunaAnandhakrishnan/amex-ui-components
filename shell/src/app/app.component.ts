@@ -322,8 +322,23 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
+  onCenturionSubClick(subId: string): void {
+    this.activeSubId = subId;
+    this.showSubMenu = false;
+
+    const route = this.centurionRouteMap[subId];
+
+    if (route) {
+      this.router.navigate([route]);
+    }
+  }
+
   getActiveSubLabel(): string {
     return this.miscSubItems.find(s => s.id === this.activeSubId)?.label ?? '';
+  }
+
+  getActiveCenturionLabel(): string {
+    return this.centurionSubItems.find(s => s.id === this.activeSubId)?.label ?? '';
   }
 
   onMenuToggle(): void {}

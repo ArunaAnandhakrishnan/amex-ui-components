@@ -38,7 +38,7 @@ public class WearablesController {
 
     // Only CSA can issue a wearable (matches spec: servicing agents only)
     @PostMapping("/issue")
-    @PreAuthorize("hasRole('ROLE_CSA', 'ONLS_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CSA', 'ONLS_ADMIN')")
     public ResponseEntity<ApiResponse<WearableDevice>> issueWearable(
             @Valid @RequestBody WearableIssuanceRequest request) {
         if (!request.isTcAccepted()) {
@@ -51,7 +51,7 @@ public class WearablesController {
 
     // Only CSA can suspend / activate / terminate a wearable
     @PostMapping("/action/{serialNo}")
-    @PreAuthorize("hasRole('ROLE_CSA', 'ONLS_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CSA', 'ONLS_ADMIN')")
     public ResponseEntity<ApiResponse<WearableDevice>> performAction(
             @PathVariable String serialNo,
             @Valid @RequestBody WearableActionRequest request) {
