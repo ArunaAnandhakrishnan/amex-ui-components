@@ -17,6 +17,9 @@
           formControlName="clientId"
           placeholder="Enter Client ID (Eg : 20510409)"
           autocomplete="off"
+          inputmode="numeric"
+          (keypress)="onlyNumbers($event)"
+          (paste)="onPaste($event)"
         />
         <div *ngIf="submitted && f['clientId'].errors" class="clce__field-error">
           Client ID is required.

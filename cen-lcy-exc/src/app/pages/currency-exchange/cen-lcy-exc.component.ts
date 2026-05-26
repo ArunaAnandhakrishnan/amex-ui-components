@@ -16,8 +16,8 @@ export class CenLcyExcComponent implements OnInit {
 
   // ── Search ──────────────────────────────────────────────────────────────────
   searchForm!: FormGroup;
-  submitted   = false;
-  searching   = false;
+  submitted = false;
+  searching = false;
   searchError = '';
 
   // ── Already submitted (shown only when user tries to resubmit) ───────────────
@@ -27,16 +27,16 @@ export class CenLcyExcComponent implements OnInit {
   customer: CenCustomer | null = null;
 
   // ── Application submission ───────────────────────────────────────────────────
-  termsAccepted  = false;
-  submitting     = false;
-  submitSuccess  = false;
+  termsAccepted = false;
+  submitting = false;
+  submitSuccess = false;
   successMessage = '';
-  submitError    = '';
+  submitError = '';
 
   constructor(
-    private fb:  FormBuilder,
+    private fb: FormBuilder,
     private svc: CenLcyExcService,
-  ) {}
+  ) { }
 
   get f() { return this.searchForm.controls; }
 
@@ -48,13 +48,13 @@ export class CenLcyExcComponent implements OnInit {
 
   // ── Search ───────────────────────────────────────────────────────────────────
   onSearch(): void {
-    this.submitted           = true;
-    this.searchError         = '';
+    this.submitted = true;
+    this.searchError = '';
     this.alreadySubmittedMsg = '';   // clear on every fresh search attempt
-    this.customer            = null;
-    this.submitSuccess       = false;
-    this.submitError         = '';
-    this.termsAccepted       = false;
+    this.customer = null;
+    this.submitSuccess = false;
+    this.submitError = '';
+    this.termsAccepted = false;
 
     if (this.searchForm.invalid) return;
 
@@ -90,20 +90,20 @@ export class CenLcyExcComponent implements OnInit {
   onSubmitApplication(): void {
     if (!this.customer || !this.termsAccepted) return;
 
-    this.submitting  = true;
+    this.submitting = true;
     this.submitError = '';
 
     this.svc.submitApplication({
-      clientId:      this.customer.clientId,
+      clientId: this.customer.clientId,
       termsAccepted: this.termsAccepted,
     }).subscribe({
       next: (result) => {
-        this.submitting     = false;
-        this.submitSuccess  = true;
+        this.submitting = false;
+        this.submitSuccess = true;
         this.successMessage = result.message;
       },
       error: (err: Error) => {
-        this.submitting  = false;
+        this.submitting = false;
         this.submitError = err.message || 'Submission failed. Please try again.';
       },
     });
@@ -111,13 +111,24 @@ export class CenLcyExcComponent implements OnInit {
 
   // ── Ok button (after success) — clean reset, NO already-submitted banner ──────
   onOk(): void {
-    this.customer            = null;
-    this.submitSuccess       = false;
-    this.successMessage      = '';
-    this.submitted           = false;
+    this.customer = null;
+    this.submitSuccess = false;
+    this.successMessage = '';
+    this.submitted = false;
     this.alreadySubmittedMsg = '';   // ← clear — banner shows only on re-search
-    this.searchError         = '';
-    this.termsAccepted       = false;
+    this.searchError = '';
+    this.termsAccepted = false;
     this.searchForm.reset();
+  }
+
+  onlyNumbers(event: KeyboardEvent): boolean {
+    return /[0-9]/.test(event.key);
+  }
+
+  onPaste(event: ClipboardEvent): void {
+    const pastedData = event.clipboardData?.getData('text') ?? '';
+    if (!/^\d+$/.test(pastedData)) {
+      event.preventDefault();
+    }
   }
 }
