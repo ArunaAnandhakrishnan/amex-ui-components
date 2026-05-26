@@ -1,57 +1,68 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { AppRoutingModule }  from './app-routing.module';
 import { AppComponent }      from './app.component';
 import { LoginComponent }    from './pages/login/login.component';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 
 import { AuthInterceptor }   from './core/interceptors/auth.interceptor';
 import { ErrorInterceptor }  from './core/interceptors/error.interceptor';
 
-// ── Amex UI components ─────────────────────────────────────────────
-// AmexPageShellComponent is the single entry point for shell layout.
-// It internally uses AmexTopNavBarComponent, AmexTabBarComponent,
-// AmexSidebarMenuComponent, AmexPageHeaderComponent etc.
-// We also import AmexTopNavBarComponent + AmexTabBarComponent here
-// because AppComponent projects a custom header slot into the shell.
-// AmexLogoutConfirmationComponent is used outside the shell for overlay.
+// ── Amex Shell Components ──────────────────────────────────────────────
 import { AmexPageShellComponent }         from '@vn-core-ui-components/ui';
 import { AmexTopNavBarComponent }         from '@vn-core-ui-components/ui';
 import { AmexTabBarComponent }            from '@vn-core-ui-components/ui';
 import { AmexLogoutConfirmationComponent } from '@vn-core-ui-components/ui';
 
+// ── Amex Auth Components ───────────────────────────────────────────────
+import { AmexLoginFormComponent }          from '@vn-core-ui-components/ui';
+import { AmexForgotPasswordFormComponent } from '@vn-core-ui-components/ui';
+import { AmexRegisterFormComponent }       from '@vn-core-ui-components/ui';
+
+// ── VN-Core UI Components ──────────────────────────────────────────────
+import { CardComponent }      from '@vn-core-ui-components/ui';
+import { FormFieldComponent } from '@vn-core-ui-components/ui';
+import { ButtonComponent }    from '@vn-core-ui-components/ui';
+import { AlertComponent }     from '@vn-core-ui-components/ui';
+
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    // HeaderComponent  — removed: logic moved into AppComponent
-    // SidebarComponent — removed: sidebar handled by amex-page-shell internally
+    ForgotPasswordComponent,
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     ReactiveFormsModule,
+    FormsModule,
     AppRoutingModule,
 
-    // Shell entry point — owns the full page chrome
+    // ── Shell Chrome ──────────────────────────────────────────────
     AmexPageShellComponent,
-
-    // Used directly in AppComponent's custom header projection slot
     AmexTopNavBarComponent,
     AmexTabBarComponent,
-
-    // Logout overlay — rendered outside shell in AppComponent template
     AmexLogoutConfirmationComponent,
 
-    // AmexSidebarMenuComponent — NOT needed here anymore.
-    // amex-page-shell imports and renders it internally.
+    // ── Auth Forms (vn-core standalone components) ─────────────────
+    AmexLoginFormComponent,
+    AmexForgotPasswordFormComponent,
+    AmexRegisterFormComponent,
+
+    // ── VN-Core UI Components ──────────────────────────────────────
+    CardComponent,
+    FormFieldComponent,
+    ButtonComponent,
+    AlertComponent,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor,  multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {}

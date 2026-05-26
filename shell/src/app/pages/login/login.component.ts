@@ -1,115 +1,131 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  AbstractControl, FormBuilder, FormGroup,
-  ValidationErrors, Validators,
-} from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { EventBusService } from '../../core/services/event-bus.service';
-
-function passwordMatch(ctrl: AbstractControl): ValidationErrors | null {
-  const pw  = ctrl.get('password')?.value;
-  const cpw = ctrl.get('confirmPassword')?.value;
-  return pw && cpw && pw !== cpw ? { mismatch: true } : null;
-}
+import { LoginCredentials } from '@vn-core-ui-components/ui';
+import { RegisterData }     from '@vn-core-ui-components/ui';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html',
+  template: `
+    <!-- LOGIN VIEW -->
+    <ng-container *ngIf="mode === 'login'">
+      <amex-login-form
+        portalTitle="ONLS Helper Tool"
+        [errorMessage]="error"
+        [successMessage]="success"
+        [showRegister]="true"
+        (loginSubmit)="onLogin($event)"
+        (forgotPassword)="goToForgotPassword()"
+        (registerClick)="setMode('register')">
+      </amex-login-form>
+    </ng-container>
+
+    <!-- REGISTER VIEW -->
+    <ng-container *ngIf="mode === 'register'">
+      <amex-register-form
+        portalTitle="ONLS Helper Tool"
+        [errorMessage]="error"
+        [successMessage]="success"
+        (registerSubmit)="onRegister($event)"
+        (cancel)="setMode('login')">
+      </amex-register-form>
+    </ng-container>
+  `,
 })
 export class LoginComponent implements OnInit {
 
   mode: 'login' | 'register' = 'login';
-  loading      = false;
-  error        = '';
-  success      = '';
-  showPwd      = false;
-  showConfirm  = false;
-  returnUrl    = '/bta';
-
-  loginForm!:    FormGroup;
-  registerForm!: FormGroup;
+  error   = '';
+  success = '';
+  private returnUrl = '/misc/priority-pass';
 
   constructor(
-    private fb:    FormBuilder,
-    private auth:  AuthService,
-    private bus:   EventBusService,
-    private router:  Router,
-    private route:   ActivatedRoute,
+    private auth:   AuthService,
+    private bus:    EventBusService,
+    private router: Router,
+    private route:  ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
-    if (this.auth.hasToken()) { this.router.navigate([this.returnUrl]); return; }
-    this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/bta';
-
-    this.loginForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(3)]],
-      password: ['', [Validators.required, Validators.minLength(4)]],
-    });
-
-    this.registerForm = this.fb.group({
-      username:        ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
-      email:           ['', [Validators.required, Validators.email]],
-      password:        ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]],
-      role:            ['ROLE_USER'],
-    }, { validators: passwordMatch });
+    // Already logged in → redirect away
+    if (this.auth.hasToken()) {
+      this.router.navigate([this.returnUrl]);
+      return;
+    }
+    this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/misc/priority-pass';
   }
+
+  // ── Mode toggle ───────────────────────────────────────────────────
 
   setMode(m: 'login' | 'register'): void {
-    this.mode = m; this.error = ''; this.success = '';
+    this.mode    = m;
+    this.error   = '';
+    this.success = '';
   }
 
-  /** Mock login — works without backend. Any non-empty credentials succeed. */
-  private mockLogin(username: string): void {
-    const mockToken = 'mock-jwt-' + Date.now();
-    localStorage.setItem(AuthService.TOKEN_KEY, mockToken);
-    localStorage.setItem(AuthService.USER_KEY, JSON.stringify({ username, role: 'ROLE_USER' }));
-    this.bus.emit({ type: 'USER_LOGGED_IN', payload: { username, role: 'ROLE_USER' } });
-    this.router.navigate([this.returnUrl]);
+  // ── Login ─────────────────────────────────────────────────────────
+
+  onLogin(credentials: LoginCredentials): void {
+    this.error   = '';
+    this.success = '';
+
+    this.auth.login({ username: credentials.username, password: credentials.password })
+      .subscribe({
+        next: (data) => {
+          this.bus.emit({
+            type: 'USER_LOGGED_IN',
+            payload: { username: data.username, roles: data.roles, userId: data.userId },
+          });
+          this.router.navigate([this.returnUrl]);
+        },
+        error: (err) => {
+          this.error = err.error?.message
+            ?? err.error?.data?.message
+            ?? 'Login failed. Please check your credentials and try again.';
+        },
+      });
   }
 
-  login(): void {
-    if (this.loginForm.invalid) { this.loginForm.markAllAsTouched(); return; }
-    this.loading = true; this.error = '';
+  // ── Register ──────────────────────────────────────────────────────
 
-    // Try real backend first; fall back to mock if backend is not running
-    this.auth.login(this.loginForm.value).subscribe({
-      next: res => {
-        this.bus.emit({ type: 'USER_LOGGED_IN', payload: { username: res.username, role: res.role } });
-        this.router.navigate([this.returnUrl]);
-      },
-      error: () => {
-        // Backend not available — use mock login so development works without a server
-        this.loading = false;
-        this.mockLogin(this.loginForm.value.username);
-      },
-    });
+  onRegister(data: RegisterData): void {
+    this.error   = '';
+    this.success = '';
+
+    // Validate passwords match
+    if (data.password !== data.confirmPassword) {
+      this.error = 'Passwords do not match.';
+      return;
+    }
+
+    // Map vn-core RegisterData → backend RegisterRequest
+    const fullName = `${data.firstName} ${data.lastName}`.trim();
+    const username = (data.firstName + data.lastName)
+      .toLowerCase()
+      .replace(/\s+/g, '');
+
+    this.auth.register({ username, email: data.email, password: data.password, fullName })
+      .subscribe({
+        next: (res) => {
+          this.bus.emit({
+            type: 'USER_LOGGED_IN',
+            payload: { username: res.username, roles: res.roles, userId: res.userId },
+          });
+          this.success = 'Account created! Redirecting…';
+          setTimeout(() => this.router.navigate([this.returnUrl]), 1500);
+        },
+        error: (err) => {
+          this.error = err.error?.message
+            ?? err.error?.data?.message
+            ?? 'Registration failed. Please try again.';
+        },
+      });
   }
 
-  register(): void {
-    if (this.registerForm.invalid) { this.registerForm.markAllAsTouched(); return; }
-    this.loading = true; this.error = ''; this.success = '';
+  // ── Navigation ────────────────────────────────────────────────────
 
-    const { username, email, password, role } = this.registerForm.value;
-    this.auth.register({ username, email, password, role }).subscribe({
-      next: res => {
-        this.bus.emit({ type: 'USER_LOGGED_IN', payload: { username: res.username, role: res.role } });
-        this.success = res.message || 'Registration successful! Redirecting…';
-        setTimeout(() => this.router.navigate(['/bta']), 1200);
-      },
-      error: () => {
-        // Backend not available — mock register
-        this.loading = false;
-        this.mockLogin(this.registerForm.value.username);
-      },
-    });
-  }
-
-  get lf() { return this.loginForm.controls; }
-  get rf() { return this.registerForm.controls; }
-  get pwdMismatch(): boolean {
-    return this.registerForm.hasError('mismatch') &&
-      (this.rf['confirmPassword'].dirty || this.rf['confirmPassword'].touched);
+  goToForgotPassword(): void {
+    this.router.navigate(['/forgot-password']);
   }
 }

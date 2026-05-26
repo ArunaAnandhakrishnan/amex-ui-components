@@ -18,15 +18,14 @@ import { AmexTabItem } from '@vn-core-ui-components/ui';
     <!-- MFE loading indicator — fixed, above everything -->
     <div class="mfe-loading-bar" [class.visible]="mfeLoading"></div>
 
-    <!-- Login page: no shell chrome -->
-    <ng-container *ngIf="isLoginPage; else shellLayout">
+    <!-- Auth pages (login / forgot-password): no shell chrome -->
+    <ng-container *ngIf="isAuthPage; else shellLayout">
       <router-outlet></router-outlet>
     </ng-container>
 
     <!-- ════════════════════════════════════════════════════════════
-         SHELL LAYOUT — amex-page-shell owns header/sidebar/footer.
-         We use Approach 3 (showCustomHeader) to project our own
-         header slot so the misc sub-menu logic is 100% preserved.
+         SHELL LAYOUT — only rendered when the user is authenticated.
+         amex-page-shell owns header/sidebar/footer.
     ════════════════════════════════════════════════════════════ -->
     <ng-template #shellLayout>
 
@@ -38,7 +37,6 @@ import { AmexTabItem } from '@vn-core-ui-components/ui';
       >
 
         <!-- ── Custom header slot ─────────────────────────────── -->
-        <!-- attribute selector must be the string "header"       -->
         <div header>
 
           <!-- Top nav bar: AMEX logo + portal title + logout -->
@@ -60,8 +58,7 @@ import { AmexTabItem } from '@vn-core-ui-components/ui';
             (subClick)="onSubClick($event)">
           </amex-tab-bar>
 
-          <!-- Misc dropdown — shown when Misc tab is active and
-               the user hasn't picked a sub-item yet, OR clicked Misc again -->
+          <!-- Misc dropdown -->
           <div class="misc-submenu" *ngIf="activeTabId === 'misc' && showSubMenu">
             <div class="misc-submenu__inner">
               <span
@@ -131,16 +128,14 @@ import { AmexTabItem } from '@vn-core-ui-components/ui';
         </div>
         <!-- /header slot -->
 
-        <!-- ── Page content (default ng-content slot) ─────────── -->
+        <!-- ── Page content ─────────────────────────────────── -->
         <router-outlet></router-outlet>
 
       </amex-page-shell>
 
     </ng-template>
 
-    <!-- Logout confirmation dialog — rendered outside the shell so it
-         overlays the entire viewport correctly via the component's own
-         position:fixed / z-index styling. -->
+    <!-- Logout confirmation dialog -->
     <amex-logout-confirmation
       [visible]="showLogoutDialog"
       serverLabel="tst-websrv01 says"
@@ -152,13 +147,13 @@ import { AmexTabItem } from '@vn-core-ui-components/ui';
 })
 export class AppComponent implements OnInit, OnDestroy {
 
-  isLoginPage = false;
-  mfeLoading = false;
+  isAuthPage       = false;
+  mfeLoading       = false;
   showLogoutDialog = false;
-  showSubMenu = false;
-  activeTabId = 'bta';   // default tab on load
-  activeSubId = '';
-  username = '';
+  showSubMenu      = false;
+  activeTabId      = 'bta';
+  activeSubId      = '';
+  username         = '';
 
   private subs = new Subscription();
 
@@ -191,7 +186,6 @@ export class AppComponent implements OnInit, OnDestroy {
     { id: 'pccm-ftp', label: 'Pccm Ftp Sequence Status' },
   ];
 
-  /** Maps each misc sub-item id → its shell route */
   private readonly subRouteMap: Record<string, string> = {
     'pay-with-points': '/pay-with-points',
     'digital-wallet': '/misc/digital-wallet',
@@ -217,7 +211,9 @@ export class AppComponent implements OnInit, OnDestroy {
   // ── Lifecycle ─────────────────────────────────────────────────────
 
   ngOnInit(): void {
-    // Load stored username into the nav bar
+    // Set immediately from current URL so shell doesn't flash on first paint
+    this.isAuthPage = this.checkIsAuthRoute(this.router.url);
+
     this.username = this.auth.getUser()?.username ?? '';
 
     this.subs.add(
@@ -234,19 +230,33 @@ export class AppComponent implements OnInit, OnDestroy {
         } else {
           this.mfeLoading = false;
           if (e instanceof NavigationEnd) {
-            this.isLoginPage = (e.urlAfterRedirects as string).startsWith('/login');
-            this.syncFromUrl(e.urlAfterRedirects as string);
+            const url = e.urlAfterRedirects as string;
+            this.isAuthPage = this.checkIsAuthRoute(url);
+            if (!this.isAuthPage) {
+              this.syncFromUrl(url);
+            }
           }
         }
       })
     );
 
-    // Sync active state on initial load / page refresh
     this.syncFromUrl(this.router.url);
   }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
+  }
+
+  // ── Auth route detection ───────────────────────────────────────────
+
+  /** Returns true for any route that should NOT show the page shell */
+  private checkIsAuthRoute(url: string): boolean {
+    return (
+      url.startsWith('/login') ||
+      url.startsWith('/forgot-password') ||
+      url === '/'  ||
+      url === ''
+    );
   }
 
   // ── URL → active tab/sub sync ─────────────────────────────────────
@@ -281,10 +291,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   // ── Tab & sub-menu handlers ───────────────────────────────────────
 
-  /**
-   * Clicking Misc tab only toggles the dropdown — it does NOT navigate.
-   * All other tabs navigate directly.
-   */
   onTabClick(tabId: string): void {
     if (tabId === 'misc' || tabId === 'centurion') {
       this.showSubMenu = !this.showSubMenu;
@@ -307,7 +313,6 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** Sub-item click → navigate, close dropdown. Only place misc routes are triggered. */
   onSubClick(subId: string): void {
     this.activeSubId = subId;
     this.showSubMenu = false;
@@ -317,40 +322,18 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCenturionSubClick(subId: string): void {
-    this.activeSubId = subId;
-    this.showSubMenu = false;
-
-    const route = this.centurionRouteMap[subId];
-
-    if (route) {
-      this.router.navigate([route]);
-    }
-  }
-
-  /** Returns the label for the currently active misc sub-item (for breadcrumb) */
   getActiveSubLabel(): string {
     return this.miscSubItems.find(s => s.id === this.activeSubId)?.label ?? '';
   }
 
-  getActiveCenturionLabel(): string {
-    return this.centurionSubItems.find(
-      s => s.id === this.activeSubId
-    )?.label ?? '';
-  }
-
-  onMenuToggle(): void {
-    // Reserved for future hamburger / mobile menu handling
-  }
+  onMenuToggle(): void {}
 
   // ── Logout ───────────────────────────────────────────────────────
 
-  /** Called by (logout) output from amex-top-nav-bar — show confirmation first */
   onLogoutRequest(): void {
     this.showLogoutDialog = true;
   }
 
-  /** Called after user confirms logout in the dialog */
   onLogoutConfirm(): void {
     this.showLogoutDialog = false;
     this.bus.emit({ type: 'USER_LOGGED_OUT' });

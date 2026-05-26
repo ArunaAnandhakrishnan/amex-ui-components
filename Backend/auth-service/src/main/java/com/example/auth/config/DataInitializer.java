@@ -100,7 +100,7 @@ public class DataInitializer implements CommandLineRunner {
                     .password(passwordEncoder.encode("Onls@1234"))
                     .fullName("Khalid Al Nasser")
                     .avatarInitials("KN")
-                    .roles(Set.of(Roles.ONLS_ADMIN))
+                    .roles(Set.of(Roles.ONLS_ADMIN) )
                     .build());
 
             log.info("Seeded 8 AEME users: sys.admin / csa.agent / onls.admin / risk.user / mrm.user / corp.admin / ta.admin / soc.user");

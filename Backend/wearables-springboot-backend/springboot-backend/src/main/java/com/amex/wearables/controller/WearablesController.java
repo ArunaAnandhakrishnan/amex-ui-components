@@ -20,7 +20,7 @@ public class WearablesController {
 
     // CSA and ONLS_ADMIN can look up a client's cards
     @GetMapping("/client/{clientCode}")
-    @PreAuthorize("hasAnyRole('CSA', 'ONLS_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CSA', 'ONLS_ADMIN')")
     public ResponseEntity<ApiResponse<ClientWearableData>> getClientData(
             @PathVariable String clientCode) {
         ClientWearableData data = wearablesService.getClientData(clientCode);
@@ -29,7 +29,7 @@ public class WearablesController {
 
     // CSA and ONLS_ADMIN can view existing devices for a card
     @GetMapping("/devices/{cardNumber}")
-    @PreAuthorize("hasAnyRole('CSA', 'ONLS_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CSA', 'ONLS_ADMIN')")
     public ResponseEntity<ApiResponse<Map<String, List<WearableDevice>>>> getDevicesForCard(
             @PathVariable String cardNumber) {
         List<WearableDevice> devices = wearablesService.getDevicesForCard(cardNumber);
@@ -38,7 +38,7 @@ public class WearablesController {
 
     // Only CSA can issue a wearable (matches spec: servicing agents only)
     @PostMapping("/issue")
-    @PreAuthorize("hasRole('CSA')")
+    @PreAuthorize("hasRole('ROLE_CSA', 'ONLS_ADMIN')")
     public ResponseEntity<ApiResponse<WearableDevice>> issueWearable(
             @Valid @RequestBody WearableIssuanceRequest request) {
         if (!request.isTcAccepted()) {
@@ -51,7 +51,7 @@ public class WearablesController {
 
     // Only CSA can suspend / activate / terminate a wearable
     @PostMapping("/action/{serialNo}")
-    @PreAuthorize("hasRole('CSA')")
+    @PreAuthorize("hasRole('ROLE_CSA', 'ONLS_ADMIN')")
     public ResponseEntity<ApiResponse<WearableDevice>> performAction(
             @PathVariable String serialNo,
             @Valid @RequestBody WearableActionRequest request) {

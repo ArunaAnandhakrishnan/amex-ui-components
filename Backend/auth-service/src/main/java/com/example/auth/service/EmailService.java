@@ -14,13 +14,23 @@ public class EmailService {
     public void sendForgotPasswordMail(String to, String username, String tempPassword) {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(to);
-        msg.setSubject("ISO8583 Validator — Password Reset");
+        msg.setSubject("Password Reset");
         msg.setText(
-                "Hi " + username + ",\n\n" +
-                        "Your temporary password is: " + tempPassword + "\n\n" +
-                        "Please log in and change your password immediately.\n\n" +
-                        "ISO8583 Validator Team"
+
+                "Hi,\n\n" +
+
+                        "Your Username is: " + username + "\n" +
+
+                        "Your Temporary Password is: "
+                        + tempPassword +
+
+                        "\n\nPlease change your password after first login.\n\n"
+
+                        + "Thank you"
+
         );
+
         mailSender.send(msg);
+
     }
 }

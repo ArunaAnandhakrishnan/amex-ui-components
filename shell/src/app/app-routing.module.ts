@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { loadRemoteModule } from '@angular-architects/module-federation';
 
 import { LoginComponent } from './pages/login/login.component';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 import { AuthGuard } from './core/guards/auth.guard';
 
 const portalFallback = () =>
@@ -11,7 +12,8 @@ const portalFallback = () =>
 const routes: Routes = [
 
   { path: 'login', component: LoginComponent },
-  { path: '', redirectTo: 'bta', pathMatch: 'full' },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: '', redirectTo: 'misc/priority-pass', pathMatch: 'full' },
 
   // ── Online Account Services (port 4201) ──────────────────────────
   {

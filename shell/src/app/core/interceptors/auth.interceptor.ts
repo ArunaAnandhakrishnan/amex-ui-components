@@ -7,18 +7,6 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 
-/**
- * Auth Interceptor (from doc section 5)
- *
- * Automatically attaches JWT Bearer token to every outgoing HTTP request.
- * This means ALL MFEs get the token on their API calls without
- * manually reading localStorage in each service.
- *
- * Flow (from doc):
- *   Component → HttpClient → AuthInterceptor → Backend API
- *                                                   ↓
- *   Component ← HttpClient ← AuthInterceptor ← Response
- */
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(private auth: AuthService) {}
@@ -27,9 +15,9 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
+    // ✅ CORRECTED: Use updated token key name
     const token = this.auth.getToken();
 
-    // Attach Bearer token if available
     const authReq = token
       ? req.clone({
           setHeaders: { Authorization: `Bearer ${token}` },
