@@ -13,6 +13,7 @@ const mfConfig = withModuleFederationPlugin({
     payWithPointsPortal: 'payWithPointsPortal@http://localhost:4207/remoteEntry.js',
     loungePortal:        'loungePortal@http://localhost:4209/remoteEntry.js',
     cenLcyExcPortal:     'cenLcyExcPortal@http://localhost:4210/remoteEntry.js',  // ← NEW
+    centurionPortal:       'centurionPortal@http://localhost:4211/remoteEntry.js',  // ← NEW
   },
   shared: {
     ...shareAll({
