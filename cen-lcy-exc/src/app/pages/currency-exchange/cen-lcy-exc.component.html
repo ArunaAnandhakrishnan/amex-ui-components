@@ -1,0 +1,136 @@
+<div class="clce">
+  <div class="clce__body">
+
+    <!-- ── Already-submitted error (top of page) ── -->
+    <div *ngIf="alreadySubmittedMsg" class="clce__already-error">
+      {{ alreadySubmittedMsg }}
+    </div>
+
+    <!-- ── Client ID Search (always visible) ── -->
+    <div class="clce__search-wrap">
+      <form [formGroup]="searchForm" (ngSubmit)="onSearch()" novalidate>
+        <label class="clce__field-label" for="clientId">Client ID</label>
+        <input
+          id="clientId"
+          class="clce__client-input"
+          [class.clce__client-input--invalid]="submitted && f['clientId'].errors"
+          formControlName="clientId"
+          placeholder="Enter Client ID (Eg : 20510409)"
+          autocomplete="off"
+        />
+        <div *ngIf="submitted && f['clientId'].errors" class="clce__field-error">
+          Client ID is required.
+        </div>
+        <button class="clce__submit-btn" type="submit" [disabled]="searching">
+          {{ searching ? 'Searching...' : 'Submit' }}
+        </button>
+      </form>
+      <div *ngIf="searchError" class="clce__search-error">{{ searchError }}</div>
+    </div>
+
+    <!-- ── Result Section (shown after customer found) ── -->
+    <ng-container *ngIf="customer">
+      <div class="clce__result">
+
+        <!-- Success state -->
+        <ng-container *ngIf="submitSuccess">
+          <div class="clce__success-banner">{{ successMessage }}</div>
+          <button class="clce__ok-btn" (click)="onOk()">Ok</button>
+        </ng-container>
+
+        <!-- Error state -->
+        <div *ngIf="submitError" class="clce__error-banner">{{ submitError }}</div>
+
+        <!-- Main content (hidden after success) -->
+        <ng-container *ngIf="!submitSuccess">
+
+          <!-- Card table + AMEX image -->
+          <div class="clce__card-row">
+            <table class="clce__card-table">
+              <tr>
+                <td>Name</td>
+                <td>{{ customer.name }}</td>
+              </tr>
+              <tr>
+                <td>Card Number</td>
+                <td>{{ customer.cardNumber }}</td>
+              </tr>
+            </table>
+
+            <div class="clce__amex-card">
+              <div class="clce__amex-brand">American Express</div>
+              <div class="clce__amex-chip"></div>
+              <div class="clce__amex-footer">
+                <div class="clce__amex-holder">{{ customer.name }}</div>
+                <div class="clce__amex-logo">AMEX</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Highlights -->
+          <div class="clce__highlights-title">Highlights</div>
+
+          <p class="clce__highlights-lead">
+            You are invited to change your Centurion Card billing currency from US$ to
+            <span class="clce__highlight">{{ customer.currency }}</span>
+            while all the Centurion benefits you are accustomed to remain as is.
+          </p>
+
+          <ul class="clce__bullet-list">
+            <li>
+              Your Card statement will be billed in
+              <span class="clce__highlight">{{ customer.currency }}</span>
+              and your monthly Card settlement (payment) will be done in
+              <span class="clce__highlight">{{ customer.currency }}</span>.
+            </li>
+            <li>
+              You will not be charged Conversion Processing Fee for transactions done in
+              <span class="clce__highlight">{{ customer.currency }}</span>,
+              while the respective fee will apply on Non-Billing currency transactions (including USD).
+            </li>
+            <li>
+              You will be issued new Centurion Cards (primary &amp; supplementary Card(s)) in
+              <span class="clce__highlight">{{ customer.currency }}</span>
+              and your existing Centurion Card will continue to be active until your new Cards are
+              delivered and activated.
+            </li>
+            <li>You will continue to earn double MR points when you spend locally.</li>
+            <li>
+              Your Card Annual Fees will be levied to you now in
+              <span class="clce__highlight">{{ customer.currency }}</span>,
+              and billed to your new Card account.
+            </li>
+          </ul>
+
+          <!-- T&C -->
+          <div class="clce__tnc">
+            <label class="clce__tnc-label">
+              <input type="checkbox" [(ngModel)]="termsAccepted" />
+              <span>
+                I agree to the Centurion Currency Exchange
+                <a href="#" class="clce__tnc-link" (click)="$event.preventDefault()">
+                  Terms &amp; Conditions
+                </a>,
+                which I have read and understood fully. Upon clicking submit below, I provide my
+                consent to process this Application for changing the currency of my Centurion Card.
+              </span>
+            </label>
+          </div>
+
+          <!-- Submit -->
+          <div class="clce__actions">
+            <button
+              class="clce__submit-btn"
+              [disabled]="!termsAccepted || submitting"
+              (click)="onSubmitApplication()"
+            >
+              {{ submitting ? 'Submitting...' : 'Submit' }}
+            </button>
+          </div>
+
+        </ng-container>
+      </div>
+    </ng-container>
+
+  </div>
+</div>

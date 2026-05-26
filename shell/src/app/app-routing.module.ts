@@ -49,8 +49,8 @@ const routes: Routes = [
         .then(m => m.OffersRemoteEntryModule).catch(portalFallback),
   },
 
-   // ── Supplementary Access helper Portal (port 4205) ────────────────────────────
-   {
+  // ── Supplementary Access helper Portal (port 4205) ───────────────
+  {
     path: 'supp',
     canActivate: [AuthGuard],
     loadChildren: () =>
@@ -64,9 +64,6 @@ const routes: Routes = [
   },
 
   // ── Pay With Points (port 4207) ───────────────────────────────────
-  // Shell mounts the remote at /pay-with-points.
-  // The remote's PayWithPointsModule registers child route '' → PayWithPointsComponent.
-  // So the full URL is /pay-with-points (no trailing segment needed).
   {
     path: 'pay-with-points',
     canActivate: [AuthGuard],
@@ -80,9 +77,7 @@ const routes: Routes = [
         .catch(portalFallback),
   },
 
-  // ── Misc sub-pages that map to sub-routes INSIDE pay-with-points remote ──
-  // When the shell's Misc menu is clicked for sub-items other than pay-with-points,
-  // they are routed here as separate paths. The remote stub handles them.
+  // ── Misc sub-pages ────────────────────────────────────────────────
   {
     path: 'misc/digital-wallet',
     canActivate: [AuthGuard],
@@ -98,8 +93,7 @@ const routes: Routes = [
         .then(m => m.WearablesRemoteEntryModule).catch(portalFallback),
   },
 
-
-  // ── AMEX Wearables (port 4206) ────────────────────────────
+  // ── AMEX Wearables (port 4206) ───────────────────────────────────
   {
     path: 'wearables',
     canActivate: [AuthGuard],
@@ -124,6 +118,33 @@ const routes: Routes = [
         exposedModule: './Module',
       })
         .then(m => m.LoungeRemoteEntryModule)
+        .catch(portalFallback),
+  },
+
+  // ── Centurion 2.0 ────────────────────────────────────────────────
+  {
+    path: 'centurion/centurion-2.0',
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      loadRemoteModule({
+        type: 'module',
+        remoteEntry: 'http://localhost:4211/remoteEntry.js',
+        exposedModule: './Module',
+      })
+        .catch(portalFallback),
+  },
+
+  // ── Centurion LCY EXC (port 4210) ────────────────────────────────
+  {
+    path: 'centurion/cen-lcy-exc',
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      loadRemoteModule({
+        type:          'module',
+        remoteEntry:   'http://localhost:4210/remoteEntry.js',
+        exposedModule: './Module',
+      })
+        .then(m => m.CenLcyExcRemoteEntryModule)
         .catch(portalFallback),
   },
 
