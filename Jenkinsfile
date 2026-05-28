@@ -8,8 +8,7 @@ pipeline {
     environment {
         SONAR_HOST_URL = 'http://localhost:9000'
         PROJECTS       = 'shell:amex-shell:4200 bta-portal:amex-bta-portal:4201'
-        ZAP_HOME       = 'C:\\Program Files\\ZAP\\Zed Attack Proxy'
-        ZAP_REPORT     = 'C:\\Users\\V00554\\Downloads\\ZAP-Report.xml'
+        ZAP_EXE        = 'C:\\Program Files\\ZAP\\Zed Attack Proxy\\zap.bat'
     }
 
     stages {
@@ -67,9 +66,11 @@ pipeline {
             steps {
                 script {
                     env.PROJECTS.split(' ').each { proj ->
-                        def parts  = proj.split(':')
-                        def folder = parts[0]
-                        def port   = parts[2]
+                        def parts    = proj.split(':')
+                        def folder   = parts[0]
+                        def port     = parts[2]
+                        def zapDir   = "${WORKSPACE}\\zap-home-${folder}"
+                        def zapReport = "${WORKSPACE}\\${folder}\\zap-report.html"
 
                         echo "--- Starting app: ${folder} on port ${port} ---"
                         dir(folder) {
@@ -80,43 +81,13 @@ pipeline {
                         sleep(time: 30, unit: 'SECONDS')
 
                         echo "--- Running ZAP scan on ${folder} (port ${port}) ---"
-                        bat """
-                            cd "${env.ZAP_HOME}" && ^
-                            zap.bat -cmd ^
-                              -port 8090 ^
-                              -dir "${WORKSPACE}\\zap-home-${folder}" ^
-                              -quickurl http://localhost:${port} ^
-                              -quickprogress ^
-                              -quickout "${env.ZAP_REPORT}" ^
-                              -silent ^
-                            || exit 0
-                        """
-
-                        echo "--- Copying ZAP report to workspace ---"
-                        bat """
-                            copy "${env.ZAP_REPORT}" ^
-                                 "${WORKSPACE}\\${folder}\\zap-report.xml" ^
-                            2>nul || exit 0
-                        """
-
-                        bat """
-                            copy "${WORKSPACE}\\${folder}\\zap-report.xml" ^
-                                 "${WORKSPACE}\\${folder}\\zap-report.html" ^
-                            2>nul || exit 0
-                        """
+                        bat "cd \"C:\\Program Files\\ZAP\\Zed Attack Proxy\" && zap.bat -cmd -port 8090 -dir \"${zapDir}\" -quickurl http://localhost:${port} -quickprogress -quickout \"${zapReport}\" -silent || exit 0"
 
                         echo "--- Stopping dev server: ${folder} ---"
                         bat 'taskkill /F /IM node.exe /T 2>nul || exit 0'
                         sleep(time: 5, unit: 'SECONDS')
 
-                        bat """
-                            if not exist "${WORKSPACE}\\${folder}\\zap-report.xml" (
-                                echo ERROR: ZAP report not generated for ${folder}
-                                exit 1
-                            ) else (
-                                echo ZAP report OK: ${WORKSPACE}\\${folder}\\zap-report.xml
-                            )
-                        """
+                        bat "if not exist \"${zapReport}\" (echo ZAP report missing for ${folder}) else (echo ZAP report OK: ${zapReport})"
                     }
                 }
             }
@@ -129,15 +100,12 @@ pipeline {
                         def parts    = proj.split(':')
                         def folder   = parts[0]
                         def sonarKey = parts[1]
+                        def zapReport = "${WORKSPACE}\\${folder}\\zap-report.html"
                         echo "--- SonarQube scan: ${folder} (key: ${sonarKey}) ---"
                         dir(folder) {
                             withSonarQubeEnv('SonarQube') {
                                 def scannerHome = tool 'SonarQubeScanner'
-                                bat """
-                                    "${scannerHome}\\bin\\sonar-scanner.bat" ^
-                                    -Dsonar.zaproxy.reportPath="${WORKSPACE}\\${folder}\\zap-report.xml" ^
-                                    -Dsonar.zaproxy.htmlReportPath="${WORKSPACE}\\${folder}\\zap-report.xml"
-                                """
+                                bat "\"${scannerHome}\\bin\\sonar-scanner.bat\" -Dsonar.zaproxy.reportPath=\"${zapReport}\" -Dsonar.zaproxy.htmlReportPath=\"${zapReport}\""
                             }
                         }
                     }
@@ -158,7 +126,6 @@ pipeline {
     post {
         always {
             echo '--- Publishing reports ---'
-
             publishHTML([
                 allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true,
                 reportDir:   'shell/coverage/shell',
@@ -174,17 +141,16 @@ pipeline {
             publishHTML([
                 allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true,
                 reportDir:   'shell',
-                reportFiles: 'zap-report.xml',
+                reportFiles: 'zap-report.html',
                 reportName:  'Shell ZAP Security Report'
             ])
             publishHTML([
                 allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true,
                 reportDir:   'bta-portal',
-                reportFiles: 'zap-report.xml',
+                reportFiles: 'zap-report.html',
                 reportName:  'BTA Portal ZAP Security Report'
             ])
         }
-
         success {
             echo '==========================='
             echo '  BUILD PASSED ✅'
