@@ -38,7 +38,6 @@ export interface RegisterRequest { username: string; password: string; email: st
 export class AuthService {
 
   private readonly AUTH_API = 'http://localhost:8080/api/auth';
-
   static readonly TOKEN_KEY   = 'mfe_access_token';
   static readonly REFRESH_KEY = 'mfe_refresh_token';
   static readonly USER_KEY    = 'mfe_user';
@@ -86,13 +85,32 @@ export class AuthService {
 
   // ── LOGOUT ────────────────────────────────────────────────────────
 
-  logout(): void {
-    localStorage.removeItem(AuthService.TOKEN_KEY);
-    localStorage.removeItem(AuthService.REFRESH_KEY);
-    localStorage.removeItem(AuthService.USER_KEY);
-    this.loggedIn$.next(false);
-    this.router.navigate(['/login']);
+logout(): void {
+  const token = this.getToken();
+
+  if (token) {
+    this.http
+      .post(
+        `${this.AUTH_API}/logout`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .subscribe({
+        next:  () => this.clearSession(),
+        error: () => this.clearSession(), // clear locally even if the call fails
+      });
+  } else {
+    this.clearSession();
   }
+}
+
+private clearSession(): void {
+  localStorage.removeItem(AuthService.TOKEN_KEY);
+  localStorage.removeItem(AuthService.REFRESH_KEY);
+  localStorage.removeItem(AuthService.USER_KEY);
+  this.loggedIn$.next(false);
+  this.router.navigate(['/login']);
+}
 
   // ── GETTERS ───────────────────────────────────────────────────────
 
