@@ -29,6 +29,14 @@ public class HeaderAuthFilter extends OncePerRequestFilter {
         String username   = request.getHeader("X-Auth-Username");
         String rolesHeader = request.getHeader("X-Auth-Roles");
 
+        // DEBUG LOGGING
+        System.out.println("=== WEARABLES HEADER AUTH FILTER DEBUG ===");
+        System.out.println("Path: " + request.getRequestURI());
+        System.out.println("X-Auth-Token-Valid: " + tokenValid);
+        System.out.println("X-Auth-Username: " + username);
+        System.out.println("X-Auth-Roles: " + rolesHeader);
+        System.out.println("=========================================");
+
         if ("true".equals(tokenValid) && username != null && !username.isBlank()) {
             List<SimpleGrantedAuthority> authorities;
 
@@ -41,6 +49,8 @@ public class HeaderAuthFilter extends OncePerRequestFilter {
             } else {
                 authorities = Collections.emptyList();
             }
+
+            System.out.println("Authorities created: " + authorities);
 
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(username, null, authorities);

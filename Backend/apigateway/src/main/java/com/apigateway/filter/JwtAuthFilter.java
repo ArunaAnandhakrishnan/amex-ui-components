@@ -69,6 +69,14 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
             List<String> roles = (List<String>) claims.get("roles");
             String rolesHeader = roles != null ? String.join(",", roles) : "";
 
+            // DEBUG LOGGING
+            System.out.println("=== GATEWAY JWT AUTH FILTER DEBUG ===");
+            System.out.println("Path: " + path);
+            System.out.println("Username: " + username);
+            System.out.println("Roles from JWT: " + roles);
+            System.out.println("Roles Header to forward: " + rolesHeader);
+            System.out.println("=====================================");
+
             ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                     .header("X-Auth-Username", username)
                     .header("X-Auth-Roles", rolesHeader)

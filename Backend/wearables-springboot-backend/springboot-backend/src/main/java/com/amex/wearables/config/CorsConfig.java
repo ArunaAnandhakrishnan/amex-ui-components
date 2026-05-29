@@ -1,29 +1,10 @@
 package com.amex.wearables.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class CorsConfig {
-
-    @Value("${app.cors.allowed-origins}")
-    private String[] allowedOrigins;
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                        .allowedOrigins(allowedOrigins)   // 4200 (shell) + 4205 (standalone)
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(false)
-                        .maxAge(3600);
-            }
-        };
-    }
+    // CORS handled entirely by the API Gateway.
+    // Leaving CORS config here causes duplicate Access-Control-Allow-Origin
+    // headers when routed through the gateway, which breaks browser requests.
 }
