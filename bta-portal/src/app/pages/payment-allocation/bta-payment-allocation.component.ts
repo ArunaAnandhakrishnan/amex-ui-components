@@ -9,10 +9,9 @@ interface Transaction {
 }
 
 @Component({
-  selector: 'app-bta-payment-allocation',
-  standalone: true,
-  imports: [CommonModule, FormsModule, AmexPageHeaderComponent, AmexBreadcrumbTrailComponent],
-  template: `
+    selector: 'app-bta-payment-allocation',
+    imports: [CommonModule, FormsModule, AmexPageHeaderComponent, AmexBreadcrumbTrailComponent],
+    template: `
     <amex-page-header portalStyle="onls" title="PAYMENT ALLOCATION"></amex-page-header>
     <amex-breadcrumb-trail
       [items]="[{id:'home',label:'Home'},{id:'bta',label:'BTA Portal'},{id:'pa',label:'Payment Allocation'}]"
@@ -71,7 +70,7 @@ interface Transaction {
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .bta-page        { padding:0 16px 24px; background:#fff; }
     .bta-panel       { border:1px solid #b8d0e8; border-radius:2px; overflow:hidden; margin-top:12px; }
     .bta-panel-hd    { background:#cfe2f3; border-bottom:1px solid #b8d0e8; padding:8px 14px; font-size:13px; font-weight:bold; color:#1e3a6e; }
@@ -89,7 +88,7 @@ interface Transaction {
     .amount          { text-align:right; font-family:monospace; }
     .no-records      { font-size:12px; color:#555; padding:12px 0; }
     .bta-actions     { margin-top:12px; }
-  `],
+  `]
 })
 export class BtaPaymentAllocationComponent {
   view = '';

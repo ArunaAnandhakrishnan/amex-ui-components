@@ -4,10 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { AmexPageHeaderComponent, AmexBreadcrumbTrailComponent } from '@vn-core-ui-components/ui';
 
 @Component({
-  selector: 'app-bta-large-reports',
-  standalone: true,
-  imports: [CommonModule, FormsModule, AmexPageHeaderComponent, AmexBreadcrumbTrailComponent],
-  template: `
+    selector: 'app-bta-large-reports',
+    imports: [CommonModule, FormsModule, AmexPageHeaderComponent, AmexBreadcrumbTrailComponent],
+    template: `
     <amex-page-header portalStyle="onls" title="LARGE REPORTS"></amex-page-header>
     <amex-breadcrumb-trail
       [items]="[{id:'home',label:'Home'},{id:'bta',label:'BTA Portal'},{id:'lr',label:'Large Reports'}]"
@@ -78,7 +77,7 @@ import { AmexPageHeaderComponent, AmexBreadcrumbTrailComponent } from '@vn-core-
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .bta-page        { padding:0 16px 24px; background:#fff; }
     .bta-panel       { border:1px solid #b8d0e8; border-radius:2px; overflow:hidden; margin-top:12px; }
     .bta-panel-hd    { background:#cfe2f3; border-bottom:1px solid #b8d0e8; padding:8px 14px; font-size:13px; font-weight:bold; color:#1e3a6e; }
@@ -97,7 +96,7 @@ import { AmexPageHeaderComponent, AmexBreadcrumbTrailComponent } from '@vn-core-
     .bta-btn-primary:hover { background:#2d5499; }
     .bta-btn-secondary { background:#fff; color:#333; border:1px solid #aaa; }
     .success-msg     { margin-top:14px; padding:10px 14px; background:#e6f9f0; color:#1a7a4a; border:1px solid #b7e4ce; font-size:12px; border-radius:2px; }
-  `],
+  `]
 })
 export class BtaLargeReportsComponent {
   generated = false;
