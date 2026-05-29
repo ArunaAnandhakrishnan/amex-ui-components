@@ -4,10 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { AmexPageHeaderComponent, AmexBreadcrumbTrailComponent } from '@vn-core-ui-components/ui';
 
 @Component({
-  selector: 'app-bta-monthly-statement',
-  standalone: true,
-  imports: [CommonModule, FormsModule, AmexPageHeaderComponent, AmexBreadcrumbTrailComponent],
-  template: `
+    selector: 'app-bta-monthly-statement',
+    imports: [CommonModule, FormsModule, AmexPageHeaderComponent, AmexBreadcrumbTrailComponent],
+    template: `
     <amex-page-header portalStyle="onls" title="BTA MONTHLY STATEMENT"></amex-page-header>
     <amex-breadcrumb-trail
       [items]="[{id:'home',label:'Home'},{id:'bta',label:'BTA Portal'},{id:'ms',label:'Monthly Statements'}]"
@@ -92,7 +91,7 @@ import { AmexPageHeaderComponent, AmexBreadcrumbTrailComponent } from '@vn-core-
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .bta-page        { padding:0 16px 24px; background:#fff; }
     .bta-panel       { border:1px solid #b8d0e8; border-radius:2px; overflow:hidden; margin-top:12px; }
     .bta-panel-hd    { background:#cfe2f3; border-bottom:1px solid #b8d0e8; padding:8px 14px; font-size:13px; font-weight:bold; color:#1e3a6e; }
@@ -122,7 +121,7 @@ import { AmexPageHeaderComponent, AmexBreadcrumbTrailComponent } from '@vn-core-
     .stmt-footer     { display:flex; justify-content:space-between; align-items:center; border-top:1px solid #eee; padding-top:10px; flex-wrap:wrap; gap:10px; }
     .view-diff       { display:flex; align-items:center; gap:8px; font-size:12px; flex-wrap:wrap; }
     .download-row    { display:flex; gap:8px; align-items:center; }
-  `],
+  `]
 })
 export class BtaMonthlyStatementComponent {
   showStatement = false;

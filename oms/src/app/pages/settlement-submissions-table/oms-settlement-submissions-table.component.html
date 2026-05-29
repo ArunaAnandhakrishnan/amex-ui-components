@@ -1,0 +1,13 @@
+<div *ngIf="loading" class="loading">
+
+  Loading settlement data...
+
+</div>
+
+<amex-settlement-submissions-table
+
+  *ngIf="!loading"
+
+  [rows]="rows">
+
+</amex-settlement-submissions-table>

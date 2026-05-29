@@ -1,0 +1,86 @@
+<div class="portal-container">
+
+  <div class="portal-card">
+
+    <!-- TITLE -->
+    <div class="title">
+
+      New Outlet Portal
+
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div class="description">
+
+      To add new outlets of an existing
+      brand, click below
+
+    </div>
+
+    <!-- BUTTON -->
+    <button
+
+      class="create-btn"
+
+      (click)="
+        onCreateApplication()
+      ">
+
+      Create New Application
+
+    </button>
+
+    <!-- OR -->
+    <div class="or-text">
+
+      OR
+
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div class="description">
+
+      To view an existing Application,
+      select from the below dropdown menu.
+
+    </div>
+
+    <!-- LABEL -->
+    <div class="label">
+
+      Existing Application Status:
+
+    </div>
+
+    <!-- DROPDOWN -->
+    <select
+
+      class="dropdown"
+
+      [(ngModel)]="
+        selectedApplication
+      ">
+
+      <option value="">
+
+        Application List
+
+      </option>
+
+      <option
+
+        *ngFor="
+          let app of applications
+        "
+
+        [value]="app">
+
+        {{ app }}
+
+      </option>
+
+    </select>
+
+  </div>
+
+</div>

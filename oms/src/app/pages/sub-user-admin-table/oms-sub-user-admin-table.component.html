@@ -1,0 +1,19 @@
+<amex-sub-user-admin-table
+
+  [rows]="rows"
+
+  [title]="title"
+
+  [showCreate]="showCreate"
+
+  [createLabel]="createLabel"
+
+  (createClick)="
+    createUserClicked.emit()
+  "
+
+  (actionClick)="
+    handleAction($event)
+  ">
+
+</amex-sub-user-admin-table>

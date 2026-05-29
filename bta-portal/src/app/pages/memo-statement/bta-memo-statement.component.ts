@@ -9,14 +9,13 @@ import {
 } from '@vn-core-ui-components/ui';
 
 @Component({
-  selector: 'app-bta-memo-statement',
-  standalone: true,
-  imports: [
-    CommonModule, FormsModule,
-    AmexPageHeaderComponent,
-    AmexBreadcrumbTrailComponent,
-  ],
-  template: `
+    selector: 'app-bta-memo-statement',
+    imports: [
+        CommonModule, FormsModule,
+        AmexPageHeaderComponent,
+        AmexBreadcrumbTrailComponent,
+    ],
+    template: `
     <amex-page-header portalStyle="onls" title="BTA MEMO STATEMENT"></amex-page-header>
     <amex-breadcrumb-trail
       [items]="[{id:'home',label:'Home'},{id:'bta',label:'BTA Portal'},{id:'memo',label:'Memo Statement'}]"
@@ -83,7 +82,7 @@ import {
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .bta-page       { padding:0 16px 24px; background:#fff; }
     .bta-panel      { border:1px solid #b8d0e8; border-radius:2px; overflow:hidden; margin-top:12px; }
     .bta-panel-hd   { background:#cfe2f3; border-bottom:1px solid #b8d0e8; padding:8px 14px; font-size:13px; font-weight:bold; color:#1e3a6e; }
@@ -109,7 +108,7 @@ import {
     .stmt-note      { font-size:11px; color:#555; margin:8px 0; }
     .stmt-footer    { display:flex; justify-content:space-between; align-items:center; margin-top:14px; border-top:1px solid #eee; padding-top:12px; }
     .download-row   { display:flex; gap:8px; align-items:center; }
-  `],
+  `]
 })
 export class BtaMemoStatementComponent {
   showStatement = false;

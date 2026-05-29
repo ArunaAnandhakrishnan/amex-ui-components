@@ -9,10 +9,9 @@ interface BtaCase {
 }
 
 @Component({
-  selector: 'app-bta-case-management',
-  standalone: true,
-  imports: [CommonModule, FormsModule, AmexPageHeaderComponent, AmexBreadcrumbTrailComponent, AmexStatusBadgeComponent],
-  template: `
+    selector: 'app-bta-case-management',
+    imports: [CommonModule, FormsModule, AmexPageHeaderComponent, AmexBreadcrumbTrailComponent, AmexStatusBadgeComponent],
+    template: `
     <amex-page-header portalStyle="onls" title="BTA TMC WORKLIST"></amex-page-header>
     <amex-breadcrumb-trail
       [items]="[{id:'home',label:'Home'},{id:'bta',label:'BTA Portal'},{id:'cm',label:'Case Management'}]"
@@ -97,7 +96,7 @@ interface BtaCase {
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .bta-page         { padding:0 16px 24px; background:#fff; }
     .bta-panel        { border:1px solid #b8d0e8; border-radius:2px; overflow:hidden; margin-top:12px; }
     .bta-panel-hd     { background:#cfe2f3; border-bottom:1px solid #b8d0e8; padding:8px 14px; font-size:13px; font-weight:bold; color:#1e3a6e; }
@@ -121,7 +120,7 @@ interface BtaCase {
     .lbl              { font-weight:bold; color:#555; min-width:100px; }
     .comment-section  { margin-top:12px; }
     .bta-actions      { display:flex; gap:10px; }
-  `],
+  `]
 })
 export class BtaCaseManagementComponent {
   selectedCase: BtaCase | null = null;

@@ -1,0 +1,41 @@
+<!-- IDLE / ERROR -->
+<amex-upload-certificate-panel
+
+  *ngIf="
+    status !== 'success'
+  "
+
+  [hintText]="hintText"
+
+  [status]="status"
+
+  [statusMessage]="statusMessage"
+
+  (uploadClick)="
+    onUploadCertificate($event)
+  "
+
+  (backClick)="
+    onBack()
+  ">
+
+</amex-upload-certificate-panel>
+
+<!-- SUCCESS -->
+<amex-upload-certificate-panel
+
+  *ngIf="
+    status === 'success'
+  "
+
+  [status]="'success'"
+
+  [statusMessage]="
+    'Certificate uploaded successfully.'
+  "
+
+  (backClick)="
+    onBack()
+  ">
+
+</amex-upload-certificate-panel>

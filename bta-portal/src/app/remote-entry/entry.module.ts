@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes, Router } from '@angular/router';
 
 @Component({
-  selector: 'bta-entry',
-  template: `
+    selector: 'bta-entry',
+    template: `
     <div class="bta-shell">
       <!-- Left nav panel — matches document NAVIGATION sidebar exactly -->
       <div class="bta-nav">
@@ -19,7 +19,7 @@ import { RouterModule, Routes, Router } from '@angular/router';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .bta-shell    { display:flex; min-height:100%; font-family:Arial,sans-serif; }
     .bta-nav      { width:150px; flex-shrink:0; border-right:1px solid #b8d0e8; background:#fff; }
     .bta-nav-hd   { background:#1e3a6e; color:#fff; font-size:12px; font-weight:bold; padding:8px 12px; text-align:center; letter-spacing:.04em; }
@@ -28,6 +28,7 @@ import { RouterModule, Routes, Router } from '@angular/router';
     .bta-nav-item.active { background:#cfe2f3; color:#1e3a6e; font-weight:bold; }
     .bta-content  { flex:1; overflow:auto; min-width:0; }
   `],
+    standalone: false
 })
 export class BtaEntryComponent {
   navItems = [

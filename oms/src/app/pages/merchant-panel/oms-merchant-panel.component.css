@@ -1,0 +1,39 @@
+.update-merchant-section {
+
+  margin-top: 30px;
+
+  padding: 20px;
+
+  border: 1px solid #dcdcdc;
+
+  background: #f8f8f8;
+
+  width: 28%;
+}
+
+.update-merchant-section h2 {
+
+  margin-bottom: 15px;
+
+  font-size: 20px;
+}
+
+.start-btn {
+
+  padding: 10px 20px;
+
+  background: #0070c9;
+
+  color: white;
+
+  border: none;
+
+  cursor: pointer;
+
+  border-radius: 4px;
+}
+
+.start-btn:hover {
+
+  background: #005fa3;
+}

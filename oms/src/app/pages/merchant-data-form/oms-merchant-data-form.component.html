@@ -1,0 +1,25 @@
+<amex-merchant-data-form
+
+  [title]="title"
+
+  [backLabel]="backLabel"
+
+  [submitLabel]="submitLabel"
+
+  [countryOptions]="countryOptions"
+
+  [cityOptions]="cityOptions"
+
+  [legalOptions]="legalOptions"
+
+  [initialData]="initialData"
+
+  (submitClick)="
+    onSubmit($event)
+  "
+
+  (backClick)="
+    onBack()
+  ">
+
+</amex-merchant-data-form>
