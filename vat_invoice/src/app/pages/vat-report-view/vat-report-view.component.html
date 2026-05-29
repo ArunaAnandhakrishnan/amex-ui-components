@@ -1,0 +1,15 @@
+<div
+  tabindex="0"
+  (click)="handleClick($event)"
+  (keydown.enter)="handleClick($event)"
+  (keydown.space)="handleClick($event)">
+
+  <amex-vat-invoice-report-view
+    [customerType]="customerType"
+    [searchMode]="searchMode"
+    [searchValue]="searchValue"
+    [errorMessage]="errorMessage"
+    [invoice]="invoice">
+  </amex-vat-invoice-report-view>
+
+</div>

@@ -1,0 +1,21 @@
+<amex-contact-information-form
+
+  [sectionTitle]="sectionTitle"
+
+  [backLabel]="backLabel"
+
+  [saveLabel]="saveLabel"
+
+  [contacts]="contacts"
+
+  [countryCodes]="countryCodes"
+
+  (saveClick)="
+    onSubmit($event)
+  "
+
+  (backClick)="
+    onBack()
+  ">
+
+</amex-contact-information-form>

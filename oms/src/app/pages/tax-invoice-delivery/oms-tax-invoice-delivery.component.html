@@ -1,0 +1,18 @@
+<div
+  tabindex="0"
+
+  (click)="handleClick($event)"
+
+  (keydown.enter)="handleClick($event)"
+
+  (keydown.space)="handleClick($event)">
+
+  <div class="title">
+
+  </div>
+
+  <amex-tax-invoice-delivery-form
+    [showError]="showError">
+  </amex-tax-invoice-delivery-form>
+
+</div>
