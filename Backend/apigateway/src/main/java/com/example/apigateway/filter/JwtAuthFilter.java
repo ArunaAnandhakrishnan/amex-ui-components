@@ -1,4 +1,4 @@
-package com.apigateway.filter;
+package com.example.apigateway.filter;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
