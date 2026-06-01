@@ -1,0 +1,166 @@
+<div class="tax-report-container">
+
+  <!-- TOP BORDER -->
+  <div class="top-border"></div>
+
+  <div class="content">
+
+    <!-- TITLE -->
+    <h2 class="title">
+      Tax Invoice
+    </h2>
+
+    <!-- SEARCH TYPE -->
+    <div class="radio-group">
+
+      <label>
+        <input
+          type="radio"
+          value="vat"
+          [(ngModel)]="vatSearchType" />
+
+        VAT Registration Number
+      </label>
+
+      <label>
+        <input
+          type="radio"
+          value="merchant"
+          [(ngModel)]="vatSearchType" />
+
+        Merchant Number
+      </label>
+
+    </div>
+
+    <!-- FORM GRID -->
+    <div class="form-grid">
+
+      <!-- VAT NUMBER -->
+      <div class="field">
+
+        <label>
+          VAT Registration Number
+        </label>
+
+        <input
+          type="text"
+          [(ngModel)]="
+            vatRegistrationNumber
+          " />
+
+        <small>
+          There are no vat registration numbers.
+        </small>
+
+      </div>
+
+      <!-- COUNTRY -->
+      <div class="field">
+
+        <label>
+          VAT Registered Country
+        </label>
+
+        <select
+          [(ngModel)]="
+            selectedCountry
+          ">
+
+          <option value="">
+            Select Country
+          </option>
+
+          <option
+            *ngFor="
+              let country of countries
+            "
+            [value]="country">
+
+            {{ country }}
+
+          </option>
+
+        </select>
+
+      </div>
+
+      <!-- FROM DATE -->
+      <div class="field">
+
+        <label>
+          From Date
+        </label>
+
+        <input
+          type="date"
+          [(ngModel)]="fromDate" />
+
+      </div>
+
+      <!-- TO DATE -->
+      <div class="field">
+
+        <label>
+          To Date
+        </label>
+
+        <input
+          type="date"
+          [(ngModel)]="toDate" />
+
+      </div>
+
+    </div>
+
+    <!-- REPORT TYPE -->
+    <div class="radio-group bottom-radio">
+
+      <label>
+
+        <input
+          type="radio"
+          value="summary"
+          [(ngModel)]="reportType" />
+
+        Summary
+
+      </label>
+
+      <label>
+
+        <input
+          type="radio"
+          value="detail"
+          [(ngModel)]="reportType" />
+
+        Detail
+
+      </label>
+
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="button-group">
+
+      <button
+        class="back-btn"
+        (click)="onBack()">
+
+        Back
+
+      </button>
+
+      <button
+        class="generate-btn"
+        (click)="generateReport()">
+
+        Generate Report
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

@@ -8,10 +8,9 @@ import {
 } from '@vn-core-ui-components/ui';
 
 @Component({
-  selector: 'app-bta-audit-trail',
-  standalone: true,
-  imports: [CommonModule, FormsModule, AmexPageHeaderComponent, AmexBreadcrumbTrailComponent],
-  template: `
+    selector: 'app-bta-audit-trail',
+    imports: [CommonModule, FormsModule, AmexPageHeaderComponent, AmexBreadcrumbTrailComponent],
+    template: `
     <amex-page-header portalStyle="onls" title="AUDIT TRAIL"></amex-page-header>
     <amex-breadcrumb-trail
       [items]="[{id:'home',label:'Home'},{id:'bta',label:'BTA Portal'},{id:'at',label:'Audit Trail'}]"
@@ -107,7 +106,7 @@ import {
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .bta-page        { padding:0 16px 24px; background:#fff; }
     .bta-panel       { border:1px solid #b8d0e8; border-radius:2px; overflow:hidden; margin-top:12px; }
     .bta-panel-hd    { background:#cfe2f3; border-bottom:1px solid #b8d0e8; padding:8px 14px; font-size:13px; font-weight:bold; color:#1e3a6e; }
@@ -133,7 +132,7 @@ import {
     .bta-table td    { border:1px solid #dde4ed; padding:7px 10px; }
     .download-row    { display:flex; gap:8px; align-items:center; }
     .bta-actions     { }
-  `],
+  `]
 })
 export class BtaAuditTrailComponent {
   activeTab = 'detailed';

@@ -1,0 +1,29 @@
+<div
+
+  tabindex="0"
+
+  role="button"
+
+  (click)="handleClick($event)"
+
+  (keyup.enter)="handleClick($event)"
+
+  (keydown.space)="handleClick($event)">
+
+  <amex-user-management-table
+
+    [rows]="
+      showMerchantNumber
+        ? rows
+        : rowsWithoutMerchantNumber
+    "
+
+    [title]="title"
+
+    [createLabel]="createLabel"
+
+    [showDelete]="showDelete">
+
+  </amex-user-management-table>
+
+</div>

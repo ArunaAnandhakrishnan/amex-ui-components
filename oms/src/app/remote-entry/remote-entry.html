@@ -1,0 +1,457 @@
+<!-- HEADER -->
+<oms-header></oms-header>
+
+<!-- TAB BAR -->
+<oms-home
+  (tabChanged)="onTabChanged($event)">
+</oms-home>
+
+<router-outlet>
+</router-outlet>
+
+<!-- <amex-page-shell
+
+  [portalStyle]="'oms'"
+
+  [pageTitle]="'OMS Portal'"
+
+  [pageSubtitle]="
+    'Manage merchants, reports and users'
+  "
+
+  [showSidebar]="true"
+
+  [showHeader]="true"
+
+  [showFooter]="true"
+
+  [tabs]="tabs"
+
+  [activeTabId]="activeTabId"
+
+  (tabChange)="
+    onTabChanged($event)
+  "> -->
+
+<!-- OMS SECTION -->
+<div
+  *ngIf="showSidebar"
+  class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <oms-sidebar
+      (menuChanged)="onMenuChanged($event)">
+    </oms-sidebar>
+
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- MERCHANT ACCOUNT -->
+    <oms-merchant-panel
+
+      *ngIf="
+        selectedSidebarMenu ===
+        'merchantaccount'
+      ">
+
+    </oms-merchant-panel>
+
+    <!-- MERCHANT DATA FORM -->
+    <oms-merchant-data-form
+
+      *ngIf="
+        selectedSidebarMenu ===
+        'editprofile'
+      ">
+
+    </oms-merchant-data-form>
+
+    <!-- CONTACT INFORMATION -->
+    <oms-contact-information
+      *ngIf="
+        selectedSidebarMenu ===
+        'contactinformation'
+      ">
+    </oms-contact-information>
+
+    <oms-contact-information
+      *ngIf="
+        selectedSidebarMenu ===
+        'marketinginformation'
+      "
+
+      sectionTitle="Marketing Information"
+      >
+    </oms-contact-information>
+
+    <oms-contact-information
+      *ngIf="
+        selectedSidebarMenu ===
+        'financeinformation'
+      "
+
+      sectionTitle="Finance Information"
+      >
+    </oms-contact-information>
+
+    <oms-contact-information
+      *ngIf="
+        selectedSidebarMenu ===
+        'operations'
+      "
+
+      sectionTitle="Operations"
+      >
+    </oms-contact-information>
+
+    <!-- REPORT FORMAT -->
+    <oms-report-format
+        *ngIf="
+            selectedSidebarMenu ===
+            'reportformat'
+        ">
+    </oms-report-format>
+
+    <!-- VAT REGISTRATION -->
+    <oms-vat-registration
+
+    *ngIf="
+        !showTaxInvoiceDelivery &&
+        !showUploadCertificate &&
+        !showTaxInvoiceReport &&
+        selectedSidebarMenu === 'vatregistration'
+    "
+
+    (taxInvoiceDeliveryClicked)="
+        onTaxInvoiceDeliveryClicked()
+    "
+
+    (uploadCertificateClicked)="
+        onUploadCertificateClicked()
+    "
+
+    (downloadTaxInvoiceClicked)="
+        onDownloadTaxInvoiceClicked()
+    ">
+
+    </oms-vat-registration>
+
+    <!-- TAX INVOICE DELIVERY -->
+    <oms-tax-invoice-delivery
+
+    *ngIf="
+        showTaxInvoiceDelivery &&
+        selectedSidebarMenu === 'vatregistration'
+    "
+
+    [sectionTitle]="'Tax Invoice Delivery'"
+
+    (backClicked)="
+        onBackToVatRegistration()
+    ">
+
+    </oms-tax-invoice-delivery>
+
+    <!-- UPLOAD CERTIFICATE -->
+    <oms-upload-certificate
+
+    *ngIf="
+        showUploadCertificate &&
+        selectedSidebarMenu === 'vatregistration'
+    "
+    (backClicked)="
+        onBackToVatRegistrationFromUpload()
+    ">
+    </oms-upload-certificate>
+
+    <!-- TAX INVOICE REPORT -->
+    <oms-tax-invoice-report
+
+    *ngIf="
+        showTaxInvoiceReport
+    "
+
+    (backClicked)="
+        onBackFromTaxInvoiceReport()
+    ">
+
+    </oms-tax-invoice-report>
+
+  </div>
+
+</div>
+
+<!-- TERMS & CONDITIONS -->
+<oms-terms-and-conditions
+
+  *ngIf="showTermsConditions">
+
+</oms-terms-and-conditions>
+
+<!-- CHANGE PASSWORD -->
+<oms-change-password
+
+  *ngIf="showChangePassword">   
+</oms-change-password>
+
+<!-- CUSTOMIZED REPORT -->
+<oms-customized-report
+
+  *ngIf="showCustomizedReport">
+
+</oms-customized-report>
+
+<!-- SETTLEMENT & SUBMISSION -->
+<div
+
+  *ngIf="
+    showSettlementSubmission
+  "
+
+  class="settlement-container">
+
+  <!-- MONTH FILTER -->
+  <oms-months-dropdown-filter
+
+  (submitClicked)="
+    onSettlementSubmit($event)
+  ">
+
+</oms-months-dropdown-filter>
+
+  <!-- TABLE -->
+  <oms-settlement-submissions-table
+
+  *ngIf="
+    showSettlementTable
+  "
+
+  [rows]="settlementRows"
+
+  [loading]="
+    settlementLoading
+  ">
+
+</oms-settlement-submissions-table>
+
+</div>
+
+<!-- SUB USER ADMINISTRATION -->
+<oms-sub-user-admin-table
+
+  *ngIf="
+    showSubUserAdmin &&
+    !showCreateSubUser
+  "
+
+  [rows]="subUserRows"
+
+  (createUserClicked)="
+    onCreateSubUser()
+  "
+
+  (editUserClicked)="
+    onEditSubUser($event)
+  "
+
+  (deleteUserClicked)="
+    onDeleteSubUser($event)
+  ">
+
+</oms-sub-user-admin-table>
+
+<!-- CREATE SUB USER -->
+<oms-create-edit-user-form
+
+  *ngIf="
+    showCreateSubUser
+  "
+
+  [title]="'CREATE SUB USER'"
+
+  [showMerchantAccess]="false"
+
+  (saveClicked)="
+    saveSubUser($event)
+  ">
+
+</oms-create-edit-user-form>
+
+<!-- MRM USER TABLE -->
+<oms-user-management-table
+
+  *ngIf="
+    showMrmUserAdmin &&
+    !showCreateMrmUser
+  "
+
+  [title]="'MRM USER ADMINISTRATION'"
+
+  [createLabel]="'Create MRM User'"
+
+  [rows]="mrmUserRows"
+
+  (createUserClicked)="
+    onCreateMrmUser()
+  "
+
+  (editUserClicked)="
+    onEditMrmUser($event)
+  "
+
+  (deleteUserClicked)="
+    onDeleteMrmUser($event)
+  ">
+
+</oms-user-management-table>
+
+<!-- CREATE MRM USER -->
+<oms-create-edit-user-form
+
+  *ngIf="
+    showCreateMrmUser
+  "
+
+  [title]="'CREATE MRM USER'"
+
+  [showMerchantAccess]="false"
+
+  (saveClicked)="
+    saveMrmUser($event)
+  ">
+
+</oms-create-edit-user-form>
+
+
+<!-- OMS USER TABLE -->
+<oms-user-management-table
+
+  *ngIf="
+    showOmsUsers &&
+    !showCreateOmsUser
+  "
+
+  [title]="'OMS USER ADMINISTRATION'"
+
+  [createLabel]="'Create OMS User'"
+
+  [showMerchantNumber]="true"
+
+  [rows]="omsUserRows"
+
+  (createUserClicked)="
+    onCreateOmsUser()
+  "
+  (editUserClicked)="
+    onEditOmsUser($event)
+  "
+  (deleteUserClicked)="
+    onDeleteOmsUser($event)
+  ">
+
+</oms-user-management-table>
+
+<!-- CREATE OMS USER -->
+<oms-create-edit-user-form
+
+  *ngIf="
+    showCreateOmsUser
+  "
+
+  [title]="'CREATE OMS USER'"
+
+  (saveClicked)="
+    saveOmsUser($event)
+  ">
+
+</oms-create-edit-user-form>
+
+<!-- EDIT USER POPUP -->
+<div
+
+  *ngIf="showEditUserPopup"
+
+  class="popup-overlay">
+
+  <div class="popup-content">
+
+    <button
+
+      class="close-btn"
+
+      (click)="closeEditPopup()">
+
+      ✕
+
+    </button>
+
+    <oms-edit-user-form
+
+  *ngIf="
+    editFormRender &&
+    selectedEditUser
+  "
+
+  [attr.data-version]="
+    editFormVersion
+  "
+
+  [title]="editPopupTitle"
+
+  [showRole]="false"
+
+  [data]="selectedEditUser"
+
+  (updateUserClicked)="
+
+    editPopupTitle ===
+    'EDIT OMS USER'
+
+      ? onUpdateOmsUser($event)
+
+      : editPopupTitle ===
+        'EDIT MRM USER'
+
+          ? onUpdateMrmUser($event)
+
+          : onUpdateSubUser($event)
+  ">
+
+</oms-edit-user-form>
+
+  </div>
+
+</div>
+
+<!-- NEW OUTLET PORTAL -->
+<oms-new-outlet-portal
+
+  *ngIf="
+    showNewOutletPortal &&
+    !showNewOutletApplicationForm
+  "
+
+  (createApplicationClicked)="
+    onCreateNewApplication()
+  ">
+
+</oms-new-outlet-portal>
+
+<!-- NEW OUTLET APPLICATION FORM -->
+<oms-new-outlet-application-form
+
+  *ngIf="
+    showNewOutletApplicationForm
+  "
+
+  (backClicked)="
+    onBackToNewOutletPortal()
+  ">
+
+</oms-new-outlet-application-form>
+
+<!-- </amex-page-shell> -->

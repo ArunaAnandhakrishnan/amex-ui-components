@@ -758,7 +758,7 @@ export class WearablesComponent implements OnInit {
 
   private checkBackendHealth(): void {
     this.backendStatus = 'checking';
-    this.http.get<any>(`${API_BASE}/health`).subscribe({
+    this.http.get<any>(`http://localhost:8080/actuator/health`).subscribe({
       next: () => { this.backendStatus = 'online'; },
       error: () => { this.backendStatus = 'offline'; },
     });

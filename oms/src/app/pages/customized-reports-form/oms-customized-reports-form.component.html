@@ -1,0 +1,174 @@
+<amex-customized-reports-form
+
+  [reportTypes]="
+    reportTypes
+  "
+
+  (submitClick)="
+    onSubmit($event)
+  "
+
+  (backClick)="
+    onBack()
+  ">
+
+</amex-customized-reports-form>
+
+<div
+
+  *ngIf="
+    showSubscriptionWarning
+  "
+
+  class="warning-box">
+
+  Warning:
+  Use "Settlement Date"
+  filter for Email Subscription reports.
+
+</div>
+
+<div
+  style="
+    margin-top: 20px;
+    display: flex;
+    gap: 12px;
+  ">
+
+  <input
+
+    type="text"
+
+    [(ngModel)]="
+      searchKeyword
+    "
+
+    placeholder="
+      Search Reports
+    "
+
+    style="
+      height: 38px;
+      padding: 0 12px;
+      width: 280px;
+    " />
+
+  <button
+
+    (click)="
+      onSearchReports()
+    "
+
+    style="
+      height: 38px;
+      padding: 0 18px;
+      background: #6a1b9a;
+      color: white;
+      border: none;
+      cursor: pointer;
+    ">
+
+    Search Reports
+
+  </button>
+
+</div>
+
+<div
+  class="reports-table-container">
+
+  <h3 class="reports-title">
+
+    Generated Reports
+
+  </h3>
+
+  <table class="reports-table">
+
+    <thead>
+
+      <tr>
+
+        <th>
+          Report Type
+        </th>
+
+        <th>
+          From Date
+        </th>
+
+        <th>
+          To Date
+        </th>
+
+        <th>
+          Status
+        </th>
+
+        <th>
+          Generated Date
+        </th>
+
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr
+
+        *ngIf="
+          generatedReports.length === 0
+        ">
+
+        <td
+
+          colspan="5"
+
+          class="no-data">
+
+          No Reports Generated Yet
+
+        </td>
+
+      </tr>
+
+      <tr
+
+        *ngFor="
+          let report of generatedReports
+        ">
+
+        <td>
+          {{ report.reportType }}
+        </td>
+
+        <td>
+          {{ report.fromDate }}
+        </td>
+
+        <td>
+          {{ report.toDate }}
+        </td>
+
+        <td>
+
+          <span class="status-badge">
+
+            {{ report.status }}
+
+          </span>
+
+        </td>
+
+        <td>
+          {{ report.createdDate }}
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>

@@ -22,15 +22,14 @@ interface BtaUser {
 }
 
 @Component({
-  selector: 'app-bta-user-management',
-  standalone: true,
-  imports: [
-    CommonModule, FormsModule,
-    AmexPageHeaderComponent,
-    AmexBreadcrumbTrailComponent,
-    AmexStatusBadgeComponent,
-  ],
-  template: `
+    selector: 'app-bta-user-management',
+    imports: [
+        CommonModule, FormsModule,
+        AmexPageHeaderComponent,
+        AmexBreadcrumbTrailComponent,
+        AmexStatusBadgeComponent,
+    ],
+    template: `
     <amex-page-header portalStyle="onls" title="CORPORATION USER MANAGEMENT"></amex-page-header>
     <amex-breadcrumb-trail
       [items]="[{id:'home',label:'Home'},{id:'bta',label:'BTA Portal'},{id:'um',label:'User Management'}]"
@@ -113,7 +112,7 @@ interface BtaUser {
 
     </div>
   `,
-  styles: [`
+    styles: [`
     .bta-page        { padding:0 16px 24px; background:#fff; }
     .bta-panel       { border:1px solid #b8d0e8; border-radius:2px; overflow:hidden; margin-top:12px; }
     .bta-panel-hd    { background:#cfe2f3; border-bottom:1px solid #b8d0e8; padding:8px 14px; font-size:13px; font-weight:bold; color:#1e3a6e; }
@@ -141,7 +140,7 @@ interface BtaUser {
     .bta-table td    { border:1px solid #dde4ed; padding:7px 10px; vertical-align:top; }
     .bta-table tr:hover td { background:#f5f9ff; }
     .bta-link        { color:#006fcf; cursor:pointer; text-decoration:underline; font-size:12px; }
-  `],
+  `]
 })
 export class BtaUserManagementComponent {
   showAddUser = false;

@@ -5,36 +5,55 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="13887086-e538-4641-a69a-c530d792adc0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/filter/JwtAuthFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/filter/JwtAuthenticationFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/util/Roles.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/config/WearablesSecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/filter/HeaderAuthFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/apigateway/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/apigateway/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apigateway/src/main/java/com/apigateway/apigateway/ApigatewayApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apigateway/src/main/java/com/apigateway/ApigatewayApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/apigateway/src/main/java/com/example/apigateway/ApigatewayApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apigateway/src/main/java/com/apigateway/filter/JwtAuthFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/apigateway/src/main/java/com/example/apigateway/filter/JwtAuthFilter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apigateway/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/apigateway/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/auth-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/AuthServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/AuthServiceApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/config/DataInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/config/DataInitializer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/dto/ApiResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/dto/ApiResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/dto/AuthDtos.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/dto/AuthDtos.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/repository/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/security/JwtUtil.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/example/auth/service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eureka/eureka/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/eureka/eureka/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/controller/WearablesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/controller/WearablesController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/eureka/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/eureka/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/eureka/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/eureka/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/eureka/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/eureka/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/eureka/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/eureka/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/eureka/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/eureka/src/main/java/com/eureka/eureka/EurekaApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/eureka/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/eureka/src/test/java/com/eureka/eureka/EurekaApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/wearables-springboot-backend/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/wearables-springboot-backend/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/wearables-springboot-backend/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/wearables-springboot-backend/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/wearables-springboot-backend/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/wearables-springboot-backend/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/WearablesApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/config/CorsConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/config/WearablesSecurityConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/controller/WearablesController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/entity/Card.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/entity/Member.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/entity/WearableDeviceEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/filter/HeaderAuthFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/model/ApiResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/model/ClientWearableData.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/model/WearableActionRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/model/WearableDevice.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/model/WearableIssuanceRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/repository/CardRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/repository/MemberRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/repository/WearableDeviceRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/java/com/amex/wearables/service/WearablesService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/resources/application-postgres.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/resources/db/migration/V1__create_schema.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wearables-springboot-backend/springboot-backend/src/main/resources/db/migration/V2__seed_data.sql" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,18 +63,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "logeshwaranV00683"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;logeshwaranV00683&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:ArunaAnandhakrishnan/amex-ui-components.git",
-    "accountId": "a5eeaa95-f9be-4e8f-93cf-0837808b02e2"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:ArunaAnandhakrishnan/amex-ui-components.git&quot;,
+    &quot;accountId&quot;: &quot;a5eeaa95-f9be-4e8f-93cf-0837808b02e2&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
@@ -64,16 +83,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/V00683/Documents/Training_PPT/AMEX/amex-ui-components/Backend/eureka/eureka/pom.xml"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Git Repositories/office/amex-ui-components/Backend&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Git Repositories\office\amex-ui-components\Backend\apigateway\src\main\java\com\example\apigateway" />
       <recent name="C:\Users\V00683\Documents\Training_PPT\AMEX\Portals\amex-ui-components\Backend\apigateway\src\main\java\com\apigateway" />
     </key>
   </component>

@@ -1,0 +1,29 @@
+<!-- TAB BAR -->
+<vat-home
+  (tabChanged)="onTabChanged($event)">
+</vat-home>
+
+<!-- VAT SECTION -->
+<div *ngIf="showVatReport" class="layout">
+
+  <!-- LEFT -->
+  <vat-sidebar class="sidebar"></vat-sidebar>
+
+  <!-- RIGHT -->
+  <!-- RIGHT CONTENT -->
+<div class="content">
+
+  <!-- REPORT SEARCH -->
+  <vat-report-view
+    *ngIf="!showInvoiceDetails"
+    (generateReport)="onGenerateReport($event)">
+  </vat-report-view>
+
+  <!-- INVOICE DETAILS -->
+  <vat-invoice-details
+    *ngIf="showInvoiceDetails">
+  </vat-invoice-details>
+
+</div>
+
+</div>
