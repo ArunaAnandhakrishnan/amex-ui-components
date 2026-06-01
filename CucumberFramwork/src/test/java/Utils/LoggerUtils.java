@@ -3,8 +3,7 @@ package Utils;
 public class LoggerUtils {
 
     public static void logRequest(
-            String url,
-            String requestBody) {
+            String url) {
 
         System.out.println(
                 "\n========== API REQUEST =========="
@@ -12,11 +11,6 @@ public class LoggerUtils {
 
         System.out.println(
                 "URL : " + url
-        );
-
-        System.out.println(
-                "REQUEST BODY : \n"
-                        + requestBody
         );
     }
 

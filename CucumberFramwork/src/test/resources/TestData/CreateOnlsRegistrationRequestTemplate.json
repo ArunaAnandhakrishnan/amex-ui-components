@@ -1,0 +1,6 @@
+{
+  "username": "${RandomUserName}",
+  "email": "${RandomEmail}",
+  "password": "Test@1234",
+  "fullName": "New User"
+}
