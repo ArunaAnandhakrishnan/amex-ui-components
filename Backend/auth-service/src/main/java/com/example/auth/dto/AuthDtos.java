@@ -2,6 +2,7 @@ package com.example.auth.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +13,7 @@ public class AuthDtos {
 
     @Data
     public static class RegisterRequest {
-        @NotBlank
+        @NotNull
         @Size(min = 3, max = 50)
         private String username;
 
@@ -20,7 +21,7 @@ public class AuthDtos {
         @Email
         private String email;
 
-        @NotBlank
+        @NotNull
         @Size(min = 8, max = 100)
         private String password;
 

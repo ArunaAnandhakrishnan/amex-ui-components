@@ -14,13 +14,13 @@ import java.util.Map;
 
 import static org.testng.Assert.assertEquals;
 
-public class AmexWearableSteps {
+public class AmexAPISteps {
 
     TestContext context;
     ApiHelper apiHelper;
     FileUtils fileUtils;
 
-    public AmexWearableSteps(TestContext context) {
+    public AmexAPISteps(TestContext context) {
         this.context = context;
         this.apiHelper = new ApiHelper(context);
         this.fileUtils = new FileUtils();
@@ -53,6 +53,19 @@ public class AmexWearableSteps {
                 break;
             case "WearablesAction":
                 response = apiHelper.postAPI(ConfigReader.getProperty("CreateAmexWearableActionEndpoint")+ ConfigReader.getProperty("SerialNo"), requestJson);
+                break;
+            case "CreateOnlsLoginEndpoint":
+                response = apiHelper.postAPI(ConfigReader.getProperty("CreateOnlsLoginEndpoint"), requestJson);
+                break;
+            case "CreateOnlsRegistrationEndpoint":
+                response = apiHelper.postAPI(ConfigReader.getProperty("CreateOnlsRegisterEndpoint"), requestJson);
+                break;
+            case "CreateOnlsForgotPasswordEndpoint":
+                response = apiHelper.postAPI(ConfigReader.getProperty("CreateOnlsForgotPasswordEndpoint"), requestJson);
+                break;
+            case "CreateOnlsLogoutEndpoint": response = apiHelper.postAPIWithAccessToken(ConfigReader.getProperty("CreateOnlsLogoutEndpoint"), Map.of("Authorization", "Bearer " + context.getDataStore().get("#AccessToken")
+                        )
+                );
                 break;
             default:
                 throw new RuntimeException("POST API NOT FOUND");

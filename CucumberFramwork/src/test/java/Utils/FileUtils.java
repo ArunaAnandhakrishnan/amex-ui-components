@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import Context.TestContext;
 
+import com.github.javafaker.Faker;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Iterator;
@@ -15,7 +19,20 @@ public class FileUtils {
     ObjectMapper mapper = new ObjectMapper();
 
     public String getDataFromTemplate(String fileName) throws Exception {
-        return new String(Files.readAllBytes(Paths.get("src/test/resources/TestData/" + fileName)));
+        VelocityEngine velocityEngine = new VelocityEngine();
+        //Initialize the Velocity runtime engine
+        velocityEngine.init();
+        VelocityContext ctx = new VelocityContext();
+
+        Faker faker = new Faker();
+        ctx.put("refNo", System.currentTimeMillis() + faker.number().digits(4));
+        ctx.put("RandomUserName", "User" + faker.number().digits(4));
+        ctx.put("RandomEmail", "User" + faker.number().digits(4) + "@gmail.com");
+        ctx.put("randomNumber", faker.number().digits(6));
+        String template = new String(Files.readAllBytes(Paths.get("src/test/resources/TestData/" + fileName)));
+        StringWriter writer = new StringWriter();
+        velocityEngine.evaluate(ctx, writer, "Template", template);
+        return writer.toString();
     }
 
     public String updateDataWithScenarioDataTableInfo(TestContext context, Map<String, String> map, String jsonRequest) throws Exception {
@@ -58,6 +75,10 @@ public class FileUtils {
                     // null handling
                     else if (value.equals("null")) {
                         ((ObjectNode) node).putNull(fieldName);
+                    }
+                    // Blank handling
+                    else if (value.equals("Blank")) {
+                        ((ObjectNode) node).put(fieldName,"");
                     }
                     // normal values
                     else {

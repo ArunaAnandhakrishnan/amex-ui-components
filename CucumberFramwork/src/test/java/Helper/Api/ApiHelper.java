@@ -6,6 +6,8 @@ import io.restassured.response.Response;
 import Utils.ConfigReader;
 import Utils.LoggerUtils;
 
+import java.util.Map;
+
 public class ApiHelper {
 
     String baseUrl = ConfigReader.getProperty("ApiBaseUrl");
@@ -13,6 +15,7 @@ public class ApiHelper {
 
     public ApiHelper() {
     }
+
 
     public ApiHelper(TestContext context) {
         this.context = context;
@@ -26,9 +29,7 @@ public class ApiHelper {
             context.lastRequestUrl = url;
             context.lastRequestBody = body;
         }
-
-        LoggerUtils.logRequest(url, body);
-
+        LoggerUtils.logRequest(url);
         Response response = RestAssured
                 .given()
                 .header("Content-Type", "application/json")
@@ -47,6 +48,36 @@ public class ApiHelper {
         return response;
     }
 
+    public Response postAPIWithAccessToken(String endpoint,
+                            Map<String, String> headers) {
+
+        String url = baseUrl + endpoint;
+        if (context != null) {
+            context.lastRequestUrl = url;
+        }
+        LoggerUtils.logRequest(url);
+        System.out.println("\n========== REQUEST HEADERS ==========");
+        headers.forEach((key, value) ->
+                System.out.println(key + " : " + value));
+        Response response = RestAssured
+                .given()
+                .contentType("application/json")
+                .headers(headers)
+                .when()
+                .post(url);
+
+        if (context != null) {
+            context.lastResponseStatusCode = response.getStatusCode();
+            context.lastResponseBody = response.asPrettyString();
+        }
+
+        LoggerUtils.logResponse(
+                response.getStatusCode(),
+                response.asPrettyString());
+
+        return response;
+    }
+
     public Response getAPI(String endpoint) {
         String url = baseUrl + endpoint;
 
@@ -55,9 +86,7 @@ public class ApiHelper {
             context.lastRequestUrl = url;
             context.lastRequestBody = "GET REQUEST";
         }
-
-        LoggerUtils.logRequest(url, "GET REQUEST");
-
+        LoggerUtils.logRequest(url);
         Response response = RestAssured
                 .given()
                 .when()
@@ -83,7 +112,7 @@ public class ApiHelper {
             context.lastRequestBody = body;
         }
 
-        LoggerUtils.logRequest(url, body);
+        LoggerUtils.logRequest(url);
         Response response = RestAssured
                 .given()
                 .header("Content-Type", "application/json")

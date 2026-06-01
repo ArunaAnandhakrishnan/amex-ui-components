@@ -3,7 +3,6 @@ package StepDefinitions.UI;
 import Helper.UI.UiHelper;
 import Context.TestContext;
 import io.cucumber.java.en.*;
-import io.cucumber.java.ja.但し;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -17,7 +16,7 @@ import java.time.Duration;
 
 import static org.testng.Assert.*;
 
-public class LoginSteps {
+public class BTALoginSteps {
 
     // ...existing fields...
     private UiHelper uiHelper;
@@ -25,7 +24,7 @@ public class LoginSteps {
     private WebDriverWait wait;
     private TestContext context;
 
-    public LoginSteps(TestContext context) {
+    public BTALoginSteps(TestContext context) {
 
         this.context = context;
 
@@ -54,7 +53,6 @@ public class LoginSteps {
     @When("I click the login button")
     public void iClickTheLoginButton() {
         uiHelper.click(By.xpath("/html/body/app-root/app-login/amex-login-form/div/div[4]/div[2]/div/div[4]/button"));
-
         LoggerUtils.logInfo("Clicked login button");
     }
 

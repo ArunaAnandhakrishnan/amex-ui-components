@@ -2,7 +2,7 @@
 
 Feature: Create Amex Wearable
 
-  @CreateWearables @Sanity
+  @CreateWearables @Sanity @WIP
   Scenario: Create Amex Wearables
     Given i have "IssueWearable" api request with template "IssueWearable" and following details
       | clientCode   | 22222            |

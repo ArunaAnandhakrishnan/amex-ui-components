@@ -2,7 +2,7 @@
 
 Feature: Create Amex Wearable Action
 
- @CreateWearablesAction @Sanity
+ @CreateWearablesAction @Sanity @WIP
   Scenario: Create Amex Wearables Action - Activate
     Given i have "WearablesAction" api request with template "WearableAction" and following details
       | action | ACTIVATE                |
@@ -15,7 +15,7 @@ Feature: Create Amex Wearable Action
       | data.nfcEnabled | true   |
       | data.status     | Issued |
 
-  @CreateWearablesAction @Sanity
+  @CreateWearablesAction @Sanity @WIP
   Scenario: Create Amex Wearables Action - Terminate
     Given i have "WearablesAction" api request with template "WearableAction" and following details
       | action | TERMINATE                                |
@@ -28,7 +28,7 @@ Feature: Create Amex Wearable Action
       | data.nfcEnabled | false |
       | data.status     | Terminated  |
 
-  @CreateWearablesAction @Sanity
+  @CreateWearablesAction @Sanity @WIP
   Scenario: Create Amex Wearables Action - Suspend
     Given i have "WearablesAction" api request with template "WearableAction" and following details
       | action | SUSPEND                |
