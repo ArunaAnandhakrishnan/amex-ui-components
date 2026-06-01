@@ -86,7 +86,7 @@ public class DataInitializer implements CommandLineRunner {
             // Corporate User — BTA Portal
             userRepository.save(User.builder()
                     .username("corp.user")
-                    .email("corp.user@aeme.com")
+                    .email("surya.prakash@verinite.com")
                     .password(passwordEncoder.encode("Corp@1234"))
                     .fullName("Arnold Smith")
                     .avatarInitials("AS")
