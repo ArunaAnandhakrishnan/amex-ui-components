@@ -1,0 +1,274 @@
+<!-- <amex-page-header
+  [portalStyle]="'onls'"
+  [title]="'Online Account'"
+></amex-page-header> -->
+
+<amex-dashboard-menu-bar
+  [showBureauDropdown]="false"
+  [links]="[
+    { id:'onlineaccount', label:'Online Account' },
+    { id:'supplementary', label:'Supplementary Access Helper' },
+    { id:'offers', label:'Offers' },
+    { id:'benefits', label:'Benefits' }
+  ]"
+  [activeLinkId]="activeSection"
+  (linkClick)="changeSection($event)"
+>
+</amex-dashboard-menu-bar>
+
+<!-- FIXED LAYOUT -->
+<div class="app-layout">
+  <!-- RIGHT CONTENT -->
+  <div class="content-area">
+    <div class="main-content">
+      @if(activeSection === 'onlineaccount') {
+
+      <div class="search-wrapper">
+        <div class="search-header">Search for a Card or User ID</div>
+
+        <div class="search-body">
+          <div class="search-row">
+            <div class="or-text">Please enter a card number</div>
+
+            <ui-input
+              class="field"
+              [type]="'text'"
+              [placeholder]="'Enter card number...'"
+              [(ngModel)]="cardNo"
+            >
+            </ui-input>
+
+            <span class="or-text">or a User Id</span>
+
+            <ui-input
+              class="field"
+              [type]="'text'"
+              [placeholder]="'Enter User Id'"
+              [(ngModel)]="userId"
+            >
+            </ui-input>
+
+            <ui-button
+              class="reset-btn"
+              [label]="'Search'"
+              [variant]="'primary'"
+              [size]="'md'"
+              (click)="onSearch()"
+            >
+            </ui-button>
+
+            <ui-button
+              class="reset-btn"
+              [label]="'Reset'"
+              [variant]="'primary'"
+              [size]="'md'"
+              (click)="onReset()"
+            >
+            </ui-button>
+          </div>
+
+          @if(accountData) {
+
+          <div class="search-result">
+            <p class="success-msg">{{ accountData?.userId }} is registered.</p>
+
+            <div class="result-card">
+              <div class="info-row">
+                <strong>User Status</strong>
+                {{ accountData?.userStatus }}
+              </div>
+
+              <div class="info-row">
+                <strong>User ID</strong>
+                {{ accountData?.userId }}
+              </div>
+
+              <div class="action-links">
+                <a href="#">Unlock</a> | <a href="#">Delete</a> |
+                <a href="#">Offers</a> |
+                <a href="#">Benefits</a>
+              </div>
+
+              <div class="info-row">
+                <strong>Mail</strong>
+                {{ accountData?.email }}
+              </div>
+
+              <div class="info-row">
+                <strong>Mobile No</strong>
+                {{ accountData?.mobileNo }}
+              </div>
+
+              <div class="info-row">
+                <strong>Power Card Id</strong>
+                {{ accountData?.powerCardId }}
+              </div>
+
+              <div class="info-row">
+                <strong>Account Locked</strong>
+                {{ accountData?.accountStatus }}
+              </div>
+
+              <div class="info-row">
+                <strong>Registration Date</strong>
+                {{ accountData.registrationDate }}
+              </div>
+
+              <div class="info-row">
+                <strong>Last Login</strong>
+                {{ accountData.lastLogin }}
+              </div>
+
+              <button class="mini-btn">card</button>
+
+              <div class="info-row">
+                <strong>Site Seal</strong>
+                {{ accountData?.siteSeal }}
+              </div>
+
+              <div class="qa-block">
+                <div>
+                  <strong>{{ accountData.secretQuestion1 }}</strong>
+                </div>
+                <div>{{ accountData.secretAnswer1 }}</div>
+
+                <div>
+                  <strong>{{ accountData.secretQuestion2 }}</strong>
+                </div>
+                <div>{{ accountData.secretAnswer2 }}</div>
+
+                <div>
+                  <strong>{{ accountData.secretQuestion3 }}</strong>
+                </div>
+                <div>{{ accountData.secretAnswer3 }}</div>
+              </div>
+            </div>
+          </div>
+
+          }
+        </div>
+      </div>
+
+      } @if(activeSection === 'supplementary') {
+
+      <div class="search-wrapper">
+        <div class="search-header">Search for a Card or User ID</div>
+
+        <div class="search-body">
+          <div class="search-row">
+            <span class="or-text">Please enter a card number</span>
+            <ui-input
+              class="field"
+              [type]="'text'"
+              [placeholder]="'Enter text...'"
+              [(ngModel)]="suppCardNo"
+            >
+            </ui-input>
+
+            <span class="or-text">or a User Id</span>
+
+            <ui-input
+              class="field"
+              [type]="'text'"
+              [placeholder]="'Enter text...'"
+              [(ngModel)]="suppUserId"
+            >
+            </ui-input>
+
+            <ui-button
+              class="reset-btn"
+              [label]="'Search'"
+              [variant]="'primary'"
+              [size]="'md'"
+              (click)="onSuppSearch()"
+            >
+            </ui-button>
+
+            <ui-button
+              class="reset-btn"
+              [label]="'Reset'"
+              [variant]="'primary'"
+              [size]="'md'"
+              (click)="onReset()"
+            >
+            </ui-button>
+          </div>
+
+          @if (supplementaryData) {
+          <amex-sortable-filterable-table
+            [title]="'Access Groups : Family - 11209'"
+            [columns]="columns"
+            [rows]="rows"
+          >
+          </amex-sortable-filterable-table>
+
+          <amex-sortable-filterable-table
+            [columns]="userColumns"
+            [rows]="userRows"
+            [actions]="userActions"
+            (actionClick)="onUserAction($event)"
+          >
+          </amex-sortable-filterable-table>
+
+          <div class="user-detail-panel">
+            <div class="detail-row">
+              <span class="label">User Status</span>
+              <span class="value active"
+                >{{supplementaryData?.userDetails?.userStatus}}</span
+              >
+            </div>
+
+            <div class="detail-row">
+              <span class="label">Mail</span>
+              <span class="value"
+                >{{ supplementaryData?.userDetails?.email}}</span
+              >
+            </div>
+
+            <div class="detail-row">
+              <span class="label">Mobile No</span>
+              <span class="value"
+                >{{ supplementaryData?.userDetails?.mobileNo }}</span
+              >
+            </div>
+
+            <div class="detail-row">
+              <span class="label">Registration Date</span>
+              <span class="value">
+                {{supplementaryData?.userDetails?.registrationDate}}</span
+              >
+            </div>
+
+            <div class="detail-row">
+              <span class="label">Last Login</span>
+              <span class="value">
+                {{supplementaryData?.userDetails?.lastLogin}}
+              </span>
+            </div>
+
+            <div class="secret-block">
+              @for (item of supplementaryData?.secretQuestions; track $index;
+              let i = $index) {
+              <div>Secret Question {{ i + 1 }}: {{ item.question }}</div>
+              <div>Secret Answer {{ i + 1 }}: {{ item.answer }}</div>
+              }
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+
+      } @if(activeSection === 'offers') {
+      <div class="content-box">
+        <h2>Offers</h2>
+        <p>Offers data will load here</p>
+      </div>
+      } @if(activeSection === 'benefits') {
+      <div class="content-box">
+        <h2>Benefits</h2>
+        <p>Benefits data will load here</p>
+      </div>
+      }
+    </div>
+  </div>
+</div>

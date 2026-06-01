@@ -1,0 +1,21 @@
+<amex-dashboard-menu-bar
+  [showBureauDropdown]="false"
+  [links]="links"
+  [activeLinkId]="activeSection"
+  (linkClick)="onTabChange($event)"
+>
+</amex-dashboard-menu-bar>
+
+@if(activeSection === 'latestStatements') {
+<app-contentbox></app-contentbox>
+} @if(activeSection === 'centralStatements') {
+<app-central-statement></app-central-statement>
+} @if(activeSection === 'afpStatements') {
+<h2>AFP Statements</h2>
+} @if(activeSection === 'customerStatements') {
+<h2>Customer Statements</h2>
+} @if(activeSection === 'statementsBeta') {
+<h2>Statements (Beta)</h2>
+} @if(activeSection === 'centralStatementsOld') {
+<h2>Central Statements (Old)</h2>
+}
