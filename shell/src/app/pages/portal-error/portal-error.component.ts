@@ -7,8 +7,8 @@ import { ActivatedRoute } from '@angular/router';
  * Reads the current route to show the correct start command.
  */
 @Component({
-  selector: 'app-portal-error',
-  template: `
+    selector: 'app-portal-error',
+    template: `
     <div class="portal-error">
       <h3>&#9888; Portal Not Available</h3>
       <p>
@@ -25,6 +25,7 @@ import { ActivatedRoute } from '@angular/router';
       <p style="margin-top:16px;">Then refresh this page.</p>
     </div>
   `,
+    standalone: false
 })
 export class PortalErrorComponent implements OnInit {
 

@@ -13,8 +13,8 @@ import { EventBusService } from './core/services/event-bus.service';
 import { AmexTabItem } from '@vn-core-ui-components/ui';
 
 @Component({
-  selector: 'app-root',
-  template: `
+    selector: 'app-root',
+    template: `
     <!-- MFE loading indicator — fixed, above everything -->
     <div class="mfe-loading-bar" [class.visible]="mfeLoading"></div>
 
@@ -144,6 +144,7 @@ import { AmexTabItem } from '@vn-core-ui-components/ui';
       (cancel)="showLogoutDialog = false">
     </amex-logout-confirmation>
   `,
+    standalone: false
 })
 export class AppComponent implements OnInit, OnDestroy {
 

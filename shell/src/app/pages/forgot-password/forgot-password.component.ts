@@ -3,9 +3,8 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
-  selector: 'app-forgot-password',
-
-  template: `
+    selector: 'app-forgot-password',
+    template: `
     <amex-forgot-password-form
       portalStyle="onls"
       portalTitle="ONLS Helper Tool"
@@ -14,6 +13,7 @@ import { AuthService } from '../../core/services/auth.service';
       (backToLogin)="goToLogin()">
     </amex-forgot-password-form>
   `,
+    standalone: false
 })
 
 export class ForgotPasswordComponent implements OnInit {

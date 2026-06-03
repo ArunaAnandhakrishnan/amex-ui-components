@@ -6,8 +6,8 @@ import { LoginCredentials } from '@vn-core-ui-components/ui';
 import { RegisterData }     from '@vn-core-ui-components/ui';
 
 @Component({
-  selector: 'app-login',
-  template: `
+    selector: 'app-login',
+    template: `
     <!-- LOGIN VIEW -->
     <ng-container *ngIf="mode === 'login'">
       <amex-login-form
@@ -32,6 +32,7 @@ import { RegisterData }     from '@vn-core-ui-components/ui';
       </amex-register-form>
     </ng-container>
   `,
+    standalone: false
 })
 export class LoginComponent implements OnInit {
 
