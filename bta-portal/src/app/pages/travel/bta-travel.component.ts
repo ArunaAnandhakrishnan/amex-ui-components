@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 interface TravelRequest {
@@ -23,7 +25,7 @@ interface TravelRequest {
           <div class="page-title">Travel Requests</div>
           <div class="page-subtitle">Manage and track all corporate travel requests</div>
         </div>
-        <button class="btn-primary" (click)="showNewForm = !showNewForm">
+        <button class="btn-primary" (click)="toggleForm()">
           {{ showNewForm ? '✕ Cancel' : '+ New Request' }}
         </button>
       </div>
@@ -32,50 +34,78 @@ interface TravelRequest {
       <div class="card" *ngIf="showNewForm" style="margin-bottom:24px;">
         <div class="card-header">New Travel Request</div>
         <div class="card-body">
+
+          <!-- Global error banner -->
+          <div *ngIf="formSubmitted && hasErrors()" class="global-error">
+            Please correct the highlighted errors before submitting.
+          </div>
+
           <div class="form-row">
             <div class="form-field">
-              <label>Traveler Name</label>
-              <input type="text" [(ngModel)]="newReq.traveler" placeholder="Full name" />
+              <label>Traveler Name <span class="req">*</span></label>
+              <input type="text" [(ngModel)]="newReq.traveler" placeholder="Full name"
+                [class.field-error]="formSubmitted && errors.traveler"/>
+              <span *ngIf="formSubmitted && errors.traveler" class="error-msg">{{ errors.traveler }}</span>
             </div>
             <div class="form-field">
-              <label>Travel Type</label>
-              <select [(ngModel)]="newReq.type">
+              <label>Travel Type <span class="req">*</span></label>
+              <select [(ngModel)]="newReq.type"
+                [class.field-error]="formSubmitted && errors.type">
+                <option value="">-- Select Type --</option>
                 <option>Conference</option>
                 <option>Client Visit</option>
                 <option>Internal Meeting</option>
                 <option>Sales Call</option>
                 <option>Training</option>
               </select>
+              <span *ngIf="formSubmitted && errors.type" class="error-msg">{{ errors.type }}</span>
             </div>
           </div>
+
           <div class="form-row">
             <div class="form-field">
-              <label>Destination</label>
-              <input type="text" [(ngModel)]="newReq.destination" placeholder="City, Country" />
+              <label>Destination <span class="req">*</span></label>
+              <input type="text" [(ngModel)]="newReq.destination" placeholder="City, Country"
+                [class.field-error]="formSubmitted && errors.destination"/>
+              <span *ngIf="formSubmitted && errors.destination" class="error-msg">{{ errors.destination }}</span>
             </div>
             <div class="form-field">
-              <label>Purpose</label>
-              <input type="text" [(ngModel)]="newReq.purpose" placeholder="Brief description" />
+              <label>Purpose <span class="req">*</span></label>
+              <input type="text" [(ngModel)]="newReq.purpose" placeholder="Brief description"
+                [class.field-error]="formSubmitted && errors.purpose"/>
+              <span *ngIf="formSubmitted && errors.purpose" class="error-msg">{{ errors.purpose }}</span>
             </div>
           </div>
+
           <div class="form-row">
             <div class="form-field">
-              <label>Departure Date</label>
-              <input type="date" [(ngModel)]="newReq.departure" />
+              <label>Departure Date <span class="req">*</span></label>
+              <input type="date" [(ngModel)]="newReq.departure" [min]="today"
+                [class.field-error]="formSubmitted && errors.departure"/>
+              <span *ngIf="formSubmitted && errors.departure" class="error-msg">{{ errors.departure }}</span>
             </div>
             <div class="form-field">
-              <label>Return Date</label>
-              <input type="date" [(ngModel)]="newReq.returnDate" />
+              <label>Return Date <span class="req">*</span></label>
+              <input type="date" [(ngModel)]="newReq.returnDate" [min]="newReq.departure || today"
+                [class.field-error]="formSubmitted && errors.returnDate"/>
+              <span *ngIf="formSubmitted && errors.returnDate" class="error-msg">{{ errors.returnDate }}</span>
             </div>
             <div class="form-field">
-              <label>Estimated Amount ($)</label>
-              <input type="number" [(ngModel)]="newReq.amount" placeholder="0.00" />
+              <label>Estimated Amount ($) <span class="req">*</span></label>
+              <input type="number" [(ngModel)]="newReq.amount" placeholder="0.00" min="0"
+                [class.field-error]="formSubmitted && errors.amount"/>
+              <span *ngIf="formSubmitted && errors.amount" class="error-msg">{{ errors.amount }}</span>
             </div>
           </div>
+
           <div style="display:flex;gap:10px;margin-top:8px;">
             <button class="btn-primary" (click)="submitRequest()">Submit Request</button>
-            <button class="btn-secondary" (click)="showNewForm = false">Cancel</button>
+            <button class="btn-secondary" (click)="cancelForm()">Cancel</button>
           </div>
+
+          <!-- Success message -->
+          <div *ngIf="successMsg" class="success-msg">{{ successMsg }}</div>
+
         </div>
       </div>
 
@@ -148,6 +178,19 @@ interface TravelRequest {
     </div>
   `,
   styles: [`
+    .req         { color: #cc0000; }
+    .field-error { border-color: #cc0000 !important; }
+    .error-msg   { color: #cc0000; font-size: 11px; margin-top: 3px; display: block; }
+    .global-error {
+      background: #fff0f0; border: 1px solid #cc0000;
+      padding: 8px 12px; font-size: 12px; color: #cc0000;
+      margin-bottom: 12px; border-radius: 4px;
+    }
+    .success-msg {
+      margin-top: 10px; padding: 8px 12px;
+      background: #e6f9f0; color: #1a7a4a;
+      border: 1px solid #b7e4ce; font-size: 12px; border-radius: 4px;
+    }
     .filter-btn {
       padding: 5px 14px; font-size: 12px; font-weight: 600;
       border: 1.5px solid #ddd; border-radius: 20px; cursor: pointer;
@@ -178,18 +221,25 @@ export class BtaTravelComponent {
   activeFilter = 'All';
   searchTerm = '';
   filters = ['All', 'Pending', 'Approved', 'Rejected'];
+  formSubmitted = false;
+  successMsg = '';
+  errors: Record<string, string> = {};
+  today = new Date().toISOString().split('T')[0];
 
-  newReq = { traveler: '', destination: '', departure: '', returnDate: '', amount: 0, type: 'Conference', purpose: '' };
+  newReq = {
+    traveler: '', destination: '', departure: '', returnDate: '',
+    amount: 0, type: '', purpose: '',
+  };
 
   requests: TravelRequest[] = [
-    { id: 'TR-2025-001', traveler: 'Sarah Johnson',    destination: 'New York, NY',     departure: '2025-06-10', returnDate: '2025-06-14', amount: 3200,  status: 'approved', type: 'Conference',      purpose: 'Q2 Leadership Summit',         bookedBy: 'Self' },
-    { id: 'TR-2025-002', traveler: 'Michael Chen',     destination: 'London, UK',       departure: '2025-06-15', returnDate: '2025-06-22', amount: 8750,  status: 'pending',  type: 'Client Visit',    purpose: 'Barclays Account Review',      bookedBy: 'Travel Desk' },
-    { id: 'TR-2025-003', traveler: 'Amanda Rodriguez', destination: 'Chicago, IL',      departure: '2025-06-18', returnDate: '2025-06-19', amount: 1400,  status: 'approved', type: 'Internal Meeting',purpose: 'Risk Team Workshop',           bookedBy: 'Self' },
-    { id: 'TR-2025-004', traveler: 'David Park',       destination: 'San Francisco, CA',departure: '2025-06-20', returnDate: '2025-06-24', amount: 4100,  status: 'pending',  type: 'Sales Call',      purpose: 'New Client Onboarding',        bookedBy: 'Travel Desk' },
-    { id: 'TR-2025-005', traveler: 'Emily Watson',     destination: 'Toronto, Canada',  departure: '2025-06-25', returnDate: '2025-06-27', amount: 2850,  status: 'rejected', type: 'Conference',      purpose: 'FinTech North 2025',           bookedBy: 'Self' },
-    { id: 'TR-2025-006', traveler: 'James Liu',        destination: 'Singapore',        departure: '2025-07-02', returnDate: '2025-07-10', amount: 12400, status: 'pending',  type: 'Client Visit',    purpose: 'APAC Account Expansion',       bookedBy: 'Travel Desk' },
-    { id: 'TR-2025-007', traveler: 'Priya Sharma',     destination: 'Dallas, TX',       departure: '2025-07-05', returnDate: '2025-07-06', amount: 980,   status: 'approved', type: 'Training',        purpose: 'Compliance Certification',     bookedBy: 'Self' },
-    { id: 'TR-2025-008', traveler: 'Robert Taylor',    destination: 'Miami, FL',        departure: '2025-07-08', returnDate: '2025-07-11', amount: 2100,  status: 'cancelled',type: 'Sales Call',      purpose: 'Prospect Meeting — cancelled', bookedBy: 'Self' },
+    { id: 'TR-2025-001', traveler: 'Sarah Johnson',    destination: 'New York, NY',      departure: '2025-06-10', returnDate: '2025-06-14', amount: 3200,  status: 'approved', type: 'Conference',       purpose: 'Q2 Leadership Summit',         bookedBy: 'Self' },
+    { id: 'TR-2025-002', traveler: 'Michael Chen',     destination: 'London, UK',        departure: '2025-06-15', returnDate: '2025-06-22', amount: 8750,  status: 'pending',  type: 'Client Visit',     purpose: 'Barclays Account Review',      bookedBy: 'Travel Desk' },
+    { id: 'TR-2025-003', traveler: 'Amanda Rodriguez', destination: 'Chicago, IL',       departure: '2025-06-18', returnDate: '2025-06-19', amount: 1400,  status: 'approved', type: 'Internal Meeting', purpose: 'Risk Team Workshop',           bookedBy: 'Self' },
+    { id: 'TR-2025-004', traveler: 'David Park',       destination: 'San Francisco, CA', departure: '2025-06-20', returnDate: '2025-06-24', amount: 4100,  status: 'pending',  type: 'Sales Call',       purpose: 'New Client Onboarding',        bookedBy: 'Travel Desk' },
+    { id: 'TR-2025-005', traveler: 'Emily Watson',     destination: 'Toronto, Canada',   departure: '2025-06-25', returnDate: '2025-06-27', amount: 2850,  status: 'rejected', type: 'Conference',       purpose: 'FinTech North 2025',           bookedBy: 'Self' },
+    { id: 'TR-2025-006', traveler: 'James Liu',        destination: 'Singapore',         departure: '2025-07-02', returnDate: '2025-07-10', amount: 12400, status: 'pending',  type: 'Client Visit',     purpose: 'APAC Account Expansion',       bookedBy: 'Travel Desk' },
+    { id: 'TR-2025-007', traveler: 'Priya Sharma',     destination: 'Dallas, TX',        departure: '2025-07-05', returnDate: '2025-07-06', amount: 980,   status: 'approved', type: 'Training',         purpose: 'Compliance Certification',     bookedBy: 'Self' },
+    { id: 'TR-2025-008', traveler: 'Robert Taylor',    destination: 'Miami, FL',         departure: '2025-07-08', returnDate: '2025-07-11', amount: 2100,  status: 'cancelled',type: 'Sales Call',       purpose: 'Prospect Meeting — cancelled', bookedBy: 'Self' },
   ];
 
   get filteredRequests(): TravelRequest[] {
@@ -202,20 +252,86 @@ export class BtaTravelComponent {
     });
   }
 
-  updateStatus(req: TravelRequest, status: 'approved' | 'rejected'): void {
-    req.status = status;
+  validate(): boolean {
+    this.errors = {};
+
+    if (!this.newReq.traveler.trim())
+      this.errors['traveler'] = 'Traveler Name is required.';
+    else if (this.newReq.traveler.trim().length < 2)
+      this.errors['traveler'] = 'Name must be at least 2 characters.';
+
+    if (!this.newReq.type)
+      this.errors['type'] = 'Travel Type is required.';
+
+    if (!this.newReq.destination.trim())
+      this.errors['destination'] = 'Destination is required.';
+
+    if (!this.newReq.purpose.trim())
+      this.errors['purpose'] = 'Purpose is required.';
+
+    if (!this.newReq.departure)
+      this.errors['departure'] = 'Departure Date is required.';
+    else if (this.newReq.departure < this.today)
+      this.errors['departure'] = 'Departure Date cannot be in the past.';
+
+    if (!this.newReq.returnDate)
+      this.errors['returnDate'] = 'Return Date is required.';
+    else if (this.newReq.departure && this.newReq.returnDate < this.newReq.departure)
+      this.errors['returnDate'] = 'Return Date must be on or after Departure Date.';
+
+    if (!this.newReq.amount || Number(this.newReq.amount) <= 0)
+      this.errors['amount'] = 'Amount must be greater than 0.';
+    else if (Number(this.newReq.amount) > 999999)
+      this.errors['amount'] = 'Amount seems too high. Please verify.';
+
+    return Object.keys(this.errors).length === 0;
+  }
+
+  hasErrors(): boolean {
+    return Object.keys(this.errors).length > 0;
+  }
+
+  toggleForm() {
+    this.showNewForm = !this.showNewForm;
+    if (!this.showNewForm) this.resetForm();
+  }
+
+  cancelForm() {
+    this.resetForm();
+    this.showNewForm = false;
+  }
+
+  resetForm() {
+    this.formSubmitted = false;
+    this.successMsg = '';
+    this.errors = {};
+    this.newReq = { traveler: '', destination: '', departure: '', returnDate: '', amount: 0, type: '', purpose: '' };
   }
 
   submitRequest(): void {
-    if (!this.newReq.traveler || !this.newReq.destination) return;
+    this.formSubmitted = true;
+    if (!this.validate()) return;
+
+    const nextId = `TR-2025-${String(this.requests.length + 1).padStart(3, '0')}`;
     this.requests.unshift({
-      id: `TR-2025-00${this.requests.length + 1}`,
-      ...this.newReq,
-      status: 'pending',
-      bookedBy: 'Self',
+      id: nextId,
+      traveler:    this.newReq.traveler.trim(),
+      destination: this.newReq.destination.trim(),
+      departure:   this.newReq.departure,
+      returnDate:  this.newReq.returnDate,
+      amount:      Number(this.newReq.amount),
+      type:        this.newReq.type,
+      purpose:     this.newReq.purpose.trim(),
+      status:      'pending',
+      bookedBy:    'Self',
     });
-    this.newReq = { traveler: '', destination: '', departure: '', returnDate: '', amount: 0, type: 'Conference', purpose: '' };
-    this.showNewForm = false;
+
+    this.successMsg = `Travel request ${nextId} submitted successfully.`;
+    setTimeout(() => { this.resetForm(); this.showNewForm = false; }, 1500);
+  }
+
+  updateStatus(req: TravelRequest, status: 'approved' | 'rejected'): void {
+    req.status = status;
   }
 
   navigate(path: string): void {

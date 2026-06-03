@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { AmexPageHeaderComponent, AmexBreadcrumbTrailComponent } from '@vn-core-ui-components/ui';
 
 @Component({
-    selector: 'app-bta-tmc-transactions',
-    imports: [CommonModule, FormsModule, AmexPageHeaderComponent, AmexBreadcrumbTrailComponent],
-    template: `
+  selector: 'app-bta-tmc-transactions',
+  imports: [CommonModule, FormsModule, AmexPageHeaderComponent, AmexBreadcrumbTrailComponent],
+  template: `
     <amex-page-header portalStyle="onls" title="BTA TMC TRANSACTIONS"></amex-page-header>
     <amex-breadcrumb-trail
       [items]="[{id:'home',label:'Home'},{id:'bta',label:'BTA Portal'},{id:'tmc',label:'TMC Transactions'}]"
@@ -18,16 +18,29 @@ import { AmexPageHeaderComponent, AmexBreadcrumbTrailComponent } from '@vn-core-
         <div class="bta-panel-hd">BTA TMC Transactions</div>
         <div class="bta-panel-bd">
 
-          <!-- Filter row — matches document image30 -->
+          <!-- Filter row -->
           <div class="filter-row">
-            <label>Select a date:</label>
-            <input type="date" [(ngModel)]="selectedDate" class="bta-date-input"/>
-            <span *ngIf="dateError" class="date-error">Please select a valid Date.</span>
-            <label>Select an index:</label>
-            <select [(ngModel)]="selectedIndex" class="bta-select-md">
-              <option *ngFor="let idx of indices" [value]="idx">{{ idx }}</option>
-            </select>
+
+            <label>Select a date: <span class="req">*</span></label>
+            <div class="field-wrap">
+              <input type="date" [(ngModel)]="selectedDate" class="bta-date-input"
+                [max]="today"
+                [class.field-error]="submitted && errors.date"/>
+              <span *ngIf="submitted && errors.date" class="error-msg">{{ errors.date }}</span>
+            </div>
+
+            <label>Select an index: <span class="req">*</span></label>
+            <div class="field-wrap">
+              <select [(ngModel)]="selectedIndex" class="bta-select-md"
+                [class.field-error]="submitted && errors.index">
+                <option value="">-- Select Index --</option>
+                <option *ngFor="let idx of indices" [value]="idx">{{ idx }}</option>
+              </select>
+              <span *ngIf="submitted && errors.index" class="error-msg">{{ errors.index }}</span>
+            </div>
+
             <button class="bta-btn bta-btn-secondary" (click)="showTransactions()">Show TMC Transactions</button>
+
           </div>
 
           <!-- Results -->
@@ -52,21 +65,25 @@ import { AmexPageHeaderComponent, AmexBreadcrumbTrailComponent } from '@vn-core-
               </tbody>
             </table>
           </div>
+
         </div>
       </div>
     </div>
   `,
-    styles: [`
+  styles: [`
     .bta-page        { padding:0 16px 24px; background:#fff; }
     .bta-panel       { border:1px solid #b8d0e8; border-radius:2px; overflow:hidden; margin-top:12px; }
     .bta-panel-hd    { background:#cfe2f3; border-bottom:1px solid #b8d0e8; padding:8px 14px; font-size:13px; font-weight:bold; color:#1e3a6e; }
     .bta-panel-bd    { padding:16px; }
-    .filter-row      { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-    .filter-row label { font-size:12px; font-weight:bold; color:#333; white-space:nowrap; }
+    .filter-row      { display:flex; align-items:flex-start; gap:10px; flex-wrap:wrap; }
+    .filter-row label { font-size:12px; font-weight:bold; color:#333; white-space:nowrap; padding-top:5px; }
+    .field-wrap      { display:flex; flex-direction:column; gap:3px; }
     .bta-date-input  { padding:3px 8px; font-size:12px; border:1px solid #aaa; font-family:Arial,sans-serif; }
     .bta-select-md   { padding:3px 8px; font-size:12px; border:1px solid #aaa; font-family:Arial,sans-serif; min-width:200px; }
-    .date-error      { color:#cc0000; font-size:12px; }
-    .bta-btn         { padding:4px 14px; font-size:12px; font-family:Arial,sans-serif; cursor:pointer; border-radius:2px; }
+    .field-error     { border-color:#cc0000 !important; }
+    .error-msg       { color:#cc0000; font-size:11px; }
+    .req             { color:#cc0000; }
+    .bta-btn         { padding:4px 14px; font-size:12px; font-family:Arial,sans-serif; cursor:pointer; border-radius:2px; margin-top:2px; }
     .bta-btn-secondary { background:#fff; color:#333; border:1px solid #aaa; }
     .bta-btn-secondary:hover { background:#f5f5f5; }
     .no-records      { font-size:12px; color:#555; }
@@ -77,16 +94,41 @@ import { AmexPageHeaderComponent, AmexBreadcrumbTrailComponent } from '@vn-core-
   `]
 })
 export class BtaTmcTransactionsComponent {
-  selectedDate = ''; selectedIndex = 'Archive Transaction';
-  shown = false; dateError = false;
+  selectedDate = '';
+  selectedIndex = '';
+  shown = false;
+  submitted = false;
+  errors: Record<string, string> = {};
+  today = new Date().toISOString().split('T')[0];
 
-  indices = ['Archive Transaction','Live Transaction','Pending Transaction','Rejected Transaction'];
+  indices = ['Archive Transaction', 'Live Transaction', 'Pending Transaction', 'Rejected Transaction'];
 
-  transactions: any[] = [];  // Empty — matches document "no transactions"
+  transactions: any[] = [];
 
   showTransactions() {
-    if (!this.selectedDate) { this.dateError = true; return; }
-    this.dateError = false; this.shown = true;
+    this.submitted = true;
+    this.errors = {};
+
+    // Date validation
+    if (!this.selectedDate) {
+      this.errors['date'] = 'Please select a valid Date.';
+    } else if (this.selectedDate > this.today) {
+      this.errors['date'] = 'Date cannot be a future date.';
+    }
+
+    // Index validation
+    if (!this.selectedIndex) {
+      this.errors['index'] = 'Please select an index.';
+    }
+
+    if (Object.keys(this.errors).length > 0) return;
+
+    this.shown = true;
   }
-  goBack() { this.shown = false; }
+
+  goBack() {
+    this.shown = false;
+    this.submitted = false;
+    this.errors = {};
+  }
 }
