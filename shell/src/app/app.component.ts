@@ -17,28 +17,19 @@ import { AmexTabItem } from '@vn-core-ui-components/ui';
     template: `
     <!-- MFE loading indicator — fixed, above everything -->
     <div class="mfe-loading-bar" [class.visible]="mfeLoading"></div>
-
+    
     <!-- Auth pages (login / forgot-password): no shell chrome -->
-    <ng-container *ngIf="isAuthPage; else shellLayout">
+    @if (isAuthPage) {
       <router-outlet></router-outlet>
-    </ng-container>
-
-    <!-- ════════════════════════════════════════════════════════════
-         SHELL LAYOUT — only rendered when the user is authenticated.
-         amex-page-shell owns header/sidebar/footer.
-    ════════════════════════════════════════════════════════════ -->
-    <ng-template #shellLayout>
-
+    } @else {
       <amex-page-shell
         portalStyle="onls"
         [showCustomHeader]="true"
         [showSidebar]="true"
         footerText="© American Express. All rights reserved."
-      >
-
+        >
         <!-- ── Custom header slot ─────────────────────────────── -->
         <div header>
-
           <!-- Top nav bar: AMEX logo + portal title + logout -->
           <amex-top-nav-bar
             portalStyle="onls"
@@ -47,7 +38,6 @@ import { AmexTabItem } from '@vn-core-ui-components/ui';
             (logout)="onLogoutRequest()"
             (menuToggle)="onMenuToggle()">
           </amex-top-nav-bar>
-
           <!-- Main tab bar -->
           <amex-tab-bar
             portalStyle="onls"
@@ -57,84 +47,77 @@ import { AmexTabItem } from '@vn-core-ui-components/ui';
             (tabClick)="onTabClick($event)"
             (subClick)="onSubClick($event)">
           </amex-tab-bar>
-
           <!-- Misc dropdown -->
-          <div class="misc-submenu" *ngIf="activeTabId === 'misc' && showSubMenu">
-            <div class="misc-submenu__inner">
-              <span
-                *ngFor="let sub of miscSubItems"
-                class="misc-submenu__item"
-                [class.misc-submenu__item--active]="activeSubId === sub.id"
-                (click)="onSubClick(sub.id)">
-                {{ sub.label }}
-              </span>
+          @if (activeTabId === 'misc' && showSubMenu) {
+            <div class="misc-submenu">
+              <div class="misc-submenu__inner">
+                @for (sub of miscSubItems; track sub) {
+                  <span
+                    class="misc-submenu__item"
+                    [class.misc-submenu__item--active]="activeSubId === sub.id"
+                    (click)="onSubClick(sub.id)">
+                    {{ sub.label }}
+                  </span>
+                }
+              </div>
             </div>
-          </div>
-
+          }
           <!-- Breadcrumb — shown when a sub-item is selected and the dropdown is closed -->
-          <div class="misc-breadcrumb"
-               *ngIf="activeTabId === 'misc' && activeSubId && !showSubMenu">
-            <span>Misc</span>
-            <span class="misc-breadcrumb__sep"> › </span>
-            <span class="misc-breadcrumb__current">{{ getActiveSubLabel() }}</span>
-            <span class="misc-breadcrumb__change" (click)="showSubMenu = true"> (change)</span>
-          </div>
-
-          <!-- Centurion dropdown -->
-          <div
-            class="misc-submenu"
-            *ngIf="activeTabId === 'centurion' && showSubMenu">
-
-            <div class="misc-submenu__inner">
-
-              <span
-                *ngFor="let sub of centurionSubItems"
-                class="misc-submenu__item"
-                [class.misc-submenu__item--active]="activeSubId === sub.id"
-                (click)="onCenturionSubClick(sub.id)">
-
-                {{ sub.label }}
-
-              </span>
-
+          @if (activeTabId === 'misc' && activeSubId && !showSubMenu) {
+            <div class="misc-breadcrumb"
+              >
+              <span>Misc</span>
+              <span class="misc-breadcrumb__sep"> › </span>
+              <span class="misc-breadcrumb__current">{{ getActiveSubLabel() }}</span>
+              <span class="misc-breadcrumb__change" (click)="showSubMenu = true"> (change)</span>
             </div>
-          </div>
-
+          }
+          <!-- Centurion dropdown -->
+          @if (activeTabId === 'centurion' && showSubMenu) {
+            <div
+              class="misc-submenu"
+              >
+              <div class="misc-submenu__inner">
+                @for (sub of centurionSubItems; track sub) {
+                  <span
+                    class="misc-submenu__item"
+                    [class.misc-submenu__item--active]="activeSubId === sub.id"
+                    (click)="onCenturionSubClick(sub.id)">
+                    {{ sub.label }}
+                  </span>
+                }
+              </div>
+            </div>
+          }
           <!-- Centurion breadcrumb -->
-          <div
-            class="misc-breadcrumb"
-            *ngIf="activeTabId === 'centurion' && activeSubId && !showSubMenu">
-
-            <span>Centurion</span>
-
-            <span class="misc-breadcrumb__sep"> › </span>
-
-            <span class="misc-breadcrumb__current">
-              {{ getActiveCenturionLabel() }}
-            </span>
-
-            <span
-              class="misc-breadcrumb__change"
-              (click)="showSubMenu = true">
-
-              (change)
-
-            </span>
-
-          </div>
-
-          
-
+          @if (activeTabId === 'centurion' && activeSubId && !showSubMenu) {
+            <div
+              class="misc-breadcrumb"
+              >
+              <span>Centurion</span>
+              <span class="misc-breadcrumb__sep"> › </span>
+              <span class="misc-breadcrumb__current">
+                {{ getActiveCenturionLabel() }}
+              </span>
+              <span
+                class="misc-breadcrumb__change"
+                (click)="showSubMenu = true">
+                (change)
+              </span>
+            </div>
+          }
         </div>
         <!-- /header slot -->
-
         <!-- ── Page content ─────────────────────────────────── -->
         <router-outlet></router-outlet>
-
       </amex-page-shell>
-
-    </ng-template>
-
+    }
+    
+    <!-- ════════════════════════════════════════════════════════════
+    SHELL LAYOUT — only rendered when the user is authenticated.
+    amex-page-shell owns header/sidebar/footer.
+    ════════════════════════════════════════════════════════════ -->
+    
     <!-- Logout confirmation dialog -->
     <amex-logout-confirmation
       [visible]="showLogoutDialog"
@@ -143,7 +126,7 @@ import { AmexTabItem } from '@vn-core-ui-components/ui';
       (confirm)="onLogoutConfirm()"
       (cancel)="showLogoutDialog = false">
     </amex-logout-confirmation>
-  `,
+    `,
     standalone: false
 })
 export class AppComponent implements OnInit, OnDestroy {

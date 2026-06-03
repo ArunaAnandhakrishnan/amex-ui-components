@@ -17,14 +17,16 @@ import { ActivatedRoute } from '@angular/router';
         <strong>Start the portal in a new terminal:</strong>
       </p>
       <div class="portal-error-cmds">
-        <div *ngFor="let cmd of startCmds" class="portal-error-cmd">
-          <span class="cmd-label">{{ cmd.label }}</span>
-          <code>{{ cmd.command }}</code>
-        </div>
+        @for (cmd of startCmds; track cmd) {
+          <div class="portal-error-cmd">
+            <span class="cmd-label">{{ cmd.label }}</span>
+            <code>{{ cmd.command }}</code>
+          </div>
+        }
       </div>
       <p style="margin-top:16px;">Then refresh this page.</p>
     </div>
-  `,
+    `,
     standalone: false
 })
 export class PortalErrorComponent implements OnInit {

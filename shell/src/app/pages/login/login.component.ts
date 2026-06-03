@@ -9,7 +9,7 @@ import { RegisterData }     from '@vn-core-ui-components/ui';
     selector: 'app-login',
     template: `
     <!-- LOGIN VIEW -->
-    <ng-container *ngIf="mode === 'login'">
+    @if (mode === 'login') {
       <amex-login-form
         portalTitle="ONLS Helper Tool"
         [errorMessage]="error"
@@ -19,10 +19,10 @@ import { RegisterData }     from '@vn-core-ui-components/ui';
         (forgotPassword)="goToForgotPassword()"
         (registerClick)="setMode('register')">
       </amex-login-form>
-    </ng-container>
-
+    }
+    
     <!-- REGISTER VIEW -->
-    <ng-container *ngIf="mode === 'register'">
+    @if (mode === 'register') {
       <amex-register-form
         portalTitle="ONLS Helper Tool"
         [errorMessage]="error"
@@ -30,8 +30,8 @@ import { RegisterData }     from '@vn-core-ui-components/ui';
         (registerSubmit)="onRegister($event)"
         (cancel)="setMode('login')">
       </amex-register-form>
-    </ng-container>
-  `,
+    }
+    `,
     standalone: false
 })
 export class LoginComponent implements OnInit {
