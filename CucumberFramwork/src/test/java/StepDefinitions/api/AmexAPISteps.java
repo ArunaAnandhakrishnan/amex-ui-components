@@ -54,16 +54,16 @@ public class AmexAPISteps {
             case "WearablesAction":
                 response = apiHelper.postAPI(ConfigReader.getProperty("CreateAmexWearableActionEndpoint")+ ConfigReader.getProperty("SerialNo"), requestJson);
                 break;
-            case "CreateOnlsLoginEndpoint":
-                response = apiHelper.postAPI(ConfigReader.getProperty("CreateOnlsLoginEndpoint"), requestJson);
+            case "CreateBTALoginEndpoint":
+                response = apiHelper.postAPI(ConfigReader.getProperty("CreateBTALoginEndpoint"), requestJson);
                 break;
-            case "CreateOnlsRegistrationEndpoint":
-                response = apiHelper.postAPI(ConfigReader.getProperty("CreateOnlsRegisterEndpoint"), requestJson);
+            case "CreateBTARegistrationEndpoint":
+                response = apiHelper.postAPI(ConfigReader.getProperty("CreateBTARegisterEndpoint"), requestJson);
                 break;
-            case "CreateOnlsForgotPasswordEndpoint":
-                response = apiHelper.postAPI(ConfigReader.getProperty("CreateOnlsForgotPasswordEndpoint"), requestJson);
+            case "CreateBTAForgotPasswordEndpoint":
+                response = apiHelper.postAPI(ConfigReader.getProperty("CreateBTAForgotPasswordEndpoint"), requestJson);
                 break;
-            case "CreateOnlsLogoutEndpoint": response = apiHelper.postAPIWithAccessToken(ConfigReader.getProperty("CreateOnlsLogoutEndpoint"), Map.of("Authorization", "Bearer " + context.getDataStore().get("#AccessToken")
+            case "CreateBTALogoutEndpoint": response = apiHelper.postAPIWithAccessToken(ConfigReader.getProperty("CreateBTALogoutEndpoint"), Map.of("Authorization", "Bearer " + context.getDataStore().get("#AccessToken")
                         )
                 );
                 break;

@@ -18,11 +18,9 @@ public class TestContext {
     private final Map<String, String> dataStore =
             new HashMap<>();
 
-
     public void setDataStore(
             String key,
             String value) {
-
         dataStore.put(key, value);
     }
 

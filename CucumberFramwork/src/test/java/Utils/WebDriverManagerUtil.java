@@ -59,6 +59,11 @@ public class WebDriverManagerUtil {
                 chromeOptions.addArguments("--disable-extensions");
                 chromeOptions.addArguments("--no-sandbox");
                 chromeOptions.addArguments("--disable-dev-shm-usage");
+                boolean headless = Boolean.parseBoolean(ConfigReader.getProperty("headless"));
+                if (headless) {
+                    chromeOptions.addArguments("--headless=new");
+                    chromeOptions.addArguments("--window-size=1920,1080");
+                }
                 driver = new ChromeDriver(chromeOptions);
                 break;
 

@@ -34,6 +34,7 @@ public class BtaCaseManagement {
         }
 
     @Then("User verify the Successful case submission in Case Management Section")
+
     public void verifyGeneratedReport() {
         uiHelper.assertAndAcceptAlertPopup("Comment submitted.");
 

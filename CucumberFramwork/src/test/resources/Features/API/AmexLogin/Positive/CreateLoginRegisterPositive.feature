@@ -1,11 +1,11 @@
 @OnlsRegistration @API @Positive
 
-Feature: Create Registration Positive Scenario with Registration API
+Feature: Create BTA Registration Positive Scenario with Registration API
 
-  @CreateOnlsRegistration @Sanity
+  @CreateBTARegistration @Sanity
   Scenario: User Create Registration
-    Given i have "CreateOnlsRegistrationEndpoint" api request with template "CreateOnlsRegistration"
-    When i POST "CreateOnlsRegistrationEndpoint" api request
+    Given i have "CreateBTARegistrationEndpoint" api request with template "CreateBTARegistration"
+    When i POST "CreateBTARegistrationEndpoint" api request
     Then the http status code should be "201"
     And the following response details should be present
       | locator     | value                   |
@@ -13,10 +13,10 @@ Feature: Create Registration Positive Scenario with Registration API
       | message     | Registration successful |
       | data.userId | #should be present      |
 
-  @CreateOnlsRegistration @Sanity
+  @CreateBTARegistration @Sanity
   Scenario: User Create Registration and perform Login & Logout
-    Given i have "CreateOnlsRegistrationEndpoint" api request with template "CreateOnlsRegistration"
-    When i POST "CreateOnlsRegistrationEndpoint" api request
+    Given i have "CreateBTARegistrationEndpoint" api request with template "CreateBTARegistration"
+    When i POST "CreateBTARegistrationEndpoint" api request
     Then the http status code should be "201"
     And the following response details should be present
       | locator     | value                   |
@@ -26,10 +26,10 @@ Feature: Create Registration Positive Scenario with Registration API
     And i have following values from the transaction
       | locator       | varname   |
       | data.username | #UserName |
-    Given i have "ONLSLoginEndpoint" api request with template "CreateOnlsLogin" and following details
+    Given i have "BTALoginEndpoint" api request with template "CreateBTALogin" and following details
       | username | #UserName |
       | password | Test@1234 |
-    When i POST "CreateOnlsLoginEndpoint" api request
+    When i POST "CreateBTALoginEndpoint" api request
     Then the http status code should be "200"
     And the following response details should be present
       | locator           | value              |

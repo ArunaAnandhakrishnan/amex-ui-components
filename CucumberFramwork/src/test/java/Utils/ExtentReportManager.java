@@ -34,7 +34,6 @@ public class ExtentReportManager {
             sparkReporter.config().setDocumentTitle("Test Automation Report");
             sparkReporter.config().setReportName("Cucumber BDD Test Report");
             sparkReporter.config().setTimeStampFormat("yyyy-MM-dd HH:mm:ss");
-
             extentReports = new ExtentReports();
             extentReports.attachReporter(sparkReporter);
 
@@ -42,7 +41,6 @@ public class ExtentReportManager {
             extentReports.setSystemInfo("Java Version", System.getProperty("java.version"));
             extentReports.setSystemInfo("User Name",    System.getProperty("user.name"));
 
-            // ── Safety net: flush on JVM shutdown ────────────────────────────
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 if (extentReports != null) {
                     extentReports.flush();

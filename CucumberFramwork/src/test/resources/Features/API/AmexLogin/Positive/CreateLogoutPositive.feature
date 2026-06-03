@@ -1,11 +1,11 @@
-@OnlsRegistration @API @Positive
+@BTARegistration @API @Positive
 
-Feature: Create ONLS Logout Positive Scenario with Logout API
+Feature: Create BTA Logout Positive Scenario with Logout API
 
-  @CreateOnlsRegistration @Sanity
-  Scenario: User Create ONLS Logout with Valid Access Token
-    Given i have "CreateOnlsRegistrationEndpoint" api request with template "CreateOnlsRegistration"
-    When i POST "CreateOnlsRegistrationEndpoint" api request
+  @CreateBTARegistration @Sanity
+  Scenario: User Create BTA Logout with Valid Access Token
+    Given i have "CreateBTARegistrationEndpoint" api request with template "CreateBTARegistration"
+    When i POST "CreateBTARegistrationEndpoint" api request
     Then the http status code should be "201"
     And the following response details should be present
       | locator     | value                   |
@@ -15,10 +15,10 @@ Feature: Create ONLS Logout Positive Scenario with Logout API
     And i have following values from the transaction
       | locator       | varname   |
       | data.username | #UserName |
-    Given i have "ONLSLoginEndpoint" api request with template "CreateOnlsLogin" and following details
+    Given i have "BTALoginEndpoint" api request with template "CreateBTALogin" and following details
       | username | #UserName |
       | password | Test@1234 |
-    When i POST "CreateOnlsLoginEndpoint" api request
+    When i POST "CreateBTALoginEndpoint" api request
     Then the http status code should be "200"
     And the following response details should be present
       | locator           | value              |
@@ -28,5 +28,5 @@ Feature: Create ONLS Logout Positive Scenario with Logout API
     And i have following values from the transaction
       | locator          | varname      |
       | data.accessToken | #AccessToken |
-    When i POST "CreateOnlsLogoutEndpoint" api request
+    When i POST "CreateBTALogoutEndpoint" api request
     Then the http status code should be "200"

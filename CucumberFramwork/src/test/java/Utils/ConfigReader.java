@@ -5,30 +5,20 @@ import java.util.Properties;
 
 public class ConfigReader {
 
-    static Properties properties =
-            new Properties();
+    static Properties properties = new Properties();
 
-    static {
-
+    static
+    {
         try {
-
-            FileInputStream fis =
-                    new FileInputStream(
-                            "src/test/resources/config/config.properties"
-                    );
-
+            FileInputStream fis = new FileInputStream("src/test/resources/config/config.properties");
             properties.load(fis);
-
-        } catch (Exception e) {
-
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
-    public static String getProperty(
-            String key) {
-
+    public static String getProperty(String key) {
         return properties.getProperty(key);
     }
 }

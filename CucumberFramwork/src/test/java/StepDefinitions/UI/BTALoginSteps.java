@@ -45,35 +45,25 @@ public class BTALoginSteps {
 
     @When("I enter username {string} and password {string}")
     public void iEnterUsernameAndPassword(String username, String password) {
-        uiHelper.enterText(By.xpath("//*[@id=\"username\"]"), username);
-        uiHelper.enterText(By.xpath("//*[@id=\"password\"]"), password);
+        uiHelper.enterText(By.xpath("/html/body/app-root/amex-page-shell/div/div[2]/div/div/app-bta-login/div/div[2]/div[2]/input"), username);
+        uiHelper.enterText(By.xpath("/html/body/app-root/amex-page-shell/div/div[2]/div/div/app-bta-login/div/div[2]/div[3]/input"), password);
         LoggerUtils.logInfo("Entered username and password");
     }
 
     @When("I click the login button")
     public void iClickTheLoginButton() {
-        uiHelper.click(By.xpath("/html/body/app-root/app-login/amex-login-form/div/div[4]/div[2]/div/div[4]/button"));
+        uiHelper.click(By.xpath("/html/body/app-root/amex-page-shell/div/div[2]/div/div/app-bta-login/div/div[2]/div[5]/button"));
         LoggerUtils.logInfo("Clicked login button");
     }
 
-    @Then("I should see the ONLS Helper Tool Home Page")
+    @Then("I should see the MY BTA Home Page")
     public void iShouldSeeTheWelcomeMessage() {
-
         WebElement welcomeMessage = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(
-                        By.xpath("//span[text()='ONLS Helper Tool']")
+                        By.xpath("/html/body/app-root/amex-page-shell/div/header/amex-top-nav-bar/div[2]/span")
                 ));
-
         assertTrue(welcomeMessage.isDisplayed(),
                 "Home page is not displayed");
-
         LoggerUtils.logInfo("Home page landed successfully");
     }
-
-@Then("User Click the BTA Section")
-public void clickBTASection() {
-    uiHelper.click(By.xpath("//span[contains(text(),'BTA')]"));
-    LoggerUtils.logInfo("Clicked the BTA Section");
-}
-
 }

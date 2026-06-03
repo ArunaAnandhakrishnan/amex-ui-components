@@ -1,9 +1,9 @@
 package Listeners;
 
+import Utils.ExtentReportManager;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
-import Utils.ExtentReportManager;
 import Utils.LoggerUtils;
 
 /**

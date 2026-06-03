@@ -164,7 +164,7 @@ public class UiHelper {
         try {
             byte[] screenshot = ((TakesScreenshot) driver)
                     .getScreenshotAs(OutputType.BYTES);
-            
+
             if (ExtentReportManager.getTest() != null) {
                 String base64 = Base64.getEncoder().encodeToString(screenshot);
                 ExtentReportManager.getTest()
@@ -542,4 +542,3 @@ public class UiHelper {
         }
     }
 }
-

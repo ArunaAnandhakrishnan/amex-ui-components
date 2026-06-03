@@ -1,10 +1,10 @@
 package StepDefinitions.api;
 
 import Context.TestContext;
+import Utils.ExtentReportManager;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
-import Utils.ExtentReportManager;
 import Utils.LoggerUtils;
 
 /**
