@@ -19,11 +19,11 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<AuthResponse>> register(
+    public ResponseEntity<ApiResponse<Object>> register(
             @Valid @RequestBody RegisterRequest request) {
-        AuthResponse response = authService.register(request);
+        authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Registration successful", response));
+                .body(ApiResponse.success("Registration successful", null));
     }
 
     @PostMapping("/login")
@@ -84,5 +84,15 @@ public class AuthController {
             @Valid @RequestBody AssignRoleRequest request) {
         authService.assignRole(request);
         return ResponseEntity.ok(ApiResponse.success("Role assigned successfully", null));
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<ApiResponse<Void>> changePassword(
+            HttpServletRequest request,
+            @Valid @RequestBody ChangePasswordRequest body) {
+
+        String authHeader = request.getHeader("Authorization");
+        authService.changePassword(authHeader, body);
+        return ResponseEntity.ok(ApiResponse.success("Password changed successfully", null));
     }
 }

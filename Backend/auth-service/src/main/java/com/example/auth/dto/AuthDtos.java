@@ -100,4 +100,15 @@ public class AuthDtos {
         @Email
         private String email;
     }
+
+    @Data
+    public static class ChangePasswordRequest {
+        @NotBlank
+        private String currentPassword;
+
+        @NotBlank
+        @Size(min = 8, max = 100)
+        private String newPassword;
+
+    }
 }

@@ -41,7 +41,7 @@ public class AuthService {
     private long refreshExpiration;
 
     @Transactional
-    public AuthResponse register(RegisterRequest request) {
+    public void  register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username already taken: " + request.getUsername());
         }
@@ -63,7 +63,6 @@ public class AuthService {
 
         userRepository.save(user);
         log.info("Registered new user: {} with role: ROLE_VIEWER", user.getUsername());
-        return generateAuthResponse(user);
     }
 
     @Transactional
@@ -189,5 +188,40 @@ public class AuthService {
 
     public String extractUsernameFromToken(String token) {
         return jwtUtil.extractUsername(token);
+    }
+
+    @Transactional
+    public void changePassword(String authHeader, ChangePasswordRequest request) {
+
+        // STEP 1: Extract username from JWT token in Authorization header
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Missing or invalid Authorization header");
+        }
+        String token    = authHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+
+        // STEP 2: Load user from database
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
+        // STEP 3: Verify current password matches what is stored in DB
+        // passwordEncoder.matches(rawPassword, encodedPassword)
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Current password is incorrect");
+        }
+
+        // STEP 5: Ensure new password is different from current
+        if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("New password must be different from the current password");
+        }
+
+        // STEP 6: Hash and save the new password
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        // STEP 7: Revoke all refresh tokens — force re-login after password change
+        refreshTokenRepository.revokeAllUserTokens(user);
+
+        log.info("Password changed successfully for user: {}", username);
     }
 }
