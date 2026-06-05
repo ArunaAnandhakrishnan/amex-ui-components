@@ -8,10 +8,8 @@ pipeline {
 
     environment {
         SONAR_HOST_URL = 'http://localhost:9000'
-
         PROJECTS = 'shell:amex-shell:4200 bta-portal:amex-bta-portal:4201'
-
-        ZAP_EXE = 'C:\\Program Files\\ZAP\\Zed Attack Proxy\\zap.bat'
+        ZAP_EXE  = 'C:\\Program Files\\ZAP\\Zed Attack Proxy\\zap.bat'
     }
 
     stages {
@@ -21,26 +19,21 @@ pipeline {
                 echo '==========================='
                 echo '  Checking out code...'
                 echo '==========================='
-
                 checkout scm
             }
         }
 
         stage('Install Dependencies') {
             steps {
-
                 script {
-
                     env.PROJECTS.split(' ').each { proj ->
-
                         def folder = proj.split(':')[0]
-
                         echo "--- npm install: ${folder} ---"
-
                         dir(folder) {
-
+                            // Clean stale node_modules after Angular 17→21 upgrade
+                            bat 'if exist node_modules rmdir /s /q node_modules'
+                            bat 'if exist package-lock.json del package-lock.json'
                             bat 'npm install'
-
                         }
                     }
                 }
@@ -49,19 +42,12 @@ pipeline {
 
         stage('Build') {
             steps {
-
                 script {
-
                     env.PROJECTS.split(' ').each { proj ->
-
                         def folder = proj.split(':')[0]
-
                         echo "--- Building: ${folder} ---"
-
                         dir(folder) {
-
                             bat 'npm run build -- --configuration production'
-
                         }
                     }
                 }
@@ -70,19 +56,12 @@ pipeline {
 
         stage('Test & Coverage') {
             steps {
-
                 script {
-
                     env.PROJECTS.split(' ').each { proj ->
-
                         def folder = proj.split(':')[0]
-
                         echo "--- Testing: ${folder} ---"
-
                         dir(folder) {
-
                             bat 'ng test --code-coverage --watch=false --browsers=ChromeHeadlessCI'
-
                         }
                     }
                 }
@@ -91,32 +70,23 @@ pipeline {
 
         stage('ZAP Security Scan') {
             steps {
-
                 script {
-
                     env.PROJECTS.split(' ').each { proj ->
-
                         def parts     = proj.split(':')
                         def folder    = parts[0]
                         def port      = parts[2]
-
                         def zapDir    = "${WORKSPACE}\\zap-home-${folder}"
                         def zapReport = "${WORKSPACE}\\${folder}\\zap-report.html"
 
                         echo "--- Starting app: ${folder} on port ${port} ---"
-
                         dir(folder) {
-
                             bat "start /B ng serve --port ${port} --disable-host-check"
-
                         }
 
                         echo "--- Waiting 30s for app to start ---"
-
                         sleep(time: 30, unit: 'SECONDS')
 
                         echo "--- Running ZAP scan on ${folder} ---"
-
                         bat """
                         cd "C:\\Program Files\\ZAP\\Zed Attack Proxy"
                         zap.bat -cmd -port 8090 ^
@@ -128,9 +98,7 @@ pipeline {
                         """
 
                         echo "--- Stopping node process ---"
-
                         bat 'taskkill /F /IM node.exe /T 2>nul || exit 0'
-
                         sleep(time: 5, unit: 'SECONDS')
                     }
                 }
@@ -139,27 +107,21 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-
                 script {
-
                     env.PROJECTS.split(' ').each { proj ->
-
-                        def parts      = proj.split(':')
-                        def folder     = parts[0]
-                        def sonarKey   = parts[1]
-
-                        def zapReport  = "${WORKSPACE}\\${folder}\\zap-report.html"
+                        def parts     = proj.split(':')
+                        def folder    = parts[0]
+                        def sonarKey  = parts[1]
+                        def zapReport = "${WORKSPACE}\\${folder}\\zap-report.html"
 
                         echo "--- SonarQube scan: ${folder} ---"
-
                         dir(folder) {
-
                             withSonarQubeEnv('SonarQube') {
-
                                 def scannerHome = tool 'SonarQubeScanner'
-
                                 bat """
                                 "${scannerHome}\\bin\\sonar-scanner.bat" ^
+                                -Dsonar.projectKey=${sonarKey} ^
+                                -Dsonar.sources=src ^
                                 -Dsonar.zaproxy.reportPath="${zapReport}" ^
                                 -Dsonar.zaproxy.htmlReportPath="${zapReport}"
                                 """
@@ -172,49 +134,36 @@ pipeline {
 
         stage('Quality Gate') {
             steps {
-
                 echo '--- Waiting for SonarQube Quality Gate result ---'
-
                 timeout(time: 5, unit: 'MINUTES') {
-
                     waitForQualityGate abortPipeline: false
-
                 }
             }
         }
 
         stage('Automation Testing') {
             steps {
-
                 echo '==========================='
                 echo ' Running Automation Tests '
                 echo '==========================='
-
                 dir('CucumberFramwork') {
-
                     bat 'mvn clean test -Dcucumber.filter.tags="@Sanity"'
-
                 }
             }
         }
 
         stage('Deployment') {
             steps {
-
                 echo '==========================='
                 echo ' Deploying Applications '
                 echo '==========================='
-
                 echo 'Deployment logic goes here'
-
             }
         }
     }
 
     post {
-
         always {
-
             echo '--- Publishing reports ---'
 
             publishHTML([
@@ -253,6 +202,8 @@ pipeline {
                 reportName: 'BTA Portal ZAP Security Report'
             ])
 
+            // Allure — requires Allure Jenkins Plugin installed
+            // If not installed yet, comment this block out
             allure([
                 includeProperties: false,
                 jdk: '',
@@ -261,14 +212,12 @@ pipeline {
         }
 
         success {
-
             echo '==========================='
             echo ' BUILD PASSED ✅ '
             echo '==========================='
         }
 
         failure {
-
             echo '==========================='
             echo ' BUILD FAILED ❌ '
             echo '==========================='
