@@ -1,6 +1,6 @@
 @UI @BTA @CorporateUser
 
-Feature: Verify that the Corporate User user can successfully access the BTA portal,
+Feature: Verify that the Corporate User can successfully access the BTA portal,
   navigate to all available sections,and validate their functionality.
 
   Background:
@@ -10,8 +10,8 @@ Feature: Verify that the Corporate User user can successfully access the BTA por
     Then I should see the MY BTA Home Page
     And Verify the Memo Statement, Large Reports ,Monthly Statement,Payment Allocation and Audit Trail sections are visible to Corporate user
 
-  @CorporateSubAdmin_001 @Sanity
-  Scenario: Verify BTA Case Management functionality for Corporate Master Admin User
+  @CorporateUser_001 @Sanity
+  Scenario: Verify BTA functionality for Corporate User
     # Memo Statement
     When  Click the Memo Statement Section
     And User Select the BTA Number and click the View Statement

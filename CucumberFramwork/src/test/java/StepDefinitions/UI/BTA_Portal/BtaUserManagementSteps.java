@@ -16,6 +16,10 @@ public class BtaUserManagementSteps {
         this.driver = WebDriverManagerUtil.getDriver();
         this.uiHelper = new UiHelper(this.driver);
     }
+    private String generatePhoneNumber() {
+        long number = (long)(Math.random() * 9_000_000_000L) + 1_000_000_000L;
+        return String.valueOf(number);
+    }
 
     @When("Click the User Management Section")
     public void clickNewUser() {
@@ -24,27 +28,56 @@ public class BtaUserManagementSteps {
         LoggerUtils.logInfo("Clicked New User button in User Management section");
     }
 
-    @Then("Fill in the user details and save")
-    public void fillUserDetailsAndSave()
-    {
-        uiHelper.selectDropdownByText(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-user-management/div/div/div[2]/div[1]/div[1]/select"), "Mr");
-        uiHelper.enterText(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-user-management/div/div/div[2]/div[1]/div[2]/input"), "Surya M");
-        uiHelper.enterText(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-user-management/div/div/div[2]/div[1]/div[3]/input"), "ABC");
-        uiHelper.enterText(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-user-management/div/div/div[2]/div[1]/div[4]/div/input[1]"), "+91");
-        uiHelper.enterText(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-user-management/div/div/div[2]/div[1]/div[4]/div/input[2]"), "9566089761");
-        uiHelper.enterText(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-user-management/div/div/div[2]/div[1]/div[5]/div/input[1]"), "+91");
-        uiHelper.enterText(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-user-management/div/div/div[2]/div[1]/div[5]/div/input[2]"), "8096089761");
-        uiHelper.enterText(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-user-management/div/div/div[2]/div[1]/div[6]/input"), "suryam3019@gmail.com");
-        uiHelper.enterText(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-user-management/div/div/div[2]/div[1]/div[7]/input"), "suryam3019@gmail.com");
-        uiHelper.selectDropdownByText(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-user-management/div/div/div[2]/div[1]/div[8]/select"), "Qatar");
-        uiHelper.selectRadioButton(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-user-management/div/div/div[2]/div[1]/div[9]/div/label[1]/input"));
-        uiHelper.enterText(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-user-management/div/div/div[2]/div[1]/div[10]/input"), "Surya@123");
-        uiHelper.click(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-user-management/div/div/div[2]/div[2]/button[2]"));
+    @Then("User create new corporate user in user management section")
+    public void SubmitCorporateUserRequest() {
+        String uniqueEmail = "User" + (1000 + (int)(Math.random() * 9000)) + "@gmail.com";
+        String UniqueUserID = "User" + System.currentTimeMillis();
+        String ConfirmEmail = uniqueEmail;
+        String PhoneNumber = generatePhoneNumber();
+        uiHelper.click(By.xpath("/html/body/app-root/amex-page-shell/div/div[2]/div/div/app-bta-user-management/div[2]/div/div[2]/div/button[2]"));
+        uiHelper.selectDropdownByText(By.xpath("//select[contains(@class,'corp-select-sm')]"), "Mr");
+        uiHelper.enterText(By.xpath("//input[@placeholder='Enter full name']"), "John Doe");
+        uiHelper.enterText(By.xpath("//input[@placeholder='Enter job title']"), "IT Manager");
+        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-cc')])[1]"), "971");
+        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-num')])[1]"),PhoneNumber );
+        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-cc')])[2]"), "971");
+        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-num')])[2]"),PhoneNumber );
+        uiHelper.enterText(By.xpath("//input[@placeholder='user@example.com']"), uniqueEmail);
+        uiHelper.enterText(By.xpath("//input[@placeholder='Re-enter email']"), ConfirmEmail);
+        uiHelper.selectDropdownByText(By.xpath("//select[contains(@class,'corp-input') and not(@multiple)]"), "UAE");
+        uiHelper.click(By.xpath("//input[@type='radio' and @value='admin']"));
+        uiHelper.selectMultipleValues(By.xpath("//select[@multiple]"), "Emirates (BTA)");
+        uiHelper.enterText(By.xpath("//input[@placeholder='Unique user ID']"), UniqueUserID);
+        uiHelper.click(By.xpath("//button[contains(@class,'bta-btn-primary')]"));
     }
+
 
     @Then("User wait for few seconds")
     public void waitForFewSeconds() throws InterruptedException {
-        Thread.sleep(3000);
+        Thread.sleep(4000);
         LoggerUtils.logInfo("Waited for few seconds to observe the result");
+    }
+
+    @Then("User create new TMC user in user management section")
+    public void SubmitTMCUserRequest() {
+        String uniqueEmail = "User" + (1000 + (int)(Math.random() * 9000)) + "@gmail.com";
+        String UniqueUserID = "User" + System.currentTimeMillis();
+        String ConfirmEmail = uniqueEmail;
+        String PhoneNumber = generatePhoneNumber();
+        uiHelper.click(By.xpath("/html/body/app-root/amex-page-shell/div/div[2]/div/div/app-bta-user-management/div[2]/div/div[2]/div[2]/button[2]"));
+        uiHelper.selectDropdownByText(By.xpath("//select[contains(@class,'corp-select-sm')]"), "Mr");
+        uiHelper.enterText(By.xpath("//input[@placeholder='Enter full name']"), "John Doe");
+        uiHelper.enterText(By.xpath("//input[@placeholder='Enter job title']"), "IT Manager");
+        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-cc')])[1]"), "971");
+        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-num')])[1]"), PhoneNumber);
+        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-cc')])[2]"), "971");
+        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-num')])[2]"), PhoneNumber);
+        uiHelper.enterText(By.xpath("//input[@placeholder='user@example.com']"), uniqueEmail);
+        uiHelper.enterText(By.xpath("//input[@placeholder='Re-enter email']"), ConfirmEmail);
+        uiHelper.selectDropdownByText(By.xpath("//select[contains(@class,'corp-input') and not(@multiple)]"), "UAE");
+        uiHelper.click(By.xpath("//input[@type='radio' and @value='admin']"));
+        uiHelper.selectMultipleValues(By.xpath("//select[@multiple]"), "Emirates (BTA)");
+        uiHelper.enterText(By.xpath("//input[@placeholder='Unique user ID']"), UniqueUserID);
+        uiHelper.click(By.xpath("//button[contains(@class,'bta-btn-primary')]"));
     }
 }

@@ -8,9 +8,10 @@ Feature: Verify that the Corporate Master Admin user can successfully access the
     When I enter username "corp.admin" and password "Corp@1234"
     And I click the login button
     Then I should see the MY BTA Home Page
-    And Verify the User Management,Memo Statement, Large Reports ,Monthly Statement,Payment Allocation and Audit Trail sections are visible to Corporate user
+    And Verify the User Management, Memo Statement, Large Reports ,Monthly Statement,Payment Allocation and Audit Trail sections are visible to Corporate Master and Sub user
+
   @CorporateMasterAdmin_001 @Sanity
-  Scenario: Verify BTA Case Management functionality for Corporate Master Admin User
+  Scenario: Verify BTA functionality for Corporate Master Admin User
      # User Management
     Given User create new corporate user in user management section
 #   Then User verify the Successful case submission in Case Management Section

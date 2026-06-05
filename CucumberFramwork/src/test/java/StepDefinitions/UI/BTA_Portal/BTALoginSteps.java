@@ -62,4 +62,73 @@ public class BTALoginSteps {
         assertTrue(welcomeMessage.isDisplayed(), "Home page is not displayed");
         LoggerUtils.logInfo("Home page landed successfully");
     }
+
+    @Then("Verify the Memo Statement, Large Reports ,Monthly Statement,Payment Allocation and Audit Trail sections are visible to Corporate user")
+    public void verifyCorpUserSectionsVisibility() {
+        By[] navigationMenus = {
+                By.xpath("//a[normalize-space()='Memo Statement']"),
+                By.xpath("//a[normalize-space()='Large Reports']"),
+                By.xpath("//a[normalize-space()='Monthly Statements']"),
+                By.xpath("//a[normalize-space()='Payment Allocation']"),
+                By.xpath("//a[normalize-space()='Audit Trail']")
+        };
+        String[] menuNames = {
+                "Memo Statement",
+                "Large Reports",
+                "Monthly Statements",
+                "Payment Allocation",
+                "Audit Trail"
+        };
+        uiHelper.assertMultipleElementsDisplayed(navigationMenus, menuNames);
+    }
+    @Then("Verify the User Management, Memo Statement, Large Reports ,Monthly Statement,Payment Allocation and Audit Trail sections are visible to Corporate Master and Sub user")
+    public void verifyCorpMasterSubSectionsVisibility() {
+        By[] navigationMenus = {
+                By.xpath("//a[normalize-space()='User Management']"),
+                By.xpath("//a[normalize-space()='Memo Statement']"),
+                By.xpath("//a[normalize-space()='Large Reports']"),
+                By.xpath("//a[normalize-space()='Monthly Statements']"),
+                By.xpath("//a[normalize-space()='Payment Allocation']"),
+                By.xpath("//a[normalize-space()='Audit Trail']")
+        };
+        String[] menuNames = {
+                "User Management",
+                "Memo Statement",
+                "Large Reports",
+                "Monthly Statements",
+                "Payment Allocation",
+                "Audit Trail"
+        };
+        uiHelper.assertMultipleElementsDisplayed(navigationMenus, menuNames);
+    }
+    @Then("Verify the User Management, Case Management,Audit Trail and TMC Transaction sections are visible to Travel Master and Sub user")
+    public void verifyTravelMasterSubSectionsVisibility() {
+        By[] navigationMenus = {
+                By.xpath("//a[normalize-space()='User Management']"),
+                By.xpath("//a[normalize-space()='Case Management']"),
+                By.xpath("//a[normalize-space()='Audit Trail']"),
+                By.xpath("//a[normalize-space()='TMC Transactions']"),
+        };
+        String[] menuNames = {
+                "User Management",
+                "Case Management",
+                "Audit Trail",
+                "TMC Transactions"
+        };
+        uiHelper.assertMultipleElementsDisplayed(navigationMenus, menuNames);
+    }
+
+    @Then("Verify the Case Management and TMC Transaction sections are visible to Travel Agent user")
+    public void verifyTravelAgentSectionsVisibility() {
+        By[] navigationMenus = {
+                By.xpath("//a[normalize-space()='Case Management']"),
+                By.xpath("//a[normalize-space()='TMC Transactions']"),
+        };
+        String[] menuNames = {
+                "Case Management",
+                "TMC Transactions"
+        };
+        uiHelper.assertMultipleElementsDisplayed(navigationMenus, menuNames);
+    }
+
 }
