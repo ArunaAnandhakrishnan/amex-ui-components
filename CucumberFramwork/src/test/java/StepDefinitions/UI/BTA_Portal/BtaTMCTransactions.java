@@ -1,4 +1,4 @@
-package StepDefinitions.UI;
+package StepDefinitions.UI.BTA_Portal;
 
 import Helper.UI.UiHelper;
 import org.openqa.selenium.By;

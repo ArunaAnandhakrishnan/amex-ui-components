@@ -42,7 +42,14 @@ public class UiHelper {
         element.clear();
         element.sendKeys(value);
     }
-
+//Multi selction dropdown
+public void selectMultipleValues(By locator, String... values) {
+        Select select = new Select(
+            wait.until(ExpectedConditions.visibilityOfElementLocated(locator)));
+        for (String value : values) {
+        select.selectByVisibleText(value);
+    }
+}
     // ...existing code...
     public String getText(By locator) {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).getText();

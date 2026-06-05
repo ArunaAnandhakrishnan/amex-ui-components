@@ -1,4 +1,4 @@
-package StepDefinitions.UI;
+package StepDefinitions.UI.BTA_Portal;
 
 import Helper.UI.UiHelper;
 import io.cucumber.java.en.Then;
@@ -19,29 +19,26 @@ public class BtaMemoStatement {
 
     @When("Click the Memo Statement Section")
     public void clickMemoStatement() {
-        By MemoStatementButton = By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[1]/a[2]");
-        uiHelper.click(MemoStatementButton);
+       uiHelper.click(By.xpath("//a[normalize-space()='Memo Statement']"));
         LoggerUtils.logInfo("Clicked the Memo Statement Section");
     }
     @Then("User Select the BTA Number and click the View Statement")
     public void selectBtaNumberFromDropdown() {
-        uiHelper.selectDropdownByText(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-memo-statement/div/div/div[2]/div/select"), "BTACLIENTBAH002-3744XXXXXXX6130");
-        uiHelper.click(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-memo-statement/div/div/div[2]/div/button"));
+        uiHelper.selectDropdownByText(By.xpath("/html/body/app-root/amex-page-shell/div/div[2]/div/div/app-bta-memo-statement/div/div/div[2]/div/div/select"), "BTACLIENTBAH002-3744XXXXXXX6130");
+        uiHelper.click(By.xpath("/html/body/app-root/amex-page-shell/div/div[2]/div/div/app-bta-memo-statement/div/div/div[2]/div/button"));
        }
 
        @Then("User Download the Memo Statement PDF")
        public void downloadPDFMemoStatement() {
-           uiHelper.click(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-memo-statement/div/div/div[2]/div[7]/div/button"));
+           uiHelper.click(By.xpath("/html/body/app-root/amex-page-shell/div/div[2]/div/div/app-bta-memo-statement/div/div/div[2]/div[7]/div/button"));
            LoggerUtils.logInfo("Clicked PDF download button");
-            uiHelper.handleDownloadPopup();
        }
 
     @Then("User Download the Memo Statement Excel")
     public void downloadExcelMemoStatement() {
-       uiHelper.selectDropdownByText(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-memo-statement/div/div/div[2]/div[7]/div/select"), "Excel");
-        uiHelper.click(By.xpath("/html/body/app-root/div[2]/div/div/bta-entry/div/div[2]/app-bta-memo-statement/div/div/div[2]/div[7]/div/button"));
+       uiHelper.selectDropdownByText(By.xpath("/html/body/app-root/amex-page-shell/div/div[2]/div/div/app-bta-memo-statement/div/div/div[2]/div[7]/div/select"), "Excel");
+        uiHelper.click(By.xpath("/html/body/app-root/amex-page-shell/div/div[2]/div/div/app-bta-memo-statement/div/div/div[2]/div[7]/div/button"));
         LoggerUtils.logInfo("Clicked Excel download button");
-        uiHelper.handleDownloadPopup();
     }
 
     @Then("User Download the Memo Statement RTF")

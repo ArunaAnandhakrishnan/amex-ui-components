@@ -1,4 +1,4 @@
-package StepDefinitions.UI;
+package StepDefinitions.UI.BTA_Portal;
 
 import Helper.UI.UiHelper;
 import Context.TestContext;
@@ -35,12 +35,12 @@ public class BTALoginSteps {
         uiHelper = new UiHelper(driver);
     }
 
-    @Given("Navigate to the AEME Portal")
+    @Given("Navigate to the BTA Portal")
     public void iAmOnTheLoginPage() {
 
         String loginUrl = ConfigReader.getProperty("uiBaseUrl");
         WebDriverManagerUtil.navigateTo(loginUrl);
-        LoggerUtils.logInfo("Navigated to AEME Portal");
+        LoggerUtils.logInfo("Navigated to BTA Portal");
     }
 
     @When("I enter username {string} and password {string}")
@@ -58,12 +58,8 @@ public class BTALoginSteps {
 
     @Then("I should see the MY BTA Home Page")
     public void iShouldSeeTheWelcomeMessage() {
-        WebElement welcomeMessage = wait.until(
-                ExpectedConditions.visibilityOfElementLocated(
-                        By.xpath("/html/body/app-root/amex-page-shell/div/header/amex-top-nav-bar/div[2]/span")
-                ));
-        assertTrue(welcomeMessage.isDisplayed(),
-                "Home page is not displayed");
+        WebElement welcomeMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/app-root/amex-page-shell/div/header/amex-top-nav-bar/div[2]/span")));
+        assertTrue(welcomeMessage.isDisplayed(), "Home page is not displayed");
         LoggerUtils.logInfo("Home page landed successfully");
     }
 }

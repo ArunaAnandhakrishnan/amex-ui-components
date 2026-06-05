@@ -1,4 +1,4 @@
-package StepDefinitions.UI;
+package StepDefinitions.UI.BTA_Portal;
 
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -44,7 +44,7 @@ public class BtaUserManagementSteps {
 
     @Then("User wait for few seconds")
     public void waitForFewSeconds() throws InterruptedException {
-        Thread.sleep(4000);
+        Thread.sleep(3000);
         LoggerUtils.logInfo("Waited for few seconds to observe the result");
     }
 }
