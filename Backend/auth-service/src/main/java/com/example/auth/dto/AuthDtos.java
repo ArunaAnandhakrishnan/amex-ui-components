@@ -106,7 +106,7 @@ public class AuthDtos {
         @NotBlank
         private String currentPassword;
 
-        @NotBlank
+        @NotNull
         @Size(min = 8, max = 100)
         private String newPassword;
 
