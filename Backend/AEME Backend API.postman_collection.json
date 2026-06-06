@@ -1,0 +1,1088 @@
+{
+  "info": {
+    "_postman_id": "ad6da029-807b-4f1e-8a3a-ef699e9e347a",
+    "name": "AEME Backend API",
+    "description": "Complete test suite for AEME microservices.\n\n**SETUP:**\n1. Start services in order: Eureka (8761) → Auth (8081) → Gateway (8080) → Wearables (8082)\n2. Run any Login request first — tokens are auto-saved to collection variables.\n3. All protected requests use {{accessToken}} automatically.\n\n**Seeded users:**\n- sys.admin / Admin@1234\n- csa.agent / Agent@1234\n- risk.user / Risk@1234\n- mrm.user / Mrm@1234\n- corp.admin / Corp@1234\n- ta.admin / Travel@1234\n- soc.user / Soc@1234",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55078215",
+    "_collection_link": "https://go.postman.co/collection/55078215-ad6da029-807b-4f1e-8a3a-ef699e9e347a?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "🔐 Auth",
+      "item": [
+        {
+          "name": "Change-password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"currentPassword\": \"Test@12345\",\r\n  \"newPassword\":     \"Test@123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/change-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "change-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register – new user",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"new.user1\",\n  \"email\": \"newuser1@aeme.com\",\n  \"password\": \"Test@12345\",\n  \"fullName\": \"New User\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Public endpoint. Role is NOT accepted here — new users always start as ROLE_VIEWER. Use Assign Role after registering."
+          },
+          "response": []
+        },
+        {
+          "name": "Login – sys.admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', res.data.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+                  "    pm.collectionVariables.set('userId', res.data.userId);",
+                  "    console.log('Tokens saved | User: ' + res.data.username + ' | Roles: ' + res.data.roles);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"sys.admin\",\n  \"password\": \"Admin@1234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Role: ROLE_SYS_ADMIN. Can assign roles to other users."
+          },
+          "response": []
+        },
+        {
+          "name": "Login – csa.agent",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', res.data.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+                  "    pm.collectionVariables.set('userId', res.data.userId);",
+                  "    console.log('Tokens saved | User: ' + res.data.username + ' | Roles: ' + res.data.roles);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"csa.agent\",\n  \"password\": \"Agent@1234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Role: ROLE_CSA. Access: ONLS Helper, Wearables, Centurion, UAEFTS, VAT Invoice, Pay with Points."
+          },
+          "response": []
+        },
+        {
+          "name": "Login – onls.admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', res.data.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+                  "    pm.collectionVariables.set('userId', res.data.userId);",
+                  "    console.log('Tokens saved | User: ' + res.data.username + ' | Roles: ' + res.data.roles);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"onls.admin\",\n  \"password\": \"Onls@1234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Role: ROLE_CSA. Access: ONLS Helper, Wearables, Centurion, UAEFTS, VAT Invoice, Pay with Points."
+          },
+          "response": []
+        },
+        {
+          "name": "Login – risk.user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', res.data.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+                  "    pm.collectionVariables.set('userId', res.data.userId);",
+                  "    console.log('Tokens saved | User: ' + res.data.username + ' | Roles: ' + res.data.roles);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"risk.user\",\n  \"password\": \"Risk@1234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Role: ROLE_RISK_USER. Access: BCRB / AECB Bulk Reporting."
+          },
+          "response": []
+        },
+        {
+          "name": "Login – mrm.user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', res.data.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+                  "    pm.collectionVariables.set('userId', res.data.userId);",
+                  "    console.log('Tokens saved | User: ' + res.data.username + ' | Roles: ' + res.data.roles);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"mrm.user\",\n  \"password\": \"Mrm@1234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Role: ROLE_MRM_USER. Access: OMS Portal."
+          },
+          "response": []
+        },
+        {
+          "name": "Login – corp.admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', res.data.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+                  "    pm.collectionVariables.set('userId', res.data.userId);",
+                  "    console.log('Tokens saved | User: ' + res.data.username + ' | Roles: ' + res.data.roles);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"corp.admin\",\n  \"password\": \"Corp@1234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Role: ROLE_CORP_MASTER_ADMIN. Access: BTA Corporate portal."
+          },
+          "response": []
+        },
+        {
+          "name": "Login – ta.admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', res.data.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+                  "    pm.collectionVariables.set('userId', res.data.userId);",
+                  "    console.log('Tokens saved | User: ' + res.data.username + ' | Roles: ' + res.data.roles);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"ta.admin\",\n  \"password\": \"Travel@1234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Role: ROLE_TA_MASTER_ADMIN. Access: BTA Travel Agent portal."
+          },
+          "response": []
+        },
+        {
+          "name": "Login – soc.user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', res.data.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+                  "    pm.collectionVariables.set('userId', res.data.userId);",
+                  "    console.log('Tokens saved | User: ' + res.data.username + ' | Roles: ' + res.data.roles);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"soc.user\",\n  \"password\": \"Soc@1234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Role: ROLE_SOC_BUSINESS_USER. Access: SOC/ROC portal."
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', res.data.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+                  "    console.log('Tokens rotated successfully');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "Uses refreshToken saved from last login. Returns new access + refresh token pair. Old token is revoked."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ]
+            },
+            "description": "Revokes all refresh tokens for the authenticated user."
+          },
+          "response": []
+        },
+        {
+          "name": "Validate Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/validate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "validate"
+              ]
+            },
+            "description": "Returns userId, username, roles. 200 = valid, 401 = invalid or expired."
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"csa.agent\",\n  \"email\": \"csa@aeme.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/forgot-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "forgot-password"
+              ]
+            },
+            "description": "Public. Both username AND email must match. Sends temp password via email and revokes all sessions."
+          },
+          "response": []
+        },
+        {
+          "name": "Assign Role (SYS_ADMIN only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"role\": \"ROLE_CSA\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/admin/assign-role",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "admin",
+                "assign-role"
+              ]
+            },
+            "description": "Login as sys.admin first.\n\nAll valid roles:\nROLE_CORP_MASTER_ADMIN, ROLE_CORP_SUB_ADMIN, ROLE_CORP_USER\nROLE_TA_MASTER_ADMIN, ROLE_TA_SUB_ADMIN, ROLE_TA_USER\nROLE_AEME_INTERNAL_ADMIN\nROLE_MERCHANT_USER, ROLE_MRM_USER, ROLE_OMS_ADMIN, ROLE_OMS_SUB_USER, ROLE_OMS_VAT_USER\nROLE_ONLS_ADMIN, ROLE_CSA\nROLE_RISK_USER, ROLE_COMP_OPS_USER, ROLE_AECB_USER, ROLE_SYS_ADMIN\nROLE_SOC_BUSINESS_USER"
+          },
+          "response": []
+        },
+        {
+          "name": "FAIL – wrong password (expect 401)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"sys.admin\",\n  \"password\": \"wrongpassword\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "FAIL – duplicate username (expect 400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"sys.admin\",\n  \"email\": \"another@aeme.com\",\n  \"password\": \"Test@1234\",\n  \"fullName\": \"Duplicate\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "FAIL – assign role without SYS_ADMIN (expect 403)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"some-id\",\n  \"role\": \"ROLE_SYS_ADMIN\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/admin/assign-role",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "admin",
+                "assign-role"
+              ]
+            },
+            "description": "Login as csa.agent first, then run. Should return 403."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🧲 Wearables",
+      "item": [
+        {
+          "name": "Get Client Data",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/wearables/client/12345",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wearables",
+                "client",
+                "12345"
+              ]
+            },
+            "description": "Requires ROLE_CSA or ROLE_ONLS_ADMIN. Replace CLT001 with a client code from your seed data."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Devices for Card",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "",
+                "value": "",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/wearables/devices/3744 XXXXXX 9008",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wearables",
+                "devices",
+                "3744 XXXXXX 9008"
+              ]
+            },
+            "description": "Requires ROLE_CSA or ROLE_ONLS_ADMIN. Replace card number with one from V2__seed_data.sql."
+          },
+          "response": []
+        },
+        {
+          "name": "Issue Wearable",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clientCode\": \"12345\",\n  \"selectedCard\": \"3744 XXXXXX 9008\",\n  \"wearableType\": \"ring\",\n  \"colorSelected\":\"white\",\n  \"wearableName\": \"white Ring\",\n  \"tcAccepted\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/wearables/issue",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wearables",
+                "issue"
+              ]
+            },
+            "description": "Requires ROLE_CSA only. tcAccepted must be true."
+          },
+          "response": []
+        },
+        {
+          "name": "Wearable Action – Suspend",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"SUSPEND\",\n  \"reason\": \"Customer requested temporary suspension\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/wearables/action/SN-00001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wearables",
+                "action",
+                "SN-00001"
+              ]
+            },
+            "description": "Requires ROLE_CSA. Replace SN-00001 with serial number from issue response."
+          },
+          "response": []
+        },
+        {
+          "name": "Wearable Action – Activate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"ACTIVATE\",\n  \"reason\": \"Customer requested reactivation\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/wearables/action/SN-00001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wearables",
+                "action",
+                "SN-00001"
+              ]
+            },
+            "description": "Requires ROLE_CSA."
+          },
+          "response": []
+        },
+        {
+          "name": "Wearable Action – Terminate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"TERMINATE\",\n  \"reason\": \"Card reported lost\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/wearables/action/SN-00001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wearables",
+                "action",
+                "SN-00001"
+              ]
+            },
+            "description": "Requires ROLE_CSA. Permanent — cannot be reversed."
+          },
+          "response": []
+        },
+        {
+          "name": "FAIL – T&C not accepted (expect 400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clientCode\": \"CLT001\",\n  \"cardNumber\": \"4111111111111111\",\n  \"deviceType\": \"NFC_RING\",\n  \"tcAccepted\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/wearables/issue",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wearables",
+                "issue"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "FAIL – no token (expect 401)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/wearables/client/CLT001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wearables",
+                "client",
+                "CLT001"
+              ]
+            },
+            "description": "No Authorization header — gateway should reject with 401."
+          },
+          "response": []
+        },
+        {
+          "name": "FAIL – wrong role (expect 403)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clientCode\": \"CLT001\",\n  \"cardNumber\": \"4111111111111111\",\n  \"deviceType\": \"NFC_RING\",\n  \"tcAccepted\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/wearables/issue",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wearables",
+                "issue"
+              ]
+            },
+            "description": "Login as risk.user or mrm.user first. Should return 403 — only CSA can issue wearables."
+          },
+          "response": []
+        }
+      ],
+      "description": "Login as csa.agent before running these requests."
+    },
+    {
+      "name": "🏥 Health Checks",
+      "item": [
+        {
+          "name": "Gateway Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actuator/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Auth Service – direct (port 8081)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/actuator/health",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "actuator",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Wearables Service – direct (port 8082)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8082/actuator/health",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8082",
+              "path": [
+                "actuator",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eureka Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8761/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8761",
+              "path": [
+                ""
+              ]
+            },
+            "description": "You should see auth-service and wearables-backend both registered here."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    }
+  ]
+}

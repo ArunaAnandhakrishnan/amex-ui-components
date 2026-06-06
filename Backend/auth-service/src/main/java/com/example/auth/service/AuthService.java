@@ -41,7 +41,7 @@ public class AuthService {
     private long refreshExpiration;
 
     @Transactional
-    public void  register(RegisterRequest request) {
+    public AuthResponse  register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username already taken: " + request.getUsername());
         }
@@ -63,6 +63,15 @@ public class AuthService {
 
         userRepository.save(user);
         log.info("Registered new user: {} with role: ROLE_VIEWER", user.getUsername());
+
+        return AuthResponse.builder()
+                .userId(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .avatarInitials(user.getAvatarInitials())
+                .roles(user.getRoles().stream().toList())
+                .build();
     }
 
     @Transactional
