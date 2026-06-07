@@ -30,7 +30,6 @@ pipeline {
                         def folder = proj.split(':')[0]
                         echo "--- npm install: ${folder} ---"
                         dir(folder) {
-                            // Clean stale node_modules after Angular 17→21 upgrade
                             bat 'if exist node_modules rmdir /s /q node_modules'
                             bat 'if exist package-lock.json del package-lock.json'
                             bat 'npm install'
@@ -47,7 +46,15 @@ pipeline {
                         def folder = proj.split(':')[0]
                         echo "--- Building: ${folder} ---"
                         dir(folder) {
-                            bat 'npm run build -- --configuration production'
+                            // Surface angular-errors.log if build fails
+                            bat '''
+                                npm run build -- --configuration production || (
+                                    for /d %%d in ("%TEMP%\\ng-*") do (
+                                        if exist "%%d\\angular-errors.log" type "%%d\\angular-errors.log"
+                                    )
+                                    exit /b 1
+                                )
+                            '''
                         }
                     }
                 }
@@ -202,11 +209,12 @@ pipeline {
                 reportName: 'BTA Portal ZAP Security Report'
             ])
 
-            // Allure — requires Allure Jenkins Plugin installed
-            // If not installed yet, comment this block out
+            // Allure plugin installed — configure commandline tool in
+            // Manage Jenkins → Tools → Allure Commandline → name must match below
             allure([
                 includeProperties: false,
                 jdk: '',
+                commandline: 'allure',
                 results: [[path: 'CucumberFramwork/allure-results']]
             ])
         }
