@@ -16,6 +16,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
+                cleanWs()
                 echo '==========================='
                 echo '  Checking out code...'
                 echo '==========================='
@@ -46,7 +47,6 @@ pipeline {
                         def folder = proj.split(':')[0]
                         echo "--- Building: ${folder} ---"
                         dir(folder) {
-                            // Surface angular-errors.log if build fails
                             bat '''
                                 npm run build -- --configuration production || (
                                     for /d %%d in ("%TEMP%\\ng-*") do (
@@ -209,8 +209,6 @@ pipeline {
                 reportName: 'BTA Portal ZAP Security Report'
             ])
 
-            // Allure plugin installed — configure commandline tool in
-            // Manage Jenkins → Tools → Allure Commandline → name must match below
             allure([
                 includeProperties: false,
                 jdk: '',
