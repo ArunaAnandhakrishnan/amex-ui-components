@@ -112,25 +112,22 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
+       stage('SonarQube Analysis') {
             steps {
                 script {
                     env.PROJECTS.split(' ').each { proj ->
                         def parts     = proj.split(':')
                         def folder    = parts[0]
                         def sonarKey  = parts[1]
-                        def zapReport = "${WORKSPACE}\\${folder}\\zap-report.html"
-
-                        echo "--- SonarQube scan: ${folder} ---"
+        
                         dir(folder) {
                             withSonarQubeEnv('SonarQube') {
                                 def scannerHome = tool 'SonarQubeScanner'
+        
                                 bat """
                                 "${scannerHome}\\bin\\sonar-scanner.bat" ^
                                 -Dsonar.projectKey=${sonarKey} ^
-                                -Dsonar.sources=src ^
-                                -Dsonar.zaproxy.reportPath="${zapReport}" ^
-                                -Dsonar.zaproxy.htmlReportPath="${zapReport}"
+                                -Dsonar.sources=src
                                 """
                             }
                         }
@@ -138,7 +135,6 @@ pipeline {
                 }
             }
         }
-
         stage('Quality Gate') {
             steps {
                 echo '--- Waiting for SonarQube Quality Gate result ---'
