@@ -13,6 +13,16 @@ public class LoggerUtils {
                 "URL : " + url
         );
     }
+    public static void logRequestwithbody(
+            String url,String body) {
+
+        System.out.println(
+                "\n========== API REQUEST =========="
+        );
+
+        System.out.println("URL : " + url);
+        System.out.println("REQUEST BODY : \n" + body);
+    }
 
     public static void logInfo(String message) {
         System.out.println("[INFO] " + message);

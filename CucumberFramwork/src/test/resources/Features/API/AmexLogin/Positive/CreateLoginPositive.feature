@@ -1,4 +1,4 @@
-@OnlsLogin @API @Positive
+@BTALogin @API @Positive
 
 Feature: Create BTA Role Based Login Positive Scenario with Login API
 

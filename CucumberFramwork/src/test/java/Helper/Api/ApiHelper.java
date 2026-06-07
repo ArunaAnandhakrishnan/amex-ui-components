@@ -29,7 +29,7 @@ public class ApiHelper {
             context.lastRequestUrl = url;
             context.lastRequestBody = body;
         }
-        LoggerUtils.logRequest(url);
+        LoggerUtils.logRequestwithbody(url, body);
         Response response = RestAssured
                 .given()
                 .header("Content-Type", "application/json")
@@ -77,7 +77,37 @@ public class ApiHelper {
 
         return response;
     }
+    public Response postAPIWithReqBodyAndAccessToken(String endpoint,
+                                           Map<String, String> headers, String body) {
 
+        String url = baseUrl + endpoint;
+        if (context != null) {
+            context.lastRequestUrl = url;
+            context.lastRequestBody = body;
+        }
+        LoggerUtils.logRequestwithbody(url, body);
+        System.out.println("\n========== REQUEST HEADERS ==========");
+        headers.forEach((key, value) ->
+                System.out.println(key + " : " + value));
+        Response response = RestAssured
+                .given()
+                .contentType("application/json")
+                .headers(headers)
+                .body(body)
+                .when()
+                .post(url);
+
+        if (context != null) {
+            context.lastResponseStatusCode = response.getStatusCode();
+            context.lastResponseBody = response.asPrettyString();
+        }
+
+        LoggerUtils.logResponse(
+                response.getStatusCode(),
+                response.asPrettyString());
+
+        return response;
+    }
     public Response getAPI(String endpoint) {
         String url = baseUrl + endpoint;
 

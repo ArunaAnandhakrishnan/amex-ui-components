@@ -63,9 +63,9 @@ public class AmexAPISteps {
             case "CreateBTAForgotPasswordEndpoint":
                 response = apiHelper.postAPI(ConfigReader.getProperty("CreateBTAForgotPasswordEndpoint"), requestJson);
                 break;
-            case "CreateBTALogoutEndpoint": response = apiHelper.postAPIWithAccessToken(ConfigReader.getProperty("CreateBTALogoutEndpoint"), Map.of("Authorization", "Bearer " + context.getDataStore().get("#AccessToken")
-                        )
-                );
+            case "CreateBTALogoutEndpoint": response = apiHelper.postAPIWithAccessToken(ConfigReader.getProperty("CreateBTALogoutEndpoint"), Map.of("Authorization", "Bearer " + context.getDataStore().get("#AccessToken")));
+                break;
+            case "CreateChangePasswordEndpoint": response = apiHelper.postAPIWithReqBodyAndAccessToken(ConfigReader.getProperty("CreateChangePasswordEndpoint"), Map.of("Authorization", "Bearer " + context.getDataStore().get("#AccessToken")), requestJson);
                 break;
             default:
                 throw new RuntimeException("POST API NOT FOUND");

@@ -1,4 +1,4 @@
-@BTARegistration @API @Positive
+@BTALogout @API @Positive
 
 Feature: Create BTA Logout Positive Scenario with Logout API
 

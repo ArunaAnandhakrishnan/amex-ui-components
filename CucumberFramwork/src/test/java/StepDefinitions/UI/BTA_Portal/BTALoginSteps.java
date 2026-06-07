@@ -130,5 +130,21 @@ public class BTALoginSteps {
         };
         uiHelper.assertMultipleElementsDisplayed(navigationMenus, menuNames);
     }
+    @Then("Verify the User Management, Memo Statement ,Monthly Statement, Audit Trail sections are visible to Amex Internal Admin user")
+    public void verifyAmexInternalAdminSectionsVisibility() {
+        By[] navigationMenus = {
+                By.xpath("//a[normalize-space()='User Management']"),
+                By.xpath("//a[normalize-space()='Audit Trail']"),
+                By.xpath("//a[normalize-space()='Memo Statement']"),
+                By.xpath("//a[normalize-space()='Monthly Statements']"),
 
+        };
+        String[] menuNames = {
+                "User Management",
+                "Memo Statement",
+                "Monthly Statements",
+                "Audit Trail"
+        };
+        uiHelper.assertMultipleElementsDisplayed(navigationMenus, menuNames);
+    }
 }

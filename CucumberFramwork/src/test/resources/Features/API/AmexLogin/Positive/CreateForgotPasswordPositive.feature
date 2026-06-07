@@ -2,7 +2,7 @@
 
 Feature: Create Forgot Password Positive Scenario with Forgot Password API
 
-  @CreateBTAForgotPassword @Sanity
+  @CreateBTAForgotPassword @Sanity @WIP
   Scenario: Create BTA Forgot Password
     Given i have "CreateBTAForgotPasswordEndpoint" api request with template "CreateBTAForgotPassword" and following details
       | username | corp.user                  |

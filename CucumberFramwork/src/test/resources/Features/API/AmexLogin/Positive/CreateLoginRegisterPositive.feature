@@ -1,4 +1,4 @@
-@OnlsRegistration @API @Positive
+@BTARegistration @API @Positive
 
 Feature: Create BTA Registration Positive Scenario with Registration API
 

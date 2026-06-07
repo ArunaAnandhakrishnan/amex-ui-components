@@ -16,8 +16,9 @@ public class BtaUserManagementSteps {
         this.driver = WebDriverManagerUtil.getDriver();
         this.uiHelper = new UiHelper(this.driver);
     }
+
     private String generatePhoneNumber() {
-        long number = (long)(Math.random() * 9_000_000_000L) + 1_000_000_000L;
+        long number = (long) (Math.random() * 9_000_000_000L) + 1_000_000_000L;
         return String.valueOf(number);
     }
 
@@ -30,7 +31,7 @@ public class BtaUserManagementSteps {
 
     @Then("User create new corporate user in user management section")
     public void SubmitCorporateUserRequest() {
-        String uniqueEmail = "User" + (1000 + (int)(Math.random() * 9000)) + "@gmail.com";
+        String uniqueEmail = "User" + (1000 + (int) (Math.random() * 9000)) + "@gmail.com";
         String UniqueUserID = "User" + System.currentTimeMillis();
         String ConfirmEmail = uniqueEmail;
         String PhoneNumber = generatePhoneNumber();
@@ -38,10 +39,10 @@ public class BtaUserManagementSteps {
         uiHelper.selectDropdownByText(By.xpath("//select[contains(@class,'corp-select-sm')]"), "Mr");
         uiHelper.enterText(By.xpath("//input[@placeholder='Enter full name']"), "John Doe");
         uiHelper.enterText(By.xpath("//input[@placeholder='Enter job title']"), "IT Manager");
-        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-cc')])[1]"), "971");
-        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-num')])[1]"),PhoneNumber );
-        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-cc')])[2]"), "971");
-        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-num')])[2]"),PhoneNumber );
+        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-cc')])[1]"), "91");
+        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-num')])[1]"), PhoneNumber);
+        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-cc')])[2]"), "91");
+        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-num')])[2]"), PhoneNumber);
         uiHelper.enterText(By.xpath("//input[@placeholder='user@example.com']"), uniqueEmail);
         uiHelper.enterText(By.xpath("//input[@placeholder='Re-enter email']"), ConfirmEmail);
         uiHelper.selectDropdownByText(By.xpath("//select[contains(@class,'corp-input') and not(@multiple)]"), "UAE");
@@ -54,13 +55,13 @@ public class BtaUserManagementSteps {
 
     @Then("User wait for few seconds")
     public void waitForFewSeconds() throws InterruptedException {
-        Thread.sleep(4000);
+        Thread.sleep(2000);
         LoggerUtils.logInfo("Waited for few seconds to observe the result");
     }
 
     @Then("User create new TMC user in user management section")
     public void SubmitTMCUserRequest() {
-        String uniqueEmail = "User" + (1000 + (int)(Math.random() * 9000)) + "@gmail.com";
+        String uniqueEmail = "User" + (1000 + (int) (Math.random() * 9000)) + "@gmail.com";
         String UniqueUserID = "User" + System.currentTimeMillis();
         String ConfirmEmail = uniqueEmail;
         String PhoneNumber = generatePhoneNumber();
@@ -68,9 +69,9 @@ public class BtaUserManagementSteps {
         uiHelper.selectDropdownByText(By.xpath("//select[contains(@class,'corp-select-sm')]"), "Mr");
         uiHelper.enterText(By.xpath("//input[@placeholder='Enter full name']"), "John Doe");
         uiHelper.enterText(By.xpath("//input[@placeholder='Enter job title']"), "IT Manager");
-        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-cc')])[1]"), "971");
+        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-cc')])[1]"), "91");
         uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-num')])[1]"), PhoneNumber);
-        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-cc')])[2]"), "971");
+        uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-cc')])[2]"), "91");
         uiHelper.enterText(By.xpath("(//input[contains(@class,'phone-num')])[2]"), PhoneNumber);
         uiHelper.enterText(By.xpath("//input[@placeholder='user@example.com']"), uniqueEmail);
         uiHelper.enterText(By.xpath("//input[@placeholder='Re-enter email']"), ConfirmEmail);
@@ -79,5 +80,17 @@ public class BtaUserManagementSteps {
         uiHelper.selectMultipleValues(By.xpath("//select[@multiple]"), "Emirates (BTA)");
         uiHelper.enterText(By.xpath("//input[@placeholder='Unique user ID']"), UniqueUserID);
         uiHelper.click(By.xpath("//button[contains(@class,'bta-btn-primary')]"));
+    }
+
+    @Then("User Click on Corporate User Management")
+    public void clickCorporateUserManagement() {
+        uiHelper.click(By.xpath("/html/body/app-root/amex-page-shell/div/div[2]/div/div/app-bta-user-management/div[1]/button[1]"));
+        LoggerUtils.logInfo("Clicked on Corporate User Management ");
+    }
+
+    @Then("User Click on TMC User Management")
+    public void clickTMCUserManagement() {
+        uiHelper.click(By.xpath("/html/body/app-root/amex-page-shell/div/div[2]/div/div/app-bta-user-management/div[1]/button[2]"));
+        LoggerUtils.logInfo("Clicked on TMC User Management ");
     }
 }
