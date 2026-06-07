@@ -16,7 +16,9 @@ const mfConfig = withModuleFederationPlugin({
     }),
   },
 });
-
+mfConfig.plugins = (mfConfig.plugins || []).filter(
+  plugin => plugin.constructor.name !== 'LicenseWebpackPlugin'
+);
 // CRITICAL: Set publicPath so ALL chunk requests from this remote
 // are resolved to port 4203, not the shell's port 4200.
 // Without this, shared chunks like common.js get fetched from the wrong host.
