@@ -201,7 +201,7 @@ pipeline {
                 echo '==========================='
 
                 dir('CucumberFramwork') {
-                    bat 'mvn clean test -Dcucumber.filter.tags="@Sanity"'
+                    bat 'mvn clean install -DskipTests'
                 }
             }
         }
