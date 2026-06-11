@@ -3,7 +3,7 @@ import type { UserConfig } from 'vite';
 
 const config: StorybookConfig & { viteFinal?: (config: UserConfig) => Promise<UserConfig> } = {
   stories: [
-    '../src/lib/docs/**/*.mdx',
+    // '../src/lib/docs/**/*.mdx',
     '../src/**/*.stories.@(js|jsx|ts|tsx)',
   ],
   addons: [
