@@ -6,14 +6,15 @@ const {
 const mfConfig = withModuleFederationPlugin({
   name: 'shell',
   remotes: {
-    btaPortal:           'btaPortal@http://localhost:4203/remoteEntry.js',
-    offersPortal:        'offersPortal@http://localhost:4204/remoteEntry.js',
-    suppPortal:          'suppPortal@http://localhost:4205/remoteEntry.js',
-    wearablesPortal:     'wearablesPortal@http://localhost:4206/remoteEntry.js',
-    payWithPointsPortal: 'payWithPointsPortal@http://localhost:4207/remoteEntry.js',
-    loungePortal:        'loungePortal@http://localhost:4209/remoteEntry.js',
-    cenLcyExcPortal:     'cenLcyExcPortal@http://localhost:4210/remoteEntry.js',  // ← NEW
-    centurionPortal:       'centurionPortal@http://localhost:4211/remoteEntry.js',  // ← NEW
+    btaPortal:            'btaPortal@http://localhost:4203/remoteEntry.js',
+    offersPortal:         'offersPortal@http://localhost:4204/remoteEntry.js',
+    suppPortal:           'suppPortal@http://localhost:4205/remoteEntry.js',
+    wearablesPortal:      'wearablesPortal@http://localhost:4206/remoteEntry.js',
+    payWithPointsPortal:  'payWithPointsPortal@http://localhost:4207/remoteEntry.js',
+    loungePortal:         'loungePortal@http://localhost:4209/remoteEntry.js',
+    cenLcyExcPortal:      'cenLcyExcPortal@http://localhost:4210/remoteEntry.js',
+    centurionPortal:      'centurionPortal@http://localhost:4211/remoteEntry.js',
+    changePasswordPortal: 'changePasswordPortal@http://localhost:4212/remoteEntry.js',
   },
   shared: {
     ...shareAll({
