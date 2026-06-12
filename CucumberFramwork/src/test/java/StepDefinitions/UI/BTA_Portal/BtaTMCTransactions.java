@@ -28,6 +28,7 @@ public class BtaTMCTransactions {
         uiHelper.selectDate(By.xpath("/html/body/app-root/amex-page-shell/div/div[2]/div/div/app-bta-tmc-transactions/div/div/div[2]/div[1]/div[1]/input"), "02-02-2026");
         uiHelper.selectDropdownByText(By.xpath("/html/body/app-root/amex-page-shell/div/div[2]/div/div/app-bta-tmc-transactions/div/div/div[2]/div[1]/div[2]/select"), "Live Transaction");
         uiHelper.click(By.xpath("/html/body/app-root/amex-page-shell/div/div[2]/div/div/app-bta-tmc-transactions/div/div/div[2]/div[1]/button"));
+
        }
 
 //    @Then("User verify the Successful case submission in Case Management Section")

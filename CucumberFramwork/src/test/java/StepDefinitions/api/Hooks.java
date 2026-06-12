@@ -62,6 +62,7 @@ public class Hooks {
         // Flush and cleanup
         ExtentReportManager.flushReport();
         ExtentReportManager.cleanup();
+        LoggerUtils.clearContext();  // Clear MDC context
     }
 }
 

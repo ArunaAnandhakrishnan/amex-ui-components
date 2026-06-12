@@ -37,8 +37,7 @@ public class BTALoginSteps {
 
     @Given("Navigate to the BTA Portal")
     public void iAmOnTheLoginPage() {
-
-        String loginUrl = ConfigReader.getProperty("uiBaseUrl");
+        String loginUrl = ConfigReader.getProperty("BTAbaseUrl");
         WebDriverManagerUtil.navigateTo(loginUrl);
         LoggerUtils.logInfo("Navigated to BTA Portal");
     }

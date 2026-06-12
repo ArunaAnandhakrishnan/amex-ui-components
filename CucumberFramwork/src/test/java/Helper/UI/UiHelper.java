@@ -31,14 +31,12 @@ public class UiHelper {
     // ...existing code...
     public void click(By locator) {
         WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
-
         element.click();
     }
 
     // ...existing code...
     public void enterText(By locator, String value) {
         WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-
         element.clear();
         element.sendKeys(value);
     }

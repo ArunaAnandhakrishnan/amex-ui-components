@@ -93,4 +93,38 @@ public class BtaUserManagementSteps {
         uiHelper.click(By.xpath("/html/body/app-root/amex-page-shell/div/div[2]/div/div/app-bta-user-management/div[1]/button[2]"));
         LoggerUtils.logInfo("Clicked on TMC User Management ");
     }
+
+    @Then("User create new corporate user in user management by passing empty fields")
+    public void SubmitCorporateUserRequestwithBlankValues() {
+        uiHelper.click(By.xpath("/html/body/app-root/amex-page-shell/div/div[2]/div/div/app-bta-user-management/div[2]/div/div[2]/div/button[2]"));
+        uiHelper.click(By.xpath("//button[contains(@class,'bta-btn-primary')]"));
+    }
+
+    @Then("User should see the validation messages for mandatory fields in user management section")
+    public void verifyValidationMessages() {
+        uiHelper.assertMultipleElementsDisplayed(
+                new By[]{
+                        By.xpath("//span[@class='error-msg' and contains(text(),'Salutation is required.')]"),
+                        By.xpath("//span[@class='error-msg' and contains(text(),'Full Name is required.')]"),
+                        By.xpath("//span[@class='error-msg' and contains(text(),'Business Phone Number is required.')]"),
+                        By.xpath("//span[@class='error-msg' and contains(text(),'Email Address is required.')]"),
+                        By.xpath("//span[@class='error-msg' and contains(text(),'Please confirm your Email Address.')]"),
+                        By.xpath("//span[@class='error-msg' and contains(text(),'Country is required.')]"),
+                        By.xpath("//span[@class='error-msg' and contains(text(),'User Type is required.')]"),
+                        By.xpath("//span[@class='error-msg' and contains(text(),'Please select at least one BTA account.')]"),
+                        By.xpath("//span[@class='error-msg' and contains(text(),'User ID is required.')]")
+                },
+                new String[]{
+                        "Salutation validation message",
+                        "Full Name validation message",
+                        "Business Phone Number validation message",
+                        "Email Address validation message",
+                        "Confirm Email Address validation message",
+                        "Country validation message",
+                        "User Type validation message",
+                        "BTA Account selection validation message",
+                        "User ID validation message"
+                }
+        );
+    }
 }
