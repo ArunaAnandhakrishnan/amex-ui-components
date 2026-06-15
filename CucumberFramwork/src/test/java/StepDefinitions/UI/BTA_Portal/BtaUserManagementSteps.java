@@ -55,7 +55,7 @@ public class BtaUserManagementSteps {
 
     @Then("User wait for few seconds")
     public void waitForFewSeconds() throws InterruptedException {
-        Thread.sleep(2000);
+        Thread.sleep(4000);
         LoggerUtils.logInfo("Waited for few seconds to observe the result");
     }
 

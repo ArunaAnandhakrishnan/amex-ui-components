@@ -24,61 +24,39 @@
             <DefaultRolloverStrategy max="5" />
         </RollingFile>
 
-        <!-- Per-Class Log Files Using Routing Appender -->
-        <Routing name="RoutingAppender" routes="dynamic">
-            <Routes pattern="$${ctx:class}">
-                <!-- Default route for logs without class context -->
-                <Route key="$${ctx:class}">
-                    <RollingFile name="Class-$${ctx:class}"
-                                 fileName="${logs.dir}/$${ctx:class}.log"
-                                 filePattern="${logs.dir}/$${ctx:class}-%i.log">
-                        <PatternLayout pattern="${log.pattern}" />
-                        <Policies>
-                            <SizeBasedTriggeringPolicy size="10 MB" />
-                        </Policies>
-                        <DefaultRolloverStrategy max="5" />
-                    </RollingFile>
-                </Route>
-            </Routes>
-        </Routing>
+
     </Appenders>
 
     <Loggers>
         <!-- Per-Package Loggers with additivity=false to prevent duplicate logging -->
         <Logger name="StepDefinitions" level="debug" additivity="false">
             <AppenderRef ref="Console" />
-            <AppenderRef ref="RoutingAppender" />
             <AppenderRef ref="RootFile" />
         </Logger>
 
         <Logger name="Helper" level="debug" additivity="false">
             <AppenderRef ref="Console" />
-            <AppenderRef ref="RoutingAppender" />
             <AppenderRef ref="RootFile" />
         </Logger>
 
         <Logger name="Utils" level="debug" additivity="false">
             <AppenderRef ref="Console" />
-            <AppenderRef ref="RoutingAppender" />
             <AppenderRef ref="RootFile" />
         </Logger>
 
         <Logger name="Context" level="debug" additivity="false">
             <AppenderRef ref="Console" />
-            <AppenderRef ref="RoutingAppender" />
             <AppenderRef ref="RootFile" />
         </Logger>
 
         <Logger name="Runners" level="debug" additivity="false">
             <AppenderRef ref="Console" />
-            <AppenderRef ref="RoutingAppender" />
             <AppenderRef ref="RootFile" />
         </Logger>
 
         <!-- Root Logger as fallback only for unmatched packages -->
         <Root level="info">
             <AppenderRef ref="Console" />
-            <AppenderRef ref="RoutingAppender" />
             <AppenderRef ref="RootFile" />
         </Root>
     </Loggers>
